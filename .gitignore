@@ -1,5 +1,11 @@
 APSingleCodebase.*
 *.txt
+*.csv
 *.o
 springAgent
 springAgent.so
+doxygen-configs-memAgent
+html/
+latex/
+movie/
+mem-agent-spring-model-activeperception-master/
