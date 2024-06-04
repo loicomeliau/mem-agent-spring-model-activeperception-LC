@@ -38,6 +38,8 @@ using namespace std;
 //general
 World* WORLDpointer;
 ofstream RUNSfile;
+ofstream TIMETOPATTERNfile;
+ofstream TIPAMOUNTfile;
 int memINIT;
 char fname[200];
 float actinMax = 512;
@@ -204,6 +206,8 @@ int main(int argc, char * argv[]) {
     //---------------------------------------------------------------
 
     char outfilename[500];
+    char tipamountfilename[500];
+    char timetopatternfilename[500];
 
     //TODO update these file names with variable vals
     //do print statement as well
@@ -221,9 +225,14 @@ int main(int argc, char * argv[]) {
         //exit(1);
     }
 
+    sprintf(timetopatternfilename, "time_to_pattern%g.txt", intersoso);
+    sprintf(tipamountfilename, "number_of_tip_parameter%g.txt", intersoso);
+
     cout << "output file name: " << outfilename << endl;
 
     RUNSfile.open(outfilename);
+    TIMETOPATTERNfile.open(timetopatternfilename, ios::app);
+    TIPAMOUNTfile.open(tipamountfilename, ios::app);
 
     World* world = new World();
     WORLDpointer = world;
@@ -255,6 +264,8 @@ int main(int argc, char * argv[]) {
 
 #endif
     RUNSfile.close();
+    TIMETOPATTERNfile.close();
+    TIPAMOUNTfile.close();
 }
 //------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------
@@ -423,8 +434,8 @@ void World::hysteresisAnalysis()
     continue_hysteresis = ECagents[1]->hyst.evaluate_hysteresis(RUNSfile);
     if (!continue_hysteresis)
     {
-         timeStep = MAXtime+1;
-         RUNSfile<<endl<<endl;
+        timeStep = MAXtime+1;
+        RUNSfile<<endl<<endl;
      }
 }
 //-----------------------------------------------------------------------------------------------------------------------------------

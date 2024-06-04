@@ -57,6 +57,8 @@ class CPM_module;
 #define MAXtime 10000000*///2000 ///480 for fil lifetime
 
 extern ofstream RUNSfile;
+extern ofstream TIMETOPATTERNfile;
+extern ofstream TIPAMOUNTfile;
 ///analysis/quantification
 #define SigRange 15.0f*(VEGFRnorm/100.0f) ///percentage of total VEGFR poss, within this range we say the cell is stable.
 #define TIP_VEGFR 50*(VEGFRnorm/100.0f)///set as over 50% - its the lower limit for no of VEGFR needed to qualify as a tip cell.

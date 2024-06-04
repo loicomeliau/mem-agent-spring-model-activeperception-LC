@@ -644,13 +644,17 @@ void World::evaluateSandP()
     if (patternHistory == 150) {
         cout << "patterned!" << endl;
         patterned = true;
-        RUNSfile << timeStep;
+        RUNSfile << timeStep << endl;
+        TIMETOPATTERNfile << timeStep << endl;
+        TIPAMOUNTfile << tipCount << endl;
         timeStepPattern = timeStep;
         timeStep = MAXtime;
     }
 
     if (timeStep == MAXtime - 1 && !patterned)
-        RUNSfile << "-1";
+        RUNSfile << "-1" << endl;
+        //TIMETOPATTERNfile << "-1" << endl;
+        //TIPAMOUNTfile << tipCount << endl;
 }
 
 
