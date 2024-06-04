@@ -42,6 +42,9 @@ int memINIT;
 char fname[200];
 float actinMax = 512;
 
+//Model alterations
+float intersoso;
+
 //GRN Signalling pathways
 float delta = 2.0; //2.0f normal
 float sigma = 15;// 10.35f; //15 normal JTB setup
@@ -119,14 +122,15 @@ void readArgs(int argc, char * argv[]) {
         FILTIPMAX = atof(argv[6]);
         tokenStrength = atof(argv[7]);
 		FIL_SPACING = atof(argv[8]);
-        if (argc > 9)
+        intersoso = atof(argv[9]);
+        if (argc > 10)
         {
-            randFilExtend = atof(argv[9]);
+            randFilExtend = atof(argv[10]);
             if (randFilExtend >= 0 && randFilExtend <= 1)
                 EPSILON = 0;
-            RAND_FILRETRACT_CHANCE = atof(argv[10]);
-            if (argc > 11)
-                seed = stoll(argv[11]);
+            RAND_FILRETRACT_CHANCE = atof(argv[11]);
+            if (argc > 12)
+                seed = stoll(argv[12]);
         }
         VEGFconc = VconcST;
     }
@@ -205,11 +209,11 @@ int main(int argc, char * argv[]) {
     //do print statement as well
     if (ANALYSIS_HYSTERESIS) {
         cout << "running bistability analysis" << endl;
-        sprintf(outfilename, "analysis_hysteresis_filvary_%g_epsilon_%g_VconcST%g_GRADIENT%i_FILTIPMAX%g_tokenStrength%g_FILSPACING%i_randFilExtend%g_randFilRetract%g_seed%lld_run%i_.txt", double(FIL_VARY), double(EPSILON), VconcST, GRADIENT, FILTIPMAX, tokenStrength, FIL_SPACING, randFilExtend, RAND_FILRETRACT_CHANCE, seed, run_number);
+        sprintf(outfilename, "analysis_hysteresis_filvary_%g_epsilon_%g_VconcST%g_GRADIENT%i_FILTIPMAX%g_tokenStrength%g_FILSPACING%i_randFilExtend%g_randFilRetract%g_seed%lld_intersoso%g_run%i.txt", double(FIL_VARY), double(EPSILON), VconcST, GRADIENT, FILTIPMAX, tokenStrength, FIL_SPACING, randFilExtend, RAND_FILRETRACT_CHANCE, seed, intersoso, run_number);
     }
     else if (ANALYSIS_TIME_TO_PATTERN) {
         cout << "running time to pattern analysis" << endl;
-        sprintf(outfilename, "time_to_pattern_filvary_%g_epsilon_%g_VconcST%g_GRADIENT%i_FILTIPMAX%g_tokenStrength%g_FILSPACING%i_randFilExtend%g_randFilRetract%g_seed%lld_run%i_.txt", double(FIL_VARY), double(EPSILON), VconcST, GRADIENT, FILTIPMAX, tokenStrength, FIL_SPACING, randFilExtend, RAND_FILRETRACT_CHANCE, seed, run_number);
+        sprintf(outfilename, "time_to_pattern_filvary_%g_epsilon_%g_VconcST%g_GRADIENT%i_FILTIPMAX%g_tokenStrength%g_FILSPACING%i_randFilExtend%g_randFilRetract%g_seed%lld_intersoso%g_run%i.txt", double(FIL_VARY), double(EPSILON), VconcST, GRADIENT, FILTIPMAX, tokenStrength, FIL_SPACING, randFilExtend, RAND_FILRETRACT_CHANCE, seed, intersoso, run_number);
     }
     else {
         cout << "analysis must either be ANALYSIS_HYSTERESIS or ANALYSIS_TIME_TO_PATTERN.. aborting run";

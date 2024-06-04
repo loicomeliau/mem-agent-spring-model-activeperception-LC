@@ -176,7 +176,7 @@ EC::EC(World*  world){
      
         //wt values FLTK link
         VEGFRnorm = VEGFRNORM;
-        Vsink =VsinkNorm;
+        Vsink =VsinkNorm*intersoso;
         
         if(VR2_HET==true){
                 VEGFRnorm = VEGFRNORM*0.5;

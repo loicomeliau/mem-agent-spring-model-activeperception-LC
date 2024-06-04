@@ -179,7 +179,9 @@ extern float M2_lambda;
 #define VR2_HET false
 #define VR1_HET false
 #define MUTANTS false
-#define VsinkNorm 9.0f
+#define VsinkNorm 9.0f 
+//#define intersoso 0.95f// AJOUT
+extern float intersoso;
 
 ///SPRING_SETUP
 #define springConstant 0.05f
@@ -737,6 +739,8 @@ public:
     std::vector <EC *> ECagents;
     int Pause;
     int timeStep;
+    int timeStepPattern; // AJOUT
+    int tipCountSoso; // AJOUT
 
     ///grid
     Location*** grid;

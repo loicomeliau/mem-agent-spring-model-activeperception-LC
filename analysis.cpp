@@ -634,6 +634,8 @@ void World::evaluateSandP()
         }
     }
 
+    tipCountSoso = tipCount;
+
     if (Patt == 1)
         patternHistory++;
     else
@@ -643,6 +645,7 @@ void World::evaluateSandP()
         cout << "patterned!" << endl;
         patterned = true;
         RUNSfile << timeStep;
+        timeStepPattern = timeStep;
         timeStep = MAXtime;
     }
 
