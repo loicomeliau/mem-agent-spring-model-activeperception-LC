@@ -1,3 +1,5 @@
+#!/bin/bash
+
 graphics=false
 camp=false
 analysis="time_to_pattern"
