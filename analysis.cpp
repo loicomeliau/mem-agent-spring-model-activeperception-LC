@@ -652,9 +652,11 @@ void World::evaluateSandP()
     }
 
     if (timeStep == MAXtime - 1 && !patterned)
+    {
         RUNSfile << "-1" << endl;
-        //TIMETOPATTERNfile << "-1" << endl;
-        //TIPAMOUNTfile << tipCount << endl;
+        TIMETOPATTERNfile << "-1" << endl;
+        TIPAMOUNTfile << tipCount << endl;
+    }
 }
 
 
