@@ -125,6 +125,7 @@ void readArgs(int argc, char * argv[]) {
         tokenStrength = atof(argv[7]);
 		FIL_SPACING = atof(argv[8]);
         intersoso = atof(argv[9]);
+        // intersoso2 = atof(argv[10])  /!\ changer les numéros de la suite (+1)
         if (argc > 10)
         {
             randFilExtend = atof(argv[10]);
