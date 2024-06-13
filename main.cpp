@@ -226,8 +226,8 @@ int main(int argc, char * argv[]) {
         //exit(1);
     }
 
-    sprintf(timetopatternfilename, "output/time_to_pattern_parameter%g_run%i.txt", intersoso, run_number);
-    sprintf(tipamountfilename, "output/number_of_tip_parameter%g_run%i.txt", intersoso, run_number);
+    sprintf(timetopatternfilename, "output/time_to_pattern_concentration%g_parameter%g_run%i.txt", VconcST, intersoso, run_number);
+    sprintf(tipamountfilename, "output/number_of_tip_concentration%g_parameter%g_run%i.txt", VconcST, intersoso, run_number);
 
     cout << "output file name: " << outfilename << endl;
 
