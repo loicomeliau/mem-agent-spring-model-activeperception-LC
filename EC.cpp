@@ -115,7 +115,10 @@ void EC::allocateProts(void){
         
         
         
-        if(nodeAgents[j]->vonNeu==true) nodeAgents[j]->VEGFR=(float)VEGFRtot/(float)div;
+        if(nodeAgents[j]->vonNeu==true){
+            nodeAgents[j]->VEGFR=(float)VEGFRtot/(float)div;
+            nodeAgents[j]->VEGFR3=(float)VEGFR3tot/(float)div; //LC//
+        }
         
         if(nodeAgents[j]->junction==true){
             
@@ -134,6 +137,7 @@ void EC::allocateProts(void){
         
         
         springAgents[j]->VEGFR=(float)VEGFRtot/(float)div;
+        springAgents[j]->VEGFR3=(float)VEGFR3tot/(float)div; //LC//
         
         //clustered VR-2 to filopodia
         //if(springAgents[j-nodeAgents.size()]->FIL!=NONE) springAgents[j-nodeAgents.size()]->VEGFR=(float)(VEGFRtot*alpha)/(float)div;
@@ -156,7 +160,10 @@ void EC::allocateProts(void){
         
         
         
-        if(surfaceAgents[j]->vonNeu==true)surfaceAgents[j]->VEGFR=(float)VEGFRtot/(float)div;
+        if(surfaceAgents[j]->vonNeu==true){
+            surfaceAgents[j]->VEGFR=(float)VEGFRtot/(float)div;
+            surfaceAgents[j]->VEGFR3=(float)VEGFR3tot/(float)div; //LC//
+        }
         
         //clustered VR-2 to filopodia
         //if(springAgents[j-nodeAgents.size()]->FIL!=NONE) springAgents[j-nodeAgents.size()]->VEGFR=(float)(VEGFRtot*alpha)/(float)div;

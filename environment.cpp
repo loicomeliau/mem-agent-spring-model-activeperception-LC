@@ -4,6 +4,21 @@
 #include <math.h>
 #include <cstdlib>
 
+float affCR2R2 ; 
+float affCR2R3 ; 
+float affCR3R3 ; 
+float affAR2R2 ; 
+float affAR2R3 ; 
+float affAR3R3 ;
+float affCmR2R2 ;
+float affCmR2R3 ;
+float affCmR3R3 ;
+float affR2R2 ; 
+float affR2R3 ; 
+float affR3R3 ;
+
+int VType;
+
 //---------------------------------------------------------------
 void World::updateEnvironment(void){
 
@@ -192,6 +207,63 @@ void Env::calcInside(void){
 */
     //if(inside==true)cout<<"true"<<endl;
 }
+
+// AJOUT3 //LC//
+void World::calcVType(){
+
+    affCR2R2 = 0.1;
+    affCR2R3 = 0.4;
+    affCR3R3 = 0.5;
+    affAR2R2 = 1.0; //0.8;
+    affAR2R3 = 0.2;
+    affAR3R3 = 0.0;
+    affCmR2R2 = 0.0;
+    affCmR2R3 = 0.0;
+    affCmR3R3 = 1.0;
+
+    if(VType==VEGF_alone){
+        affR2R2 = affAR2R2 ;
+        affR3R3 = affAR3R3 ;
+        affR2R3 = affAR2R3 ;
+    }
+    
+    if(VType==VEGFC_alone){
+        affR2R2 = affCR2R2 ;
+        affR3R3 = affCR3R3 ;
+        affR2R3 = affCR2R3 ;
+    }
+
+    if(VType==VEGFCm_alone){
+        affR2R2 = affCmR2R2 ;
+        affR3R3 = affCmR3R3 ;
+        affR2R3 = affCmR2R3 ;
+    }
+
+    if(VType==VEGF_VEGFC){
+        affR2R2 = affAR2R2 + affCR2R2 ;
+        affR3R3 = affAR3R3 + affCR3R3 ;
+        affR2R3 = affAR2R3 + affCR2R3 ;
+    }
+
+    if(VType==VEGF_VEGFCm){
+        affR2R2 = affAR2R2 + affCmR2R2 ;
+        affR3R3 = affAR3R3 + affCmR3R3 ;
+        affR2R3 = affAR2R3 + affCmR2R3 ;
+    }
+
+    if(VType==VEGFC_VEGFCm){
+        affR2R2 = affCR2R2 + affCmR2R2 ;
+        affR3R3 = affCR3R3 + affCmR3R3 ;
+        affR2R3 = affCR2R3 + affCmR2R3 ;
+    }
+
+    if(VType==VEGF_VEGFC_VEGFCm){
+        affR2R2 = affAR2R2 + affCR2R2 + affCmR2R2 ;
+        affR3R3 = affAR3R3 + affCR3R3 + affCmR3R3 ;
+        affR2R3 = affAR2R3 + affCR2R3 + affCmR2R3 ;
+    }
+}
+
 //-------------------------------------------------------------------------
 //-----------------------------------------------------------------------------------------
 void World::calcEnvAgentVEGF(Env* ep){

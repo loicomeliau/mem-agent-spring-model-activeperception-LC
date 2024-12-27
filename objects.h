@@ -135,6 +135,38 @@ extern float HorCutOff;
 #define BACKGROUND_VEGF NONE //STEADY
 #define MACROS 0///2///2
 extern int GRADIENT;//FIXED_MACROS////ASTRO_UNIFORM///FIXED_MACROS///ASTRO_LINEAR///specifies the current VEGF gradient type
+
+// VEGF type //LC//
+extern int VType; 
+// AJOUT3 
+// Which Stimu ? The number we enter in argument 
+#define VEGF_alone 1
+#define VEGFC_alone 2
+#define VEGFCm_alone 3
+#define VEGF_VEGFC 4
+#define VEGF_VEGFCm 5
+#define VEGFC_VEGFCm 6
+#define VEGF_VEGFC_VEGFCm 7
+// Affinities for Ligands
+extern float affCR2R2 ; 
+extern float affCR2R3 ; 
+extern float affCR3R3 ; 
+extern float affAR2R2 ; 
+extern float affAR2R3 ; 
+extern float affAR3R3 ;
+extern float affCmR2R2 ;
+extern float affCmR2R3 ;
+extern float affCmR3R3 ;
+extern float affR2R2 ; 
+extern float affR2R3 ; 
+extern float affR3R3 ;  
+
+//LC// dimerization
+extern float R2toR2R2;
+extern float R2toR2R3;
+extern float R3toR2R3;
+extern float R3toR3R3;
+
 extern float VEGFconc; ///conc of VEGF in flat gradient
 extern float VconcST;
 extern float VconcSTMACRO;
@@ -155,7 +187,9 @@ extern float randFilExtend;
 ///GRN signalling pathways
 extern float NotchNorm;
 extern float VEGFRNORM; /// (46000.0f/100.0f)*48.6f ///total of receptors it will maintain if all else is equal - divides out to M agents
+extern float VEGFR3NORM; //LC//
 extern float VEGFRmin; /// (1000.0f/100.0f)*48.6f///min level total VEGFR is allowed to drop to (Holger said wont go to zero..)
+extern float VEGFR3min; //LC//
 extern float sigma; ///no. of VEGFR recs lost by one active notch receptor.
 extern float MAX_dll4; ///max amount of VEGF that will induce the same amount of notch/dll4 - after this it will induce only amount specified in this param - from Liu03 paper
 extern float delta;
@@ -181,7 +215,7 @@ extern float M2_lambda;
 #define VR2_HET false
 #define VR1_HET false
 #define MUTANTS false
-#define VsinkNorm 9.0f 
+#define VsinkNorm 9.0f
 //#define intersoso 0.95f// AJOUT
 extern float intersoso;
 
@@ -535,9 +569,11 @@ public:
     ///GRN signalling pathways
     float Vsink; ///VEGFR-1 parameter
     float VEGFRnorm; //VEGFR2 level
+    float VEGFR3norm; //LC//
     float actNotCurrent; ///active Notch after time delay (able to affect Gene expression)
     float actVEGFRcurrent; ///active VEGFR-2 after time delay (able to affect Gene expression)
     float VEGFRtot; ///VEGFR-2 receptor expression level
+    float VEGFR3tot; //LC//
     float Dll4tot; ///Dll4 ligand expression level
     float Notchtot; ///Number of Notch receptors
     float activeNotchtot; ///activeNotch level in timestep
@@ -682,11 +718,20 @@ public:
 
     ///GRN and signalling pathways
     float VEGFR;
+    float VEGFR3; //LC//
     float Notch1;
     float Dll4;
     float activeNotch;
     float VEGFRactive;
     float SumVEGF;
+    // float SumVEGFC; //LC//
+    // float SumVEGFCm; //LC//
+    float R2R2;
+    float R2R3;
+    float R3R3;
+    float R2R2active;
+    float R2R3active;
+    float R3R3active;
 
     bool checkNeighsVonForEnv(void); ///check if memAgent has env in von neuman neighbours, as only allocates receptors to memAgents with full surface exposed, to avoid ruffled surfaces
     void VEGFRresponse(void); ///activate VEGFR receptors and also trigger filopoida extension
@@ -812,6 +857,7 @@ public:
     void drawMeshFirst(int i, int j, EC* ecp, int JunctArrangement);
     void connectMesh(void);
     void calcEnvAgentVEGF(Env * ep);
+    void calcVType();
     void createNewEnvAgent(int x, int y, int z);
     void createAstrocytes(void);
     void createTestCase(void);

@@ -19,6 +19,11 @@ int count3 = 0;
 float overallVEGF = 0.0f;
 int overallflag = 0;
 int Dolaycount = 0;
+
+float R2toR2R2;
+float R2toR2R3;
+float R3toR3R3;
+float R3toR2R3;
 //----------------------------------------------------------------------------------
 /**
  *
@@ -629,22 +634,62 @@ void MemAgent::VEGFRresponse(void) {
 
     float Prob, chance;
 
-    int upto = Cell->VonNeighs; 
+    int upto = Cell->VonNeighs;
     float VEGFRactiveProp;
+    float R2R2activeProp; //LC//
+    float R2R3activeProp; //LC//
+    float R3R3activeProp; //LC//
     int i, j, k;
     i = (int) Mx;
     j = (int) My;
     k = (int) Mz;
     bool moved = false;
+
+    //LC// To be adapted to account for sink 
+    R2toR2R2 = 0.5;
+    R2toR2R3 = 1 - R2toR2R2;
+    R3toR3R3 = 0.8;
+    R3toR2R3 = 1 - R3toR3R3;
    
+    // Build dimers
+    R2R2 = (R2toR2R2 * VEGFR) / 2;
+    R2R3 = min(R2toR2R3*VEGFR, R3toR2R3*VEGFR3);
+    R3R3 = (R3toR3R3 * VEGFR3) / 2;
+
     //calculate the active VEGFR level as a function of VEGFR-2, VEGFR1 level and vEGF.. 
     VEGFRactiveProp = (VEGFR / ((float) VEGFRNORM / (float) upto));
     VEGFRactive = (SumVEGF / Cell->Vsink) * VEGFRactiveProp;
+
+    float maxR2R2 = R2toR2R2 * VEGFRNORM/2;  // should R2toR2R2 be there?
+    R2R2activeProp = (R2R2 / ((float) maxR2R2 / (float) upto));
+    R2R2active = (SumVEGF / Cell->Vsink) * affR2R2 * R2R2activeProp;
+
+    float maxR2R3 = min(R2toR2R3 * VEGFRNORM, R3toR2R3 * VEGFR3NORM);
+    R2R3activeProp = (R2R3 / ((float) maxR2R3 / (float) upto));
+    R2R3active = (SumVEGF / Cell->Vsink) * affR2R3 * R2R3activeProp;
+
+    float maxR3R3 = R3toR3R3 * VEGFR3NORM/2;
+    R3R3activeProp = (R3R3 / ((float) maxR3R3 / (float) upto));
+    R3R3active = (SumVEGF / Cell->Vsink) * affR3R3 * R3R3activeProp;
 
     //done exceed max level
     if (VEGFRactive > VEGFR) {
         
         VEGFRactive = VEGFR;
+    }
+
+    //LC//
+    if (R2R2active > R2R2) {
+        
+        R2R2active = R2R2;
+    }
+    if (R2R3active > R2R3) {
+        
+        R2R3active = R2R3;
+    }
+    if (R3R3active > R3R3) {
+        
+        R3R3active = R3R3;
     }
 
     //calculate probability of extending a filopdium as a function of VEGFR activity, if no filopodia needed set to 0
@@ -654,6 +699,7 @@ void MemAgent::VEGFRresponse(void) {
       Prob = randFilExtend; //0-1 continuous value input at runtime. if randFil!=-1 - token Strength forced to 0, and epsilon forced to 0.0 (fully random direction and extension, no bias from VR->actin or VR gradient to direction.
     else
       Prob = ((float) VEGFRactive / ((float) Cell->VEGFRnorm / (float) upto)) * Cell->filCONST;
+      //Prob = ((float) R2R2active / ((float) maxR2R2 / (float) upto)) * Cell->filCONST;
         //else Prob = ((float) VEGFRactive / (((float) VEGFRnorm/2.0f) / (float) upto)) * Cell->filCONST;
     }
     else Prob = 0;

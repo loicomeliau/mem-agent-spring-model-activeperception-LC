@@ -53,7 +53,9 @@ float sigma = 15;// 10.35f; //15 normal JTB setup
 float NotchNorm;
 float MAX_dll4;
 float VEGFRNORM; //total of receptors it will maintain if all else is equal - divides out to M agents
+float VEGFR3NORM; //LC//
 float VEGFRmin;
+float VEGFR3min; //LC//
 
 //junctional offset simulations as in PLoS CB 2009
 int Junct_arrange = UNEQUAL_NEIGHS;
@@ -124,16 +126,17 @@ void readArgs(int argc, char * argv[]) {
         FILTIPMAX = atof(argv[6]);
         tokenStrength = atof(argv[7]);
 		FIL_SPACING = atof(argv[8]);
-        intersoso = atof(argv[9]);
+        VType = atoi(argv[9]);
+        intersoso = atof(argv[10]);
         // intersoso2 = atof(argv[10])  /!\ changer les numéros de la suite (+1)
         if (argc > 10)
         {
-            randFilExtend = atof(argv[10]);
+            randFilExtend = atof(argv[11]);
             if (randFilExtend >= 0 && randFilExtend <= 1)
                 EPSILON = 0;
-            RAND_FILRETRACT_CHANCE = atof(argv[11]);
-            if (argc > 12)
-                seed = stoll(argv[12]);
+            RAND_FILRETRACT_CHANCE = atof(argv[12]);
+            if (argc > 13)
+                seed = stoll(argv[13]);
         }
         VEGFconc = VconcST;
     }
@@ -304,7 +307,7 @@ void World::runSimulation()
 
 void World::simulateTimestep()
 {
-    int movie = 0;
+    int movie = 0; //LC// Seems useless (will always be 0)
     timeStep++;
     //TODO: maybe move this out of simulate timestep? bit misleading that its in here
     //could just call creation timestep func from here.. and have timesteps start from zero instead of -1
@@ -315,7 +318,7 @@ void World::simulateTimestep()
     }
     else
     {
-
+        //LC// What for?
         for (EC* ec : ECagents)
         {
             ec->filopodiaExtensions.clear();
@@ -323,6 +326,7 @@ void World::simulateTimestep()
         }
 
         updateMemAgents();
+        //LC// What for? CPM?
         if ( (timeStep > TIME_DIFFAD_STARTS) && REARRANGEMENT)
             diffAd->run_CPM();
         updateECagents();
@@ -826,15 +830,22 @@ void World::scale_ProtLevels_to_CellSize(void) {
         NotchNorm = (10000.0f / 100.0f) * Scale;
 
         MAX_dll4 = (10000.0f / 100.0f) * Scale;
-
-        VEGFRNORM = (31714.0f / 100.0f) * Scale; //total of receptors it will maintain if all else is equal - divides out to M agents
-        VEGFRmin = (689.0f / 100.0f) * Scale;
+        //LC// multiply by 2 for dimerization so that R2R2 gives the same result as VEGFR alone in previous version of code
+        VEGFRNORM = (2 * 31714.0f / 100.0f) * Scale; //total of receptors it will maintain if all else is equal - divides out to M agents
+        VEGFR3NORM = (2 * 31714.0f / 100.0f) * Scale; //LC//
+        //LC// multiply by 2 for dimerization so that R2R2 gives the same result as VEGFR alone in previous version of code
+        VEGFRmin = (2 * 689.0f / 100.0f) * Scale;
+        VEGFR3min = (2 * 689.0f / 100.0f) * Scale; //LC//
     } else {
         NotchNorm = 10000.0f;
 
         MAX_dll4 = 10000.0f;
+        //LC// multiply by 2 for dimerization so that R2R2 gives the same result as VEGFR alone in previous version of code
         VEGFRNORM = 31714.0; //scaled to fit with first model - so each memagent has same number of recs - new arrangment means diff number of initial memagents
+        VEGFR3NORM = 2 * 31714.0f; //LC//
+        //LC// multiply by 2 for dimerization so that R2R2 gives the same result as VEGFR alone in previous version of code
         VEGFRmin = 689.0f;
+        VEGFR3min = 2 * 689.0f; //LC//
     }
 }
 //---------------------------------------------------------------------------------------------------------
