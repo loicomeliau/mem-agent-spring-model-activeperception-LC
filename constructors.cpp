@@ -217,10 +217,16 @@ EC::EC(World*  world){
 		NotchLastsArray.push_back(0.0f);
 	}
 	for(i=0;i<VEGFR_dll4_delay;i++){
-		VEGFRDelayArray.push_back(0.0f);
+		//LC// VEGFRDelayArray.push_back(0.0f);
+        R2R2DelayArray.push_back(0.0f);
+        R2R3DelayArray.push_back(0.0f);
+        R3R3DelayArray.push_back(0.0f);
 	}
 	for(i=0;i<VEGFR_dll4_lasts;i++){
-		VEGFRlastsArray.push_back(0.0f);
+		//LC// VEGFRlastsArray.push_back(0.0f);
+        R2R2lastsArray.push_back(0.0f);
+        R2R3lastsArray.push_back(0.0f);
+        R3R3lastsArray.push_back(0.0f);
 	}		
 
 

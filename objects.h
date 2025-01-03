@@ -572,16 +572,33 @@ public:
     float VEGFR3norm; //LC//
     float actNotCurrent; ///active Notch after time delay (able to affect Gene expression)
     float actVEGFRcurrent; ///active VEGFR-2 after time delay (able to affect Gene expression)
+    float actR2R2current; //LC//
+    float actR2R3current; //LC//
+    float actR3R3current; //LC//
+    float affR2R2DLL4; //LC//
+    float affR2R3DLL4; //LC//
+    float affR3R3DLL4; //LC//
     float VEGFRtot; ///VEGFR-2 receptor expression level
     float VEGFR3tot; //LC//
     float Dll4tot; ///Dll4 ligand expression level
     float Notchtot; ///Number of Notch receptors
     float activeNotchtot; ///activeNotch level in timestep
+    
     float activeVEGFRtot; ///active VEGFR-2 level in timestep
     std::vector <float> NotchDelayArray;
     std::vector <float> NotchLastsArray;
     std::vector <float> VEGFRDelayArray;
     std::vector <float> VEGFRlastsArray;
+    //LC//
+    float activeR2R2tot;
+    float activeR2R3tot;
+    float activeR3R3tot;
+    std::vector <float> R2R2DelayArray;
+    std::vector <float> R2R2lastsArray;
+    std::vector <float> R2R3DelayArray;
+    std::vector <float> R2R3lastsArray;
+    std::vector <float> R3R3DelayArray;
+    std::vector <float> R3R3lastsArray;
 
     void allocateProts(void);
     void updateProteinTotals(void);

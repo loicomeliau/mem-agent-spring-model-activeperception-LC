@@ -219,25 +219,49 @@ void EC::NotchDelay(void){
 void EC::VEGFRDelay(void){
     
     int i;
-    actVEGFRcurrent=0.0f;
-    vector<float>::iterator T=VEGFRDelayArray.begin();
+    //LC// actVEGFRcurrent=0.0f;
+    actR2R2current=0.0f; //LC//
+    actR2R3current=0.0f; //LC//
+    actR3R3current=0.0f; //LC//
+    //LC// vector<float>::iterator T=VEGFRDelayArray.begin();
+    vector<float>::iterator T_R2R2=R2R2DelayArray.begin();
+    vector<float>::iterator T_R2R3=R2R3DelayArray.begin();
+    vector<float>::iterator T_R3R3=R3R3DelayArray.begin();
     
-    VEGFRDelayArray.push_back(activeVEGFRtot);
+    //LC// VEGFRDelayArray.push_back(activeVEGFRtot);
+    R2R2DelayArray.push_back(activeR2R2tot);
+    R2R3DelayArray.push_back(activeR2R3tot);
+    R3R3DelayArray.push_back(activeR3R3tot);
     
     //add the first element in the delay vector (has passed its delay time and can now have an effect)
     //to the end of the lasts vector - where it will have an effect until it leaves the lasts stack.
-    VEGFRlastsArray.push_back(VEGFRDelayArray.front());
+    //LC// VEGFRlastsArray.push_back(VEGFRDelayArray.front());
+    R2R2lastsArray.push_back(R2R2DelayArray.front());
+    R2R3lastsArray.push_back(R2R3DelayArray.front());
+    R3R3lastsArray.push_back(R3R3DelayArray.front());
     
     //remove element from delay stack
-    VEGFRDelayArray.erase(T);
+    //LC// VEGFRDelayArray.erase(T);
+    R2R2DelayArray.erase(T_R2R2);
+    R2R3DelayArray.erase(T_R2R3);
+    R3R3DelayArray.erase(T_R3R3);
     
     //remove frst element in lasts array, it nolonger has an effect on VEGFR levels.
-    T=VEGFRlastsArray.begin();
-    VEGFRlastsArray.erase(T);
+    //LC// T=VEGFRlastsArray.begin();
+    //LC// VEGFRlastsArray.erase(T);
+    T_R2R2=R2R2lastsArray.begin();
+    R2R2lastsArray.erase(T_R2R2);
+    T_R2R3=R2R3lastsArray.begin();
+    R2R3lastsArray.erase(T_R2R3);
+    T_R3R3=R3R3lastsArray.begin();
+    R3R3lastsArray.erase(T_R3R3);
     
     //update current amount of active notch that has an effect on VEGFR levels (the sum of the lasts array)
     for(i=0;i<VEGFR_dll4_lasts;i++){
-        actVEGFRcurrent=actVEGFRcurrent+VEGFRlastsArray[i];
+        //actVEGFRcurrent=actVEGFRcurrent+VEGFRlastsArray[i];
+        actR2R2current=actR2R2current+R2R2lastsArray[i];
+        actR2R3current=actR2R3current+R2R3lastsArray[i];
+        actR3R3current=actR3R3current+R3R3lastsArray[i];
     }
 }
 //-------------------------------------------------------------------------------------------------------------
@@ -246,11 +270,15 @@ void EC::GRN(void){
     
     //down-reg VEGFR2 via notch
     
+    //LC// DLL4-VEGFRs affinity values
+    affR2R2DLL4 = 1.0; //LC//
+    affR2R3DLL4 = 0.0; //LC//
+    affR3R3DLL4 = 0.0; //LC//
   
     VEGFRtot=(VEGFRnorm)-2*(actNotCurrent*sigma); //VEGFRnorm is now a EC specific param and scaled at config if mutant
 
     if(VEGFRtot<VEGFRmin) VEGFRtot=VEGFRmin;
-   
+    actVEGFRcurrent = affR2R2DLL4 * actR2R2current + affR2R3DLL4 * actR2R3current + affR3R3DLL4 * actR3R3current; //LC//
     if(ANALYSIS_HYSTERESIS==true){
         if((this!=worldP->ECagents[0])&&(this!=worldP->ECagents[ECELLS-1]))
             Dll4tot+=(actVEGFRcurrent*delta);
@@ -280,13 +308,18 @@ void EC::updateProteinTotals(void){
     //VEGFRtot=0.0f;
     Dll4tot=0.0f;
     activeNotchtot=0.0f;
-    activeVEGFRtot=0.0f;
+    //LC// activeVEGFRtot=0.0f;
+    activeR2R2tot=0.0f;
+    activeR2R3tot=0.0f;
+    activeR3R3tot=0.0f;
     int junctionAgents=0;
 
     for(m=0;m<uptoN;m++){
         
         //LC-R2R2// activeVEGFRtot=activeVEGFRtot+nodeAgents[m]->VEGFRactive;
-        activeVEGFRtot=activeVEGFRtot+nodeAgents[m]->R2R2active; //LC-R2R2//
+        activeR2R2tot=activeR2R2tot+nodeAgents[m]->R2R2active; //LC-R2R2//
+        activeR2R3tot=activeR2R3tot+nodeAgents[m]->R2R3active; //LC-R2R3//
+        activeR3R3tot=activeR3R3tot+nodeAgents[m]->R3R3active; //LC-R3R3//
         //if(nodeAgents[m]->junction==true){
         activeNotchtot=activeNotchtot+nodeAgents[m]->activeNotch;
         
@@ -297,7 +330,9 @@ void EC::updateProteinTotals(void){
     for(m=0;m<uptoS;m++){
         
         //LC-R2R2// activeVEGFRtot=activeVEGFRtot+springAgents[m]->VEGFRactive;
-        activeVEGFRtot=activeVEGFRtot+springAgents[m]->R2R2active; //LC-R2R2//
+        activeR2R2tot=activeR2R2tot+springAgents[m]->R2R2active; //LC-R2R2//
+        activeR2R3tot=activeR2R3tot+springAgents[m]->R2R3active; //LC-R2R3//
+        activeR3R3tot=activeR3R3tot+springAgents[m]->R3R3active; //LC-R3R3//
         //activeNotchtot=activeNotchtot+springAgents[m]->activeNotch;
         
         //Dll4tot=Dll4tot+springAgents[m]->Dll4;
@@ -305,7 +340,9 @@ void EC::updateProteinTotals(void){
     for(m=0;m<uptoSu;m++){
         
         //LC-R2R2// activeVEGFRtot=activeVEGFRtot+surfaceAgents[m]->VEGFRactive;
-        activeVEGFRtot=activeVEGFRtot+surfaceAgents[m]->R2R2active; //LC-R2R2//
+        activeR2R2tot=activeR2R2tot+surfaceAgents[m]->R2R2active; //LC-R2R2//
+        activeR2R3tot=activeR2R3tot+surfaceAgents[m]->R2R3active; //LC-R2R3//
+        activeR3R3tot=activeR3R3tot+surfaceAgents[m]->R3R3active; //LC-R3R3//
         //if(surfaceAgents[m]->junction==true){
         activeNotchtot=activeNotchtot+surfaceAgents[m]->activeNotch;
 
