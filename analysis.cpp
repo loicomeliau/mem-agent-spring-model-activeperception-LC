@@ -100,7 +100,8 @@ std::vector< std::vector<float> > World::getGridSiteData()
                                 {
                                     vegfTotal += grid[x][y][z].Fids[filopodiaID]->SumVEGF;
                                     vegfrTotal += grid[x][y][z].Fids[filopodiaID]->VEGFR;
-                                    activeVegfrTotal += grid[x][y][z].Fids[filopodiaID]->VEGFRactive;
+                                    //activeVegfrTotal += grid[x][y][z].Fids[filopodiaID]->VEGFRactive;
+                                    activeVegfrTotal += grid[x][y][z].Fids[filopodiaID]->R2R2active; //LC-R2R2//
                                     dll4Total += grid[x][y][z].Fids[filopodiaID]->Dll4;
                                 }
                             }
@@ -131,7 +132,8 @@ std::vector< std::vector<float> > World::getGridSiteData()
                                 {
                                     vegfTotal += grid[x][y][z].Fids[filopodiaID]->SumVEGF;
                                     vegfrTotal += grid[x][y][z].Fids[filopodiaID]->VEGFR;
-                                    activeVegfrTotal += grid[x][y][z].Fids[filopodiaID]->VEGFRactive;
+                                    //activeVegfrTotal += grid[x][y][z].Fids[filopodiaID]->VEGFRactive;
+                                    activeVegfrTotal += grid[x][y][z].Fids[filopodiaID]->R2R2active; //LC-R2R2//
                                     dll4Total += grid[x][y][z].Fids[filopodiaID]->Dll4;
                                 }
                             }
@@ -144,7 +146,8 @@ std::vector< std::vector<float> > World::getGridSiteData()
                                 {
                                     vegfTotal += grid[x][y][z].Mids[memAgentID]->SumVEGF;
                                     vegfrTotal += grid[x][y][z].Mids[memAgentID]->VEGFR;
-                                    activeVegfrTotal += grid[x][y][z].Mids[memAgentID]->VEGFRactive;
+                                    //activeVegfrTotal += grid[x][y][z].Mids[memAgentID]->VEGFRactive;
+                                    activeVegfrTotal += grid[x][y][z].Mids[memAgentID]->R2R2active; //LC-R2R2//
                                     dll4Total += grid[x][y][z].Mids[memAgentID]->Dll4;
                                 }
                             }
@@ -209,13 +212,16 @@ std::vector< std::vector< std::vector<float> > > World::getFilopodiaBaseLocation
                 float x = currentMemAgentInFilopodia->Mx;
                 float y = currentMemAgentInFilopodia->My;
                 float z = currentMemAgentInFilopodia->Mz;
-                float totalVegfr = currentMemAgentInFilopodia->VEGFRactive;
+                //float totalVegfr = currentMemAgentInFilopodia->VEGFRactive;
+                float totalVegfr = currentMemAgentInFilopodia->R2R2active; //LC-R2R2//
 
-                totalVegfr += currentMemAgentInFilopodia->VEGFRactive;
+                //totalVegfr += currentMemAgentInFilopodia->VEGFRactive;
+                totalVegfr += currentMemAgentInFilopodia->R2R2active; //LC-R2R2//
                 while (currentMemAgentInFilopodia->plusSite != nullptr)
                 {
                     currentMemAgentInFilopodia = currentMemAgentInFilopodia->plusSite;
-                    totalVegfr += currentMemAgentInFilopodia->VEGFRactive;
+                    //totalVegfr += currentMemAgentInFilopodia->VEGFRactive;
+                    totalVegfr += currentMemAgentInFilopodia->R2R2active; //LC-R2R2//
                 }
 
                 std::vector<float> values;

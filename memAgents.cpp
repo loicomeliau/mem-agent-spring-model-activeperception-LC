@@ -646,7 +646,7 @@ void MemAgent::VEGFRresponse(void) {
     bool moved = false;
 
     //LC// To be adapted to account for sink 
-    R2toR2R2 = 0.5;
+    R2toR2R2 = 1.0;
     R2toR2R3 = 1 - R2toR2R2;
     R3toR3R3 = 0.8;
     R3toR2R3 = 1 - R3toR3R3;
@@ -660,15 +660,15 @@ void MemAgent::VEGFRresponse(void) {
     VEGFRactiveProp = (VEGFR / ((float) VEGFRNORM / (float) upto));
     VEGFRactive = (SumVEGF / Cell->Vsink) * VEGFRactiveProp;
 
-    float maxR2R2 = R2toR2R2 * VEGFRNORM/2;  // should R2toR2R2 be there?
+    float maxR2R2 = VEGFRNORM/2;
     R2R2activeProp = (R2R2 / ((float) maxR2R2 / (float) upto));
     R2R2active = (SumVEGF / Cell->Vsink) * affR2R2 * R2R2activeProp;
 
-    float maxR2R3 = min(R2toR2R3 * VEGFRNORM, R3toR2R3 * VEGFR3NORM);
+    float maxR2R3 = min(VEGFRNORM, VEGFR3NORM);
     R2R3activeProp = (R2R3 / ((float) maxR2R3 / (float) upto));
     R2R3active = (SumVEGF / Cell->Vsink) * affR2R3 * R2R3activeProp;
 
-    float maxR3R3 = R3toR3R3 * VEGFR3NORM/2;
+    float maxR3R3 = VEGFR3NORM/2;
     R3R3activeProp = (R3R3 / ((float) maxR3R3 / (float) upto));
     R3R3active = (SumVEGF / Cell->Vsink) * affR3R3 * R3R3activeProp;
 
@@ -699,7 +699,7 @@ void MemAgent::VEGFRresponse(void) {
       Prob = randFilExtend; //0-1 continuous value input at runtime. if randFil!=-1 - token Strength forced to 0, and epsilon forced to 0.0 (fully random direction and extension, no bias from VR->actin or VR gradient to direction.
     else
       Prob = ((float) VEGFRactive / ((float) Cell->VEGFRnorm / (float) upto)) * Cell->filCONST;
-      //Prob = ((float) R2R2active / ((float) maxR2R2 / (float) upto)) * Cell->filCONST;
+      Prob = ((float) R2R2active / ((float) maxR2R2 / (float) upto)) * Cell->filCONST;
         //else Prob = ((float) VEGFRactive / (((float) VEGFRnorm/2.0f) / (float) upto)) * Cell->filCONST;
     }
     else Prob = 0;

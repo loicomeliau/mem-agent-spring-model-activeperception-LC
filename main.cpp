@@ -560,7 +560,8 @@ void World::updateMemAgents(void) {
             //if memAGent has not deleted in behaviours above, then update receptor activities and possibly extend a fil
             if (tipDeleteFlag == false) {
 
-                memp->VEGFRactive = 0.0f; //reset VEGFR activation level
+                //LC-R2R2// memp->VEGFRactive = 0.0f; //reset VEGFR activation level
+                memp->R2R2active = 0.0f; //LC-R2R2// VEGFRactive;
 
                 if ((ANALYSIS_HYSTERESIS == true)&&(memp->Cell != ECagents[0])&&(memp->Cell != ECagents[ECELLS - 1])) {
                     if (memp->vonNeu == true) memp->VEGFRresponse();
@@ -841,10 +842,10 @@ void World::scale_ProtLevels_to_CellSize(void) {
 
         MAX_dll4 = 10000.0f;
         //LC// multiply by 2 for dimerization so that R2R2 gives the same result as VEGFR alone in previous version of code
-        VEGFRNORM = 31714.0; //scaled to fit with first model - so each memagent has same number of recs - new arrangment means diff number of initial memagents
+        VEGFRNORM = 2 * 31714.0f; //scaled to fit with first model - so each memagent has same number of recs - new arrangment means diff number of initial memagents
         VEGFR3NORM = 2 * 31714.0f; //LC//
         //LC// multiply by 2 for dimerization so that R2R2 gives the same result as VEGFR alone in previous version of code
-        VEGFRmin = 689.0f;
+        VEGFRmin = 2 * 689.0f;
         VEGFR3min = 2 * 689.0f; //LC//
     }
 }

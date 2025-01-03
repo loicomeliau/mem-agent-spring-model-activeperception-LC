@@ -139,6 +139,11 @@ MemAgent::MemAgent(EC* belongsTo, World* world){
 	Dll4=0.0f;
 	VEGFR = 0.0f;
 	VEGFRactive=0.0f;
+
+    //LC//
+    R2R2active=0.0f;
+    R2R3active=0.0f;
+    R3R3active=0.0f;
 	
 	surgeSpringConst=false;
 	veilAdvancing = false;

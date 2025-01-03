@@ -247,7 +247,7 @@ void EC::GRN(void){
     //down-reg VEGFR2 via notch
     
   
-    VEGFRtot=(VEGFRnorm)-(actNotCurrent*sigma); //VEGFRnorm is now a EC specific param and scaled at config if mutant
+    VEGFRtot=(VEGFRnorm)-2*(actNotCurrent*sigma); //VEGFRnorm is now a EC specific param and scaled at config if mutant
 
     if(VEGFRtot<VEGFRmin) VEGFRtot=VEGFRmin;
    
@@ -285,7 +285,8 @@ void EC::updateProteinTotals(void){
 
     for(m=0;m<uptoN;m++){
         
-        activeVEGFRtot=activeVEGFRtot+nodeAgents[m]->VEGFRactive;
+        //LC-R2R2// activeVEGFRtot=activeVEGFRtot+nodeAgents[m]->VEGFRactive;
+        activeVEGFRtot=activeVEGFRtot+nodeAgents[m]->R2R2active; //LC-R2R2//
         //if(nodeAgents[m]->junction==true){
         activeNotchtot=activeNotchtot+nodeAgents[m]->activeNotch;
         
@@ -295,14 +296,16 @@ void EC::updateProteinTotals(void){
     }
     for(m=0;m<uptoS;m++){
         
-        activeVEGFRtot=activeVEGFRtot+springAgents[m]->VEGFRactive;
+        //LC-R2R2// activeVEGFRtot=activeVEGFRtot+springAgents[m]->VEGFRactive;
+        activeVEGFRtot=activeVEGFRtot+springAgents[m]->R2R2active; //LC-R2R2//
         //activeNotchtot=activeNotchtot+springAgents[m]->activeNotch;
         
         //Dll4tot=Dll4tot+springAgents[m]->Dll4;
     }
     for(m=0;m<uptoSu;m++){
         
-        activeVEGFRtot=activeVEGFRtot+surfaceAgents[m]->VEGFRactive;
+        //LC-R2R2// activeVEGFRtot=activeVEGFRtot+surfaceAgents[m]->VEGFRactive;
+        activeVEGFRtot=activeVEGFRtot+surfaceAgents[m]->R2R2active; //LC-R2R2//
         //if(surfaceAgents[m]->junction==true){
         activeNotchtot=activeNotchtot+surfaceAgents[m]->activeNotch;
 
@@ -353,8 +356,8 @@ int uptoN;
     }
 
 
-
-        activeVEGFRtot=activeVEGFRtot+nodeAgents[m]->VEGFRactive;
+        //LC-R2R2// activeVEGFRtot=activeVEGFRtot+nodeAgents[m]->VEGFRactive;
+        activeVEGFRtot=activeVEGFRtot+nodeAgents[m]->R2R2active; //LC-R2R2//
         if(nodeAgents[m]->junction==true){
         activeNotchtot=activeNotchtot+nodeAgents[m]->activeNotch;
 
@@ -364,14 +367,16 @@ int uptoN;
     }
     for(m=0;m<uptoS;m++){
 
-        activeVEGFRtot=activeVEGFRtot+springAgents[m]->VEGFRactive;
+        //LC-R2R2// activeVEGFRtot=activeVEGFRtot+springAgents[m]->VEGFRactive;
+        activeVEGFRtot=activeVEGFRtot+springAgents[m]->R2R2active; //LC-R2R2//
         //activeNotchtot=activeNotchtot+springAgents[m]->activeNotch;
 
         //Dll4tot=Dll4tot+springAgents[m]->Dll4;
     }
     for(m=0;m<uptoSu;m++){
 
-        activeVEGFRtot=activeVEGFRtot+surfaceAgents[m]->VEGFRactive;
+        //LC-R2R2// activeVEGFRtot=activeVEGFRtot+surfaceAgents[m]->VEGFRactive;
+        activeVEGFRtot=activeVEGFRtot+surfaceAgents[m]->R2R2active; //LC-R2R2//
         if(surfaceAgents[m]->junction==true){
         activeNotchtot=activeNotchtot+surfaceAgents[m]->activeNotch;
 
