@@ -692,7 +692,7 @@ Coordinates one;
                 three = ECagents[j]->triangles[k*3+2];
 
 
-                if(viewType==1){ red=((float)ECagents[j]->VEGFRtot/(float)VEGFRnorm); green=0.2245098; blue = 0.545098;}
+                if(viewType==1){ red=((float)ECagents[j]->VEGFR2tot/(float)VEGFR2norm); green=0.2245098; blue = 0.545098;}
                 else if(viewType==3){ red=(float)5.0f;green=0.2245098; blue = 0.545098;}
                 else if(viewType==2){ red= 0.534f;green=0.0623f+ECagents[j]->Dll4tot/5000.0f; blue = 0.5923f;}
                 else if(viewType==4){ red= 0.534f;green=0.0623f+ECagents[j]->Dll4tot/50.0f; blue = 0.5923f;}
@@ -759,13 +759,13 @@ Coordinates one;
 
                                 //red=0.4; green=0.2245098; blue = 0.545098;
 
-                                if(viewType==1){ red=(float)mp->Cell->VEGFRtot/((float)VEGFRNORM); green=0.2245098; blue = 0.545098;
+                                if(viewType==1){ red=(float)mp->Cell->VEGFR2tot/((float)VEGFR2NORM); green=0.2245098; blue = 0.545098;
                                 //if(red<0.5) red = 0.5;
                                 }
                                 else if(viewType==3){ red=(float)mp->filTokens/5.0f;green=0.2245098; blue = 0.545098;}
                                 else if(viewType==2){ red= 0.534f;green=0.0623f+mp->Cell->Dll4tot/(float)MAX_dll4; blue = 0.5923f;}
                                 else if(viewType==4){ red= 0.534f;green=0.0623f+mp->Dll4/50.0f; blue = 0.5923f;}
-                                else if(viewType==5){ red=(mp->VEGFR/30.0f); green=0.2245098; blue = 0.545098;}
+                                else if(viewType==5){ red=(mp->VEGFR2/30.0f); green=0.2245098; blue = 0.545098;}
                                 else if(viewType==6){ red=mp->VEGFRactive/5.0f; green=0.2245098; blue = 0.545098;}
                                 else if(viewType==7){ red= 0.534f;green=0.0623f+(float)mp->Cell->activeNotchtot/800.0f; blue = 0.5923f;}
                                 else if(viewType==8){ red= 0.0f;green=0.0f; blue = 0.0f;}
@@ -839,11 +839,11 @@ Coordinates one;
                     //if(j%2==1){
                     //red=1.0f; green = 0.0f; blue = 1.0f;
 
-                    if(viewType==1){ red=(float)mp->Cell->VEGFRtot/((float)VEGFRNORM); green=0.2245098; blue = 0.545098;}//if(red<0.5) red = 0.5;}
+                    if(viewType==1){ red=(float)mp->Cell->VEGFR2tot/((float)VEGFR2NORM); green=0.2245098; blue = 0.545098;}//if(red<0.5) red = 0.5;}
                     else if(viewType==3){ red=(float)mp->filTokens/5.0f;green=0.2245098; blue = 0.545098;}
                     else if(viewType==2){ red= 0.534f;green=0.0623f+mp->Cell->Dll4tot/(float)MAX_dll4; blue = 0.5923f;}
                     else if(viewType==4){ red= 0.534f;green=0.0623f+mp->Dll4/50; blue = 0.5923f;}
-                    else if(viewType==5){ red=(mp->VEGFR/30.0f); green=0.2245098; blue = 0.545098;}
+                    else if(viewType==5){ red=(mp->VEGFR2/30.0f); green=0.2245098; blue = 0.545098;}
                     else if(viewType==6){ red=mp->VEGFRactive/5.0f; green=0.2245098; blue = 0.545098;}
                     else if(viewType==7){ red= 0.534f;green=0.0623f+(float)mp->Cell->activeNotchtot/800.0f; blue = 0.5923f;}
                     else if(viewType==8){ red= 0.0f;green=0.0f; blue = 0.0f;}
@@ -958,7 +958,7 @@ Coordinates one;
                 three = ECagents[j]->triangles[k*3+2];
                 
                 
-                if(viewType==1){ red=((float)ECagents[j]->VEGFRtot/(float)VEGFRnorm); green=0.2245098; blue = 0.545098;}
+                if(viewType==1){ red=((float)ECagents[j]->VEGFR2tot/(float)VEGFR2norm); green=0.2245098; blue = 0.545098;}
                 else if(viewType==3){ red=(float)5.0f;green=0.2245098; blue = 0.545098;}
                 else if(viewType==2){ red= 0.534f;green=0.0623f+ECagents[j]->Dll4tot/5000.0f; blue = 0.5923f;}
                 else if(viewType==4){ red= 0.534f;green=0.0623f+ECagents[j]->Dll4tot/50.0f; blue = 0.5923f;}
@@ -1013,13 +1013,13 @@ Coordinates one;
                                 
                                 //red=0.4; green=0.2245098; blue = 0.545098;
                                 
-                                if(viewType==1){ red=(float)mp->Cell->VEGFRtot/((float)VEGFRNORM); green=0.2245098; blue = 0.545098;
+                                if(viewType==1){ red=(float)mp->Cell->VEGFR2tot/((float)VEGFR2NORM); green=0.2245098; blue = 0.545098;
                                 //if(red<0.5) red = 0.5;
                                 }
                                 else if(viewType==3){ red=(float)mp->filTokens/5.0f;green=0.2245098; blue = 0.545098;}
                                 else if(viewType==2){ red= 0.534f;green=0.0623f+mp->Cell->Dll4tot/(float)MAX_dll4; blue = 0.5923f;}
                                 else if(viewType==4){ red= 0.534f;green=0.0623f+mp->Dll4/50.0f; blue = 0.5923f;}
-                                else if(viewType==5){ red=(mp->VEGFR/30.0f); green=0.2245098; blue = 0.545098;}
+                                else if(viewType==5){ red=(mp->VEGFR2/30.0f); green=0.2245098; blue = 0.545098;}
                                 else if(viewType==6){ red=mp->VEGFRactive/5.0f; green=0.2245098; blue = 0.545098;}
                                 else if(viewType==7){ red= 0.534f;green=0.0623f+(float)mp->Cell->activeNotchtot/(float)NotchNorm; blue = 0.5923f;}
                                 
@@ -1077,11 +1077,11 @@ Coordinates one;
                     //if(j%2==1){
                     //red=1.0f; green = 0.0f; blue = 1.0f;
                     
-                    if(viewType==1){ red=((float)mp->Cell->VEGFRtot/((float)VEGFRNORM/(float)ECcross)); green=0.2245098; blue = 0.545098;}//if(red<0.5) red = 0.5;}
+                    if(viewType==1){ red=((float)mp->Cell->VEGFR2tot/((float)VEGFR2NORM/(float)ECcross)); green=0.2245098; blue = 0.545098;}//if(red<0.5) red = 0.5;}
                     else if(viewType==3){ red=(float)mp->filTokens/5.0f;green=0.2245098; blue = 0.545098;}
                     else if(viewType==2){ red= 0.534f;green=0.0623f+mp->Cell->Dll4tot/(float)MAX_dll4; blue = 0.5923f;}
                     else if(viewType==4){ red= 0.534f;green=0.0623f+mp->Dll4/50.0f; blue = 0.5923f;}
-                    else if(viewType==5){ red=(mp->VEGFR/30.0f); green=0.2245098; blue = 0.545098;}
+                    else if(viewType==5){ red=(mp->VEGFR2/30.0f); green=0.2245098; blue = 0.545098;}
                     else if(viewType==6){ red=mp->VEGFRactive/5.0f; green=0.2245098; blue = 0.545098;}
                     else if(viewType==7){ red= 0.534f;green=0.0623f+(float)mp->Cell->activeNotchtot/(float)NotchNorm; blue = 0.5923f;}
                     
@@ -1125,11 +1125,11 @@ Coordinates one;
             glTranslatef(-posx,-posy,-posz);
             gluDeleteQuadric(quad);
                     
-                    /*if(viewType==1){ red=((float)mp->Cell->VEGFRtot/((float)VEGFRnorm/(float)ECcross)); green=0.2245098; blue = 0.545098;}//if(red<0.5) red = 0.5;}
+                    /*if(viewType==1){ red=((float)mp->Cell->VEGFR2tot/((float)VEGFR2norm/(float)ECcross)); green=0.2245098; blue = 0.545098;}//if(red<0.5) red = 0.5;}
                     else if(viewType==3){ red=(float)mp->filTokens/5.0f;green=0.2245098; blue = 0.545098;}
                     else if(viewType==2){ red= 0.534f;green=0.0623f+mp->Cell->Dll4tot/5000.0f; blue = 0.5923f;}
                     else if(viewType==4){ red= 0.534f;green=0.0623f+mp->Dll4/50.0f; blue = 0.5923f;}
-                    else if(viewType==5){ red=(mp->VEGFR/30.0f); green=0.2245098; blue = 0.545098;}
+                    else if(viewType==5){ red=(mp->VEGFR2/30.0f); green=0.2245098; blue = 0.545098;}
                     else if(viewType==6){ red=mp->VEGFRactive/5.0f; green=0.2245098; blue = 0.545098;}
                     else if(viewType==7){ red= 0.534f;green=0.0623f+mp->Cell->activeNotchtot/10000.0f; blue = 0.5923f;}
                     */
@@ -1211,11 +1211,11 @@ void World::viewGrid(void){
                                 if((nodeAgentView==1)&&(grid[i][j][k].Fids[m]->node==true)) flag=1;
                                 if((springAgentsView==1)&&(grid[i][j][k].Fids[m]->node==false)) flag=1;
                                 if(flag==1){
-                                    if(viewType==1){ red=((float)grid[i][j][k].Fids[m]->Cell->VEGFRtot/((float)VEGFRNORM/(float)ECcross)); green=0.2245098; blue = 0.545098;}//if(red<0.5) red = 0.5;}
+                                    if(viewType==1){ red=((float)grid[i][j][k].Fids[m]->Cell->VEGFR2tot/((float)VEGFR2NORM/(float)ECcross)); green=0.2245098; blue = 0.545098;}//if(red<0.5) red = 0.5;}
                                     else if(viewType==3){ red=(float)grid[i][j][k].Fids[m]->filTokens/5.0f;green=0.2245098; blue = 0.545098;}
                                     else if(viewType==2){ red= 0.534f;green=0.0623f+grid[i][j][k].Fids[m]->Cell->Dll4tot/(float)MAX_dll4; blue = 0.5923f;}
                                     else if(viewType==4){ red= 0.534f;green=0.0623f+grid[i][j][k].Fids[m]->Dll4/50.0f; blue = 0.5923f;}
-                                    else if(viewType==5){ red=(grid[i][j][k].Fids[m]->VEGFR/20.0f); green=0.2245098; blue = 0.545098;}
+                                    else if(viewType==5){ red=(grid[i][j][k].Fids[m]->VEGFR2/20.0f); green=0.2245098; blue = 0.545098;}
                                     else if(viewType==6){ red=grid[i][j][k].Fids[m]->VEGFRactive/5.0f; green=0.2245098; blue = 0.545098;}
                                     else if(viewType==7){ red= 0.534f;green=0.0623f+(float)grid[i][j][k].Fids[m]->activeNotch/(float)NotchNorm; blue = 0.5923f;}
                                     else if(viewType==8){
@@ -1272,11 +1272,11 @@ void World::viewGrid(void){
                                     //if(grid[i][j][k].Mids[m]->FIL==NONE) cout<<"left over"<<endl;
                                     red=0.30f; green = 0.40f; blue = 1.0f;
                                     //if(grid[i][j][k].Mids.size()>1)cout<<"doubled up!"<<grid[i][j][k].Mids.size()<<endl;
-                                    if(viewType==1){ red=((float)grid[i][j][k].Mids[m]->Cell->VEGFRtot/(float)VEGFRnorm); green=0.2245098; blue = 0.545098;}
+                                    if(viewType==1){ red=((float)grid[i][j][k].Mids[m]->Cell->VEGFR2tot/(float)VEGFR2norm); green=0.2245098; blue = 0.545098;}
                                     else if(viewType==3){ red=(float)grid[i][j][k].Mids[m]->filTokens/5.0f;green=0.2245098; blue = 0.545098;}
                                     else if(viewType==2){ red= 0.534f;green=0.0623f+grid[i][j][k].Mids[m]->Cell->Dll4tot/5000.0f; blue = 0.5923f;}
                                     else if(viewType==4){ red= 0.534f;green=0.0623f+grid[i][j][k].Mids[m]->Dll4/50.0f; blue = 0.5923f;}
-                                    else if(viewType==5){ red=(grid[i][j][k].Mids[m]->VEGFR/20.0f); green=0.2245098; blue = 0.545098;}
+                                    else if(viewType==5){ red=(grid[i][j][k].Mids[m]->VEGFR2/20.0f); green=0.2245098; blue = 0.545098;}
                                     else if(viewType==6){ red=grid[i][j][k].Mids[m]->VEGFRactive/5.0f; green=0.2245098; blue = 0.545098;}
                                     else if(viewType==7){ red= 0.534f;green=0.0623f+grid[i][j][k].Mids[m]->Notch1/50.0f; blue = 0.5923f;}
                                     else if(viewType==8){ red= 0.5f;green=0.5f; blue = 0.5f;}
@@ -1291,11 +1291,11 @@ void World::viewGrid(void){
                                     //if(grid[i][j][k].Mids[m]->FIL==NONE) cout<<"left over"<<endl;
                                     red=0.30f; green = 0.40f; blue = 1.0f;
                                     //if(grid[i][j][k].Mids.size()>1)cout<<"doubled up!"<<grid[i][j][k].Mids.size()<<endl;
-                                    if(viewType==1){ red=((float)grid[i][j][k].Mids[m]->Cell->VEGFRtot/((float)VEGFRNORM/(float)ECcross)); green=0.2245098; blue = 0.545098;}//if(red<0.5) red = 0.5;}
+                                    if(viewType==1){ red=((float)grid[i][j][k].Mids[m]->Cell->VEGFR2tot/((float)VEGFR2NORM/(float)ECcross)); green=0.2245098; blue = 0.545098;}//if(red<0.5) red = 0.5;}
                                     else if(viewType==3){ red=(float)grid[i][j][k].Mids[m]->filTokens/5.0f;green=0.2245098; blue = 0.545098;}
                                     else if(viewType==2){ red= 0.534f;green=0.0623f+grid[i][j][k].Mids[m]->Cell->Dll4tot/(float)MAX_dll4; blue = 0.5923f;}
                                     else if(viewType==4){ red= 0.534f;green=0.0623f+grid[i][j][k].Mids[m]->Dll4/50.0f; blue = 0.5923f;}
-                                    else if(viewType==5){ red=(grid[i][j][k].Mids[m]->VEGFR/20.0f); green=0.2245098; blue = 0.545098;}
+                                    else if(viewType==5){ red=(grid[i][j][k].Mids[m]->VEGFR2/20.0f); green=0.2245098; blue = 0.545098;}
                                     else if(viewType==6){ red=grid[i][j][k].Mids[m]->VEGFRactive/5.0f; green=0.2245098; blue = 0.545098;}
                                     else if(viewType==7){ red= 0.534f;green=0.0623f+(float)grid[i][j][k].Mids[m]->activeNotch/(float)NotchNorm; blue = 0.5923f;}
                                     else if(viewType==8){ red= 0.3f;green=0.3f; blue = 0.3f;}
@@ -1314,11 +1314,11 @@ void World::viewGrid(void){
                                 
                                 if((nodeAgentView==1)&&(grid[i][j][k].Mids[m]->node==true)){
                                     
-                                    if(viewType==1){ red=((float)grid[i][j][k].Mids[m]->Cell->VEGFRtot/((float)VEGFRNORM/(float)ECcross)); green=0.2245098; blue = 0.545098;}//if(red<0.5) red = 0.5;}
+                                    if(viewType==1){ red=((float)grid[i][j][k].Mids[m]->Cell->VEGFR2tot/((float)VEGFR2NORM/(float)ECcross)); green=0.2245098; blue = 0.545098;}//if(red<0.5) red = 0.5;}
                                     else if(viewType==3){ red=(float)grid[i][j][k].Mids[m]->filTokens/5.0f;green=0.2245098; blue = 0.545098;}
                                     else if(viewType==2){ red= 0.534f;green=0.0623f+grid[i][j][k].Mids[m]->Cell->Dll4tot/(float)MAX_dll4; blue = 0.5923f;}
                                     else if(viewType==4){ red= 0.534f;green=0.0623f+grid[i][j][k].Mids[m]->Dll4/50.0f; blue = 0.5923f;}
-                                    else if(viewType==5){ red=(grid[i][j][k].Mids[m]->VEGFR/20.0f); green=0.2245098; blue = 0.545098;}
+                                    else if(viewType==5){ red=(grid[i][j][k].Mids[m]->VEGFR2/20.0f); green=0.2245098; blue = 0.545098;}
                                     else if(viewType==6){ red=grid[i][j][k].Mids[m]->VEGFRactive/5.0f; green=0.2245098; blue = 0.545098;}
                                     else if(viewType==7){ red= 0.534f;green=0.0623f+(float)grid[i][j][k].Mids[m]->activeNotch/(float)NotchNorm; blue = 0.5923f;
                                     //cout<<grid[i][j][k].Mids[m]->activeNotch<<endl;
@@ -1872,12 +1872,12 @@ void displayGlui(int * argc, char  ** argv) {
     GLUI_Panel *viewer= glui->add_panel("View", true);
     
     GLUI_Listbox *listbox = glui->add_listbox("View", &viewType);
-    listbox->add_item(1, "EC VEGFR");
+    listbox->add_item(1, "EC VEGFR2");
     listbox->add_item(2, "EC Dll4");
     listbox->add_item(3, "Mem filTokens");
     listbox->add_item(4, "local Dll4");
-    listbox->add_item(5, "local VEGFR");
-    listbox->add_item(6, "local active VEGFR");
+    listbox->add_item(5, "local VEGFR2");
+    listbox->add_item(6, "local active VEGFR2");
     listbox->add_item(7, "active Notch");
     listbox->add_item(8, "black and white");
     listbox->add_item(9, "force");

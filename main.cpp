@@ -52,9 +52,9 @@ float delta = 2.0; //2.0f normal
 float sigma = 15;// 10.35f; //15 normal JTB setup
 float NotchNorm;
 float MAX_dll4;
-float VEGFRNORM; //total of receptors it will maintain if all else is equal - divides out to M agents
+float VEGFR2NORM; //total of receptors it will maintain if all else is equal - divides out to M agents
 float VEGFR3NORM; //LC//
-float VEGFRmin;
+float VEGFR2min;
 float VEGFR3min; //LC//
 
 //junctional offset simulations as in PLoS CB 2009
@@ -560,8 +560,10 @@ void World::updateMemAgents(void) {
             //if memAGent has not deleted in behaviours above, then update receptor activities and possibly extend a fil
             if (tipDeleteFlag == false) {
 
-                //LC-R2R2// memp->VEGFRactive = 0.0f; //reset VEGFR activation level
+                //LC-R2R2// memp->VEGFRactive = 0.0f; //reset VEGFR2 activation level
                 memp->R2R2active = 0.0f; //LC-R2R2// VEGFRactive;
+                memp->R2R3active = 0.0f; //LC// !!
+                memp->R3R3active = 0.0f; //LC// !!
 
                 if ((ANALYSIS_HYSTERESIS == true)&&(memp->Cell != ECagents[0])&&(memp->Cell != ECagents[ECELLS - 1])) {
                     if (memp->vonNeu == true) memp->VEGFRresponse();
@@ -615,7 +617,7 @@ void World::updateECagents(void) {
 
 
     for (j = 0; j < upto; j++) {
-//cout<<ECagents[j]->activeVEGFRtot<<" "<<ECagents[j]->VEGFRtot<<"\t"<<ECagents[j]->actinUsed<<endl;
+//cout<<ECagents[j]->activeVEGFRtot<<" "<<ECagents[j]->VEGFR2tot<<"\t"<<ECagents[j]->actinUsed<<endl;
         if (ANALYSIS_COMS == true)
             ECagents[j]->store_cell_COM(); //to see cell movement, monitor its centre of mass
 
@@ -831,21 +833,21 @@ void World::scale_ProtLevels_to_CellSize(void) {
         NotchNorm = (10000.0f / 100.0f) * Scale;
 
         MAX_dll4 = (10000.0f / 100.0f) * Scale;
-        //LC// multiply by 2 for dimerization so that R2R2 gives the same result as VEGFR alone in previous version of code
-        VEGFRNORM = (2 * 31714.0f / 100.0f) * Scale; //total of receptors it will maintain if all else is equal - divides out to M agents
+        //LC// multiply by 2 for dimerization so that R2R2 gives the same result as VEGFR2 alone in previous version of code
+        VEGFR2NORM = (2 * 31714.0f / 100.0f) * Scale; //total of receptors it will maintain if all else is equal - divides out to M agents
         VEGFR3NORM = (2 * 31714.0f / 100.0f) * Scale; //LC//
-        //LC// multiply by 2 for dimerization so that R2R2 gives the same result as VEGFR alone in previous version of code
-        VEGFRmin = (2 * 689.0f / 100.0f) * Scale;
+        //LC// multiply by 2 for dimerization so that R2R2 gives the same result as VEGFR2 alone in previous version of code
+        VEGFR2min = (2 * 689.0f / 100.0f) * Scale;
         VEGFR3min = (2 * 689.0f / 100.0f) * Scale; //LC//
     } else {
         NotchNorm = 10000.0f;
 
         MAX_dll4 = 10000.0f;
-        //LC// multiply by 2 for dimerization so that R2R2 gives the same result as VEGFR alone in previous version of code
-        VEGFRNORM = 2 * 31714.0f; //scaled to fit with first model - so each memagent has same number of recs - new arrangment means diff number of initial memagents
+        //LC// multiply by 2 for dimerization so that R2R2 gives the same result as VEGFR2 alone in previous version of code
+        VEGFR2NORM = 2 * 31714.0f; //scaled to fit with first model - so each memagent has same number of recs - new arrangment means diff number of initial memagents
         VEGFR3NORM = 2 * 31714.0f; //LC//
-        //LC// multiply by 2 for dimerization so that R2R2 gives the same result as VEGFR alone in previous version of code
-        VEGFRmin = 2 * 689.0f;
+        //LC// multiply by 2 for dimerization so that R2R2 gives the same result as VEGFR2 alone in previous version of code
+        VEGFR2min = 2 * 689.0f;
         VEGFR3min = 2 * 689.0f; //LC//
     }
 }

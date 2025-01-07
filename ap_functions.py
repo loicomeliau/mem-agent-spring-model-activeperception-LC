@@ -242,7 +242,7 @@ def global_transfer_entropy(M,S,history):
         Time series of Sensory Map of Movements.
     S: 
        ndarray Mdim x T
-        Time series Sensory Map of VEGFR Activations
+        Time series Sensory Map of VEGFR2 Activations
     History:
         int
         Time delay hyperparameter for TE.
@@ -271,7 +271,7 @@ def global_transfer_entropy(M,S,history):
 
 def get_SM_series(time=800,epsilon=.9,gradient=.04,gradienttype=2,yBaseline=10000,F=2,filtipmax=20,tokenstrength=1,randfilextension=-1,randfilretract=-1,want_RGB=True,NewVersion=True,ymax=116):
     """
-    Crucial Assumption: This counts all VEGFR activations in specific grid sites as discrete units!
+    Crucial Assumption: This counts all VEGFR2 activations in specific grid sites as discrete units!
     
     parameters
     ----------

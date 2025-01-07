@@ -60,8 +60,8 @@ extern ofstream RUNSfile;
 extern ofstream TIMETOPATTERNfile;
 extern ofstream TIPAMOUNTfile;
 ///analysis/quantification
-#define SigRange 15.0f*(VEGFRnorm/100.0f) ///percentage of total VEGFR poss, within this range we say the cell is stable.
-#define TIP_VEGFR 50*(VEGFRnorm/100.0f)///set as over 50% - its the lower limit for no of VEGFR needed to qualify as a tip cell.
+#define SigRange 15.0f*(VEGFR2norm/100.0f) ///percentage of total VEGFR2 poss, within this range we say the cell is stable.
+#define TIP_VEGFR 50*(VEGFR2norm/100.0f)///set as over 50% - its the lower limit for no of VEGFR2 needed to qualify as a tip cell.
 #define TIP_MEMS 1.2///lower limit on no. of Magents needed to qualify as a tip cell, X times the initial value TIP_MEMS is X
 #define ANALYSIS_SHUFFLING false
 #define ANALYSIS_COMS false
@@ -74,7 +74,7 @@ extern ofstream TIPAMOUNTfile;
 
 #define TESTING  false //if testing the behaviour against a deterministic version (random numbers always generated the same throughout for stochastic elements, seeded with 100)
 #define on_the_fly_surface_agents false ///faster as doesnt do voxellisatoin but cant use for full runs as not correct
-#define oldVersion false ///old VEGFR-2 activatoin function from JTB 2008
+#define oldVersion false ///old VEGFR2-2 activatoin function from JTB 2008
 
 #define TOROIDAL_X true//cell_setup2: false ///will want if vessel (JTB or PLos) or some monolayers
 #define TOROIDAL_X_env true //this is true for the NCB and rearrnagement setups even though strictly the vessel cannotgrow toroidally (only env lookup toroidal) TOROIDAL_X will be false in this case ..
@@ -186,17 +186,17 @@ extern float tokenStrength; ///no. of tokens need to extend filopodia by 0.5 mic
 extern float randFilExtend;
 ///GRN signalling pathways
 extern float NotchNorm;
-extern float VEGFRNORM; /// (46000.0f/100.0f)*48.6f ///total of receptors it will maintain if all else is equal - divides out to M agents
+extern float VEGFR2NORM; /// (46000.0f/100.0f)*48.6f ///total of receptors it will maintain if all else is equal - divides out to M agents
 extern float VEGFR3NORM; //LC//
-extern float VEGFRmin; /// (1000.0f/100.0f)*48.6f///min level total VEGFR is allowed to drop to (Holger said wont go to zero..)
+extern float VEGFR2min; /// (1000.0f/100.0f)*48.6f///min level total VEGFR2 is allowed to drop to (Holger said wont go to zero..)
 extern float VEGFR3min; //LC//
-extern float sigma; ///no. of VEGFR recs lost by one active notch receptor.
+extern float sigma; ///no. of VEGFR2 recs lost by one active notch receptor.
 extern float MAX_dll4; ///max amount of VEGF that will induce the same amount of notch/dll4 - after this it will induce only amount specified in this param - from Liu03 paper
 extern float delta;
-#define actNot_VEGFR_delay 28//CEll_setup 2: 120///28 ///no. of timesteps before active notch affects VEGFR expression
-#define actNot_VEGFR_lasts 1 ///no of timesteps activ notch effect on VEGFR expression lasts - after which VEGFR levels will return to normal (given no other active notch delays run out)
-#define VEGFR_dll4_delay 28//120CEll_setup 2: 120////28  ///no. of timesteps it takes for an active VEGFR receptor to cause dll4 expression. goes on the dll4array stack
-#define VEGFR_dll4_lasts 1///no of time steps the active effect of VEGFR has on dll4 up reg - before it goes back to normal.
+#define actNot_VEGFR_delay 28//CEll_setup 2: 120///28 ///no. of timesteps before active notch affects VEGFR2 expression
+#define actNot_VEGFR_lasts 1 ///no of timesteps activ notch effect on VEGFR2 expression lasts - after which VEGFR2 levels will return to normal (given no other active notch delays run out)
+#define VEGFR_dll4_delay 28//120CEll_setup 2: 120////28  ///no. of timesteps it takes for an active VEGFR2 receptor to cause dll4 expression. goes on the dll4array stack
+#define VEGFR_dll4_lasts 1///no of time steps the active effect of VEGFR2 has on dll4 up reg - before it goes back to normal.
 
 ///Rearrangement
 #define REARRANGEMENT false
@@ -253,8 +253,8 @@ void new_random_shuffle( _RandomAccessIterator first, _RandomAccessIterator last
 }
 
 /////analysis/quantification
-//#define SigRange 15.0f*(VEGFRnorm/100.0f) ///percentage of total VEGFR poss, within this range we say the cell is stable.
-//#define TIP_VEGFR 50*(VEGFRnorm/100.0f)///set as over 50% - its the lower limit for no of VEGFR needed to qualify as a tip cell.
+//#define SigRange 15.0f*(VEGFR2norm/100.0f) ///percentage of total VEGFR2 poss, within this range we say the cell is stable.
+//#define TIP_VEGFR 50*(VEGFR2norm/100.0f)///set as over 50% - its the lower limit for no of VEGFR2 needed to qualify as a tip cell.
 //#define TIP_MEMS 1.2///lower limit on no. of Magents needed to qualify as a tip cell, X times the initial value TIP_MEMS is X
 
 //#define ANALYSIS_SHUFFLING false
@@ -556,7 +556,8 @@ public:
     vector <int> junctionSizes; ///used in characterize notch boundaries for PLoS CB uneven junctions study
     MemAgent* base_of_longest_fil;
     int length_of_longest_fil;
-    float stableVEGFR; ///relates to calcStability();
+    float stableVEGFR2; ///relates to calcStability();
+    float stableVEGFR3; ///relates to calcStability();
     std::vector<Coordinates*> COMstore;
     std::vector <int> stableArray;
 
@@ -567,28 +568,28 @@ public:
     Coordinates calcCOM_toroidal(void);
 
     ///GRN signalling pathways
-    float Vsink; ///VEGFR-1 parameter
-    float VEGFRnorm; //VEGFR2 level
+    float Vsink; ///VEGFR2-1 parameter
+    float VEGFR2norm; //VEGFR2 level
     float VEGFR3norm; //LC//
     float actNotCurrent; ///active Notch after time delay (able to affect Gene expression)
-    float actVEGFRcurrent; ///active VEGFR-2 after time delay (able to affect Gene expression)
+    float actVEGFRcurrent; ///active VEGFR2-2 after time delay (able to affect Gene expression)
     float actR2R2current; //LC//
     float actR2R3current; //LC//
     float actR3R3current; //LC//
     float affR2R2DLL4; //LC//
     float affR2R3DLL4; //LC//
     float affR3R3DLL4; //LC//
-    float VEGFRtot; ///VEGFR-2 receptor expression level
+    float VEGFR2tot; ///VEGFR2-2 receptor expression level
     float VEGFR3tot; //LC//
     float Dll4tot; ///Dll4 ligand expression level
     float Notchtot; ///Number of Notch receptors
     float activeNotchtot; ///activeNotch level in timestep
     
-    float activeVEGFRtot; ///active VEGFR-2 level in timestep
+    float activeVEGFRtot; ///active VEGFR2-2 level in timestep -- to be removed //LC//
     std::vector <float> NotchDelayArray;
     std::vector <float> NotchLastsArray;
-    std::vector <float> VEGFRDelayArray;
-    std::vector <float> VEGFRlastsArray;
+    std::vector <float> VEGFRDelayArray; //  -- to be removed //LC//
+    std::vector <float> VEGFRlastsArray; //  -- to be removed //LC//
     //LC//
     float activeR2R2tot;
     float activeR2R3tot;
@@ -734,7 +735,7 @@ public:
     bool meshConnected(MemAgent* tocheck); ///used to check if two neghbours in space are actually neighbours in the mesh (for rearrangement so that overlapping folder membrane couldnt try to make copyflips via springs that dotn exist)
 
     ///GRN and signalling pathways
-    float VEGFR;
+    float VEGFR2;
     float VEGFR3; //LC//
     float Notch1;
     float Dll4;
@@ -751,7 +752,7 @@ public:
     float R3R3active;
 
     bool checkNeighsVonForEnv(void); ///check if memAgent has env in von neuman neighbours, as only allocates receptors to memAgents with full surface exposed, to avoid ruffled surfaces
-    void VEGFRresponse(void); ///activate VEGFR receptors and also trigger filopoida extension
+    void VEGFRresponse(void); ///activate VEGFR2 receptors and also trigger filopoida extension
     void NotchResponse(void); ///activate Notch receptors with Dll4
 
     ///rearrangement

@@ -512,7 +512,8 @@ void World::create_3D_round_cell(void){
 
 
 
-         ECagents[i]->VEGFRtot = 0;
+         ECagents[i]->VEGFR2tot = 0;
+         ECagents[i]->VEGFR3tot = 0;
 
 
      }
@@ -650,7 +651,8 @@ void World::createECagents(int Junc_arrang){
          //chose = rand();
          chose = new_rand();
 	    
-         ECagents[i]->VEGFRtot = 0;
+         ECagents[i]->VEGFR2tot = 0;
+         ECagents[i]->VEGFR3tot = 0;
 
          //ECagents[i]->red = ((float)rand()/(float)RAND_MAX);
         //ECagents[i]->green = ((float)rand()/(float)RAND_MAX);
@@ -1831,7 +1833,7 @@ void World::createNewEnvAgent(int x, int y, int z){
         int i, j, k;
         EC* ecp =  new EC((World*) this);
         ECagents.push_back(ecp);
-        ecp->VEGFRtot = 46000;
+        ecp->VEGFR2tot = 46000;
         for(i=0;i<xMAX;i++){
             for(j=0;j<9;j++){
                 for(k=0;k<zMAX;k++){

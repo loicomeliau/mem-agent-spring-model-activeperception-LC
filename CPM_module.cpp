@@ -332,7 +332,7 @@ void CPM_module::calc_J_sum(void) {
             for (j = 0; j < mp->DiffAd_neighs.size(); j++) {
                 //cout << j << endl;
                 //decide types
-                if (mp->diffAd_replaced->VEGFRtot == 0) {
+                if (mp->diffAd_replaced->VEGFR2tot == 0) {
                     if (mp->DiffAd_neighs[j]->Cell->ODE.Variables[VR2] == 0) {
                         J_sum += J_SS;
 
@@ -901,7 +901,7 @@ float CPM_module::calc_local_change(MemAgent* replacer_mem, MemAgent* replaced_m
     if (replaced_mem != NULL) {
 
         ecp = replaced_mem->Cell;
-        //if(ecp->VEGFRtot<(float)VEGFRnorm/2.0f){
+        //if(ecp->VEGFR2tot<(float)VEGFR2norm/2.0f){
         for(i=0;i<ecp->nodeAgents.size();i++){
             if((ecp->nodeAgents[i]->FIL!=TIP)&&(ecp->nodeAgents[i]->FIL!=STALK)) area++;
         }
@@ -912,7 +912,7 @@ float CPM_module::calc_local_change(MemAgent* replacer_mem, MemAgent* replaced_m
 
         if (replacer_mem != NULL) {
             ecp = replacer_mem->Cell;
-          //   if(ecp->VEGFRtot<(float)VEGFRnorm/2.0f){
+          //   if(ecp->VEGFR2tot<(float)VEGFR2norm/2.0f){
             for(i=0;i<ecp->nodeAgents.size();i++){
             if((ecp->nodeAgents[i]->FIL!=TIP)&&(ecp->nodeAgents[i]->FIL!=STALK)) area2++;
         }
@@ -949,13 +949,13 @@ float CPM_module::calc_local_change(MemAgent* replacer_mem, MemAgent* replaced_m
         if (replaced_mem != NULL) {
 
             ecp = replaced_mem->Cell;
-           //  if(ecp->VEGFRtot<(float)VEGFRnorm/2.0f){
+           //  if(ecp->VEGFR2tot<(float)VEGFR2norm/2.0f){
             newAsum = ((area -1 - ecp->ideal_Cell_area)*(area-1 - ecp->ideal_Cell_area));
             // }
 
         if (replacer_mem != NULL) {
             ecp = replacer_mem->Cell;
-           //  if(ecp->VEGFRtot<(float)VEGFRnorm/2.0f){
+           //  if(ecp->VEGFR2tot<(float)VEGFR2norm/2.0f){
             newAsum += ((area2 +1 - ecp->ideal_Cell_area)*(area2 +1  - ecp->ideal_Cell_area));
            //  }
         }
@@ -1502,7 +1502,7 @@ bool CPM_module::check_gradient(MemAgent* replaced_mem, MemAgent* replacer_mem) 
     float prob;
 
     //old version - but not inline with findings in Lars paper...
-    //if (replacer_mem->Cell->VEGFRtot > (float) VEGFRnorm / 2.0f) {
+    //if (replacer_mem->Cell->VEGFR2tot > (float) VEGFR2norm / 2.0f) {
 
     //this prob was in Lars paper model - but is te prob of one cell entirely passing another, so too low for this here...
     //will need to optimise this param somehow...
@@ -1514,7 +1514,7 @@ bool CPM_module::check_gradient(MemAgent* replaced_mem, MemAgent* replacer_mem) 
 
     if (chance < prob) {
         
-    //if (replacer_mem->Cell->VEGFRtot> (float) VEGFRnorm / 2.0f) {
+    //if (replacer_mem->Cell->VEGFR2tot> (float) VEGFR2norm / 2.0f) {
         /*   int SumVEGF_replacer = 0;
            int SumVEGF_replaced = 0;
            int countA = 0;`

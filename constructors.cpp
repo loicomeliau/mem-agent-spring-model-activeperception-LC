@@ -137,8 +137,9 @@ MemAgent::MemAgent(EC* belongsTo, World* world){
 	FATimer=0;
 	activeNotch = 0.0f;
 	Dll4=0.0f;
-	VEGFR = 0.0f;
-	VEGFRactive=0.0f;
+	VEGFR2 = 0.0f;
+    VEGFR3 = 0.0f;
+	VEGFRactive=0.0f; // -- to be removed //LC//
 
     //LC//
     R2R2active=0.0f;
@@ -180,21 +181,25 @@ EC::EC(World*  world){
         filCONST = FIL_VARY; //LTK link add user config value link here
      
         //wt values FLTK link
-        VEGFRnorm = VEGFRNORM;
+        VEGFR2norm = VEGFR2NORM;
+        VEGFR3norm = VEGFR3NORM;
         Vsink =VsinkNorm*intersoso;
         
         if(VR2_HET==true){
-                VEGFRnorm = VEGFRNORM*0.5;
+                VEGFR2norm = VEGFR2NORM*0.5;
+                VEGFR3norm = VEGFR3NORM*0.5;
         }
         if(VR1_HET==true) Vsink = Vsink*0.5;
         
         //add in for Dll4 HET/KO..
         
-	VEGFRtot=VEGFRnorm;
+	VEGFR2tot=VEGFR2norm;
+    VEGFR3tot=VEGFR3norm;
 	Dll4tot=0.0f;
 	Notchtot=0.0f;
 	activeNotchtot=0.0f;
-	stableVEGFR=VEGFRnorm;
+	stableVEGFR2=VEGFR2norm;
+    stableVEGFR3=VEGFR3norm;
 	base_of_longest_fil= NULL;
 	length_of_longest_fil = 0;
         newJunction = 0;

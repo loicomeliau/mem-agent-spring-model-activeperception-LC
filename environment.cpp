@@ -211,11 +211,11 @@ void Env::calcInside(void){
 // AJOUT3 //LC//
 void World::calcVType(){
 
-    affCR2R2 = 0.1;
-    affCR2R3 = 0.4;
-    affCR3R3 = 0.5;
+    affCR2R2 = 0.0;
+    affCR2R3 = 0.0;
+    affCR3R3 = 1.0;
     affAR2R2 = 1.0; //0.8;
-    affAR2R3 = 0.2;
+    affAR2R3 = 0.0;
     affAR3R3 = 0.0;
     affCmR2R2 = 0.0;
     affCmR2R3 = 0.0;

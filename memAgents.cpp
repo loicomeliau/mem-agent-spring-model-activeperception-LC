@@ -461,7 +461,7 @@ void MemAgent::ActinFlow(void) {
     MemAgent* nearest;
 
 
-    //lose all actin tokens (opposite of recruitment also simplified degradation) if VEGFR-2 receptors havent activated for a while------------------------
+    //lose all actin tokens (opposite of recruitment also simplified degradation) if VEGFR2-2 receptors havent activated for a while------------------------
     if (VRinactiveCounter > TokDisRate) {
         filTokens = 0;
         flag = 1;
@@ -532,7 +532,7 @@ void MemAgent::tryActinPassRadiusN(int x, int y, int z, int N) {
                             for (m = 0; m < worldP->grid[i][j][k].Mids.size(); m++) {
                                 if (flag2 == 0) {
                                     if ((worldP->grid[i][j][k].Mids[m]->FIL != NONE) && (worldP->grid[i][j][k].Mids[m]->Cell == Cell)) {
-                                        ///only passes one token as called in VEGFR response when only one new one has been allocated
+                                        ///only passes one token as called in VEGFR2 response when only one new one has been allocated
                                         worldP->grid[i][j][k].Mids[m]->filTokens++; 
                                         filTokens--;
                                         flag2 = 1;
@@ -628,7 +628,7 @@ bool MemAgent::checkNeighsVonForEnv(void) {
 //------------------------------------------------------------------------------
 /**
  * 
- * main VEGFR activation function (applies VEGFR-1 as a simple sink parameter taking away VEGF from VEGFR-2
+ * main VEGFR2 activation function (applies VEGFR2-1 as a simple sink parameter taking away VEGF from VEGFR2-2
  */
 void MemAgent::VEGFRresponse(void) {
 
@@ -648,23 +648,23 @@ void MemAgent::VEGFRresponse(void) {
     //LC// To be adapted to account for sink 
     R2toR2R2 = 1.0;
     R2toR2R3 = 1 - R2toR2R2;
-    R3toR3R3 = 0.8;
+    R3toR3R3 = 1.0;
     R3toR2R3 = 1 - R3toR3R3;
    
     // Build dimers
-    R2R2 = (R2toR2R2 * VEGFR) / 2;
-    R2R3 = min(R2toR2R3*VEGFR, R3toR2R3*VEGFR3);
+    R2R2 = (R2toR2R2 * VEGFR2) / 2;
+    R2R3 = min(R2toR2R3*VEGFR2, R3toR2R3*VEGFR3);
     R3R3 = (R3toR3R3 * VEGFR3) / 2;
 
-    //calculate the active VEGFR level as a function of VEGFR-2, VEGFR1 level and vEGF.. 
-    VEGFRactiveProp = (VEGFR / ((float) VEGFRNORM / (float) upto));
-    VEGFRactive = (SumVEGF / Cell->Vsink) * VEGFRactiveProp;
+    //calculate the active VEGFR2 level as a function of VEGFR2-2, VEGFR1 level and vEGF.. 
+    //LC// --to be removed VEGFRactiveProp = (VEGFR2 / ((float) VEGFR2NORM / (float) upto));
+    //LC// --to be removed VEGFRactive = (SumVEGF / Cell->Vsink) * VEGFRactiveProp;
 
-    float maxR2R2 = VEGFRNORM/2;
+    float maxR2R2 = VEGFR2NORM/2;
     R2R2activeProp = (R2R2 / ((float) maxR2R2 / (float) upto));
     R2R2active = (SumVEGF / Cell->Vsink) * affR2R2 * R2R2activeProp;
 
-    float maxR2R3 = min(VEGFRNORM, VEGFR3NORM);
+    float maxR2R3 = min(VEGFR2NORM, VEGFR3NORM);
     R2R3activeProp = (R2R3 / ((float) maxR2R3 / (float) upto));
     R2R3active = (SumVEGF / Cell->Vsink) * affR2R3 * R2R3activeProp;
 
@@ -672,10 +672,10 @@ void MemAgent::VEGFRresponse(void) {
     R3R3activeProp = (R3R3 / ((float) maxR3R3 / (float) upto));
     R3R3active = (SumVEGF / Cell->Vsink) * affR3R3 * R3R3activeProp;
 
-    //done exceed max level
-    if (VEGFRactive > VEGFR) {
+    //done exceed max level //LC// --to be removed 
+    if (VEGFRactive > VEGFR2) {
         
-        VEGFRactive = VEGFR;
+        VEGFRactive = VEGFR2;
     }
 
     //LC//
@@ -692,15 +692,16 @@ void MemAgent::VEGFRresponse(void) {
         R3R3active = R3R3;
     }
 
-    //calculate probability of extending a filopdium as a function of VEGFR activity, if no filopodia needed set to 0
+    //calculate probability of extending a filopdium as a function of VEGFR2 activity, if no filopodia needed set to 0
     if (FILOPODIA == true){
     //***** RANDFIL here
     if(randFilExtend >= 0 && randFilExtend <= 1)
       Prob = randFilExtend; //0-1 continuous value input at runtime. if randFil!=-1 - token Strength forced to 0, and epsilon forced to 0.0 (fully random direction and extension, no bias from VR->actin or VR gradient to direction.
     else
-      Prob = ((float) VEGFRactive / ((float) Cell->VEGFRnorm / (float) upto)) * Cell->filCONST;
+      //LC// --to be removed Prob = ((float) VEGFRactive / ((float) Cell->VEGFR2norm / (float) upto)) * Cell->filCONST;
       Prob = ((float) R2R2active / ((float) maxR2R2 / (float) upto)) * Cell->filCONST;
-        //else Prob = ((float) VEGFRactive / (((float) VEGFRnorm/2.0f) / (float) upto)) * Cell->filCONST;
+      // LC test// Prob = ((float) R3R3active / ((float) maxR3R3 / (float) upto)) * Cell->filCONST;  //TEST R3//
+        //else Prob = ((float) VEGFRactive / (((float) VEGFR2norm/2.0f) / (float) upto)) * Cell->filCONST;
     }
     else Prob = 0;
 
@@ -1860,7 +1861,7 @@ void MemAgent::checkNeighs(bool called_fron_differentialAdhesion) {
     /*if(diffAd_replaced!=NULL){
             //out<<"D:";
             for(i=0;i<DiffAd_neighs.size();i++){
-                    //cout<<DiffAd_neighs[i]->Cell->VEGFRtot<<endl;
+                    //cout<<DiffAd_neighs[i]->Cell->VEGFR2tot<<endl;
             }
             //cout<<endl;
     }*/

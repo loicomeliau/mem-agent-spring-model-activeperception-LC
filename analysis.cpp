@@ -75,8 +75,13 @@ std::vector< std::vector<float> > World::getGridSiteData()
                 }
 
                 float vegfTotal = 0;
-                float vegfrTotal = 0;
-                float activeVegfrTotal = 0;
+                //LC// float vegfrTotal = 0; 
+                float vegfr2Total = 0; //LC//
+                float vegfr3Total = 0; //LC//
+                //LC// float activeVegfrTotal = 0;
+                float activeR2r2Total = 0;
+                float activeR2r3Total = 0;
+                float activeR3r3Total = 0;
                 float dll4Total = 0;
 
                 if (grid[x][y][z].type == E)
@@ -87,8 +92,13 @@ std::vector< std::vector<float> > World::getGridSiteData()
                     for (int endothelialCellNumber = 0 ; endothelialCellNumber < ECELLS; endothelialCellNumber++)
                     {
                         vegfTotal = 0;
-                        vegfrTotal = 0;
-                        activeVegfrTotal = 0;
+                        //LC// vegfrTotal = 0;
+                        vegfr2Total = 0; //LC//
+                        vegfr3Total = 0; //LC//
+                        //LC// activeVegfrTotal = 0;
+                        activeR2r2Total = 0; //LC//
+                        activeR2r3Total = 0; //LC//
+                        activeR3r3Total = 0; //LC//
                         dll4Total = 0;
 
                         if (grid[x][y][z].Fids.size() > 0) // Check if grid site contains filapodia
@@ -99,16 +109,26 @@ std::vector< std::vector<float> > World::getGridSiteData()
                                 if (grid[x][y][z].Fids[filopodiaID]->Cell == ECagents[endothelialCellNumber])
                                 {
                                     vegfTotal += grid[x][y][z].Fids[filopodiaID]->SumVEGF;
-                                    vegfrTotal += grid[x][y][z].Fids[filopodiaID]->VEGFR;
+                                    //LC// vegfrTotal += grid[x][y][z].Fids[filopodiaID]->VEGFR2;
+                                    vegfr2Total += grid[x][y][z].Fids[filopodiaID]->VEGFR2; //LC//
+                                    vegfr3Total += grid[x][y][z].Fids[filopodiaID]->VEGFR3; //LC//
                                     //activeVegfrTotal += grid[x][y][z].Fids[filopodiaID]->VEGFRactive;
-                                    activeVegfrTotal += grid[x][y][z].Fids[filopodiaID]->R2R2active; //LC-R2R2//
+                                    //activeVegfrTotal += grid[x][y][z].Fids[filopodiaID]->R2R2active; //LC-R2R2//
+                                    activeR2r2Total += grid[x][y][z].Fids[filopodiaID]->R2R2active; //LC-R2R2//
+                                    activeR2r3Total += grid[x][y][z].Fids[filopodiaID]->R2R3active; //LC-R2R3//
+                                    activeR3r3Total += grid[x][y][z].Fids[filopodiaID]->R3R3active; //LC-R3R3//
                                     dll4Total += grid[x][y][z].Fids[filopodiaID]->Dll4;
                                 }
                             }
                         }
                         gridSiteValues.push_back(vegfTotal);
-                        gridSiteValues.push_back(vegfrTotal);
-                        gridSiteValues.push_back(activeVegfrTotal);
+                        //LC// gridSiteValues.push_back(vegfrTotal);
+                        gridSiteValues.push_back(vegfr2Total); //LC//
+                        gridSiteValues.push_back(vegfr3Total); //LC//
+                        //LC// gridSiteValues.push_back(activeVegfrTotal);
+                        gridSiteValues.push_back(activeR2r2Total); //LC//
+                        gridSiteValues.push_back(activeR2r3Total); //LC//
+                        gridSiteValues.push_back(activeR3r3Total); //LC//
                         gridSiteValues.push_back(dll4Total);
                     }
                 }
@@ -120,8 +140,13 @@ std::vector< std::vector<float> > World::getGridSiteData()
                     for (int endothelialCellNumber = 0 ; endothelialCellNumber < ECELLS; endothelialCellNumber++)
                     {
                         vegfTotal = 0;
-                        vegfrTotal = 0;
-                        activeVegfrTotal = 0;
+                        //LC// vegfrTotal = 0;
+                        vegfr2Total = 0; //LC//
+                        vegfr3Total = 0; //LC//
+                        //LC// activeVegfrTotal = 0;
+                        activeR2r2Total = 0; //LC//
+                        activeR2r3Total = 0; //LC//
+                        activeR3r3Total = 0; //LC//
                         dll4Total = 0;
 
                         if (grid[x][y][z].Fids.size() > 0)
@@ -131,9 +156,14 @@ std::vector< std::vector<float> > World::getGridSiteData()
                                 if (grid[x][y][z].Fids[filopodiaID]->Cell == ECagents[endothelialCellNumber])
                                 {
                                     vegfTotal += grid[x][y][z].Fids[filopodiaID]->SumVEGF;
-                                    vegfrTotal += grid[x][y][z].Fids[filopodiaID]->VEGFR;
+                                    //LC// vegfrTotal += grid[x][y][z].Fids[filopodiaID]->VEGFR2;
+                                    vegfr2Total += grid[x][y][z].Fids[filopodiaID]->VEGFR2; //LC//
+                                    vegfr3Total += grid[x][y][z].Fids[filopodiaID]->VEGFR3; //LC//
                                     //activeVegfrTotal += grid[x][y][z].Fids[filopodiaID]->VEGFRactive;
-                                    activeVegfrTotal += grid[x][y][z].Fids[filopodiaID]->R2R2active; //LC-R2R2//
+                                    //activeVegfrTotal += grid[x][y][z].Fids[filopodiaID]->R2R2active; //LC-R2R2//
+                                    activeR2r2Total += grid[x][y][z].Fids[filopodiaID]->R2R2active; //LC-R2R2//
+                                    activeR2r3Total += grid[x][y][z].Fids[filopodiaID]->R2R3active; //LC-R2R3//
+                                    activeR3r3Total += grid[x][y][z].Fids[filopodiaID]->R3R3active; //LC-R3R3//
                                     dll4Total += grid[x][y][z].Fids[filopodiaID]->Dll4;
                                 }
                             }
@@ -145,16 +175,26 @@ std::vector< std::vector<float> > World::getGridSiteData()
                                 if (grid[x][y][z].Mids[memAgentID]->Cell == ECagents[endothelialCellNumber])
                                 {
                                     vegfTotal += grid[x][y][z].Mids[memAgentID]->SumVEGF;
-                                    vegfrTotal += grid[x][y][z].Mids[memAgentID]->VEGFR;
+                                    //LC// vegfrTotal += grid[x][y][z].Fids[memAgentID]->VEGFR2;
+                                    vegfr2Total += grid[x][y][z].Mids[memAgentID]->VEGFR2; //LC//
+                                    vegfr3Total += grid[x][y][z].Mids[memAgentID]->VEGFR3; //LC//
                                     //activeVegfrTotal += grid[x][y][z].Mids[memAgentID]->VEGFRactive;
-                                    activeVegfrTotal += grid[x][y][z].Mids[memAgentID]->R2R2active; //LC-R2R2//
+                                    //activeVegfrTotal += grid[x][y][z].Mids[memAgentID]->R2R2active; //LC-R2R2//
+                                    activeR2r2Total += grid[x][y][z].Mids[memAgentID]->R2R2active; //LC-R2R2//
+                                    activeR2r3Total += grid[x][y][z].Mids[memAgentID]->R2R3active; //LC-R2R3//
+                                    activeR3r3Total += grid[x][y][z].Mids[memAgentID]->R3R3active; //LC-R3R3//
                                     dll4Total += grid[x][y][z].Mids[memAgentID]->Dll4;
                                 }
                             }
                         }
                         gridSiteValues.push_back(vegfTotal);
-                        gridSiteValues.push_back(vegfrTotal);
-                        gridSiteValues.push_back(activeVegfrTotal);
+                        //LC// gridSiteValues.push_back(vegfrTotal);
+                        gridSiteValues.push_back(vegfr2Total); //LC//
+                        gridSiteValues.push_back(vegfr3Total); //LC//
+                        //LC// gridSiteValues.push_back(activeVegfrTotal);
+                        gridSiteValues.push_back(activeR2r2Total); //LC//
+                        gridSiteValues.push_back(activeR2r3Total); //LC//
+                        gridSiteValues.push_back(activeR3r3Total); //LC//
                         gridSiteValues.push_back(dll4Total);
                     }
                 }
@@ -250,9 +290,10 @@ void World::simulateTimestep(std::vector< std::vector<float> > cellIncrements)
     for (unsigned i = 0; i < cellIncrements.size(); i++)
     {
         EC* currentCell = ECagents[i];
-        currentCell->VEGFRtot += cellIncrements[i][0];
+        currentCell->VEGFR2tot += cellIncrements[i][0];
         currentCell->Dll4tot += cellIncrements[i][1];
         currentCell->Notchtot += cellIncrements[i][2];
+        currentCell->VEGFR3tot += cellIncrements[i][3]; //LC// add a lign/column to cellIncrements to account for VEGFR3
     }
     simulateTimestep();
 }
@@ -355,7 +396,7 @@ void World::printScores(ofstream& fileTo) {
 
     for (c = 0; c < uptoC; c++) {
 
-        fileTo << ECagents[c]->VEGFRtot << "\t";
+        fileTo << ECagents[c]->VEGFR2tot << "\t";
     }
 
     fileTo << endl;
@@ -381,9 +422,9 @@ void World::printScores(ofstream& fileTo) {
 		
 		
             //print out how many tip cells and whether any are next to each other.
-            //define tip cell as having over half full amount of VEGFR and more than initial amount of memAgents
+            //define tip cell as having over half full amount of VEGFR2 and more than initial amount of memAgents
 		
-            //fileTo<<ecp->VEGFRtot<<"\t"<<ecp->actVEGFRArray[0];//<<ecp->Dll4tot<<"\t"<<ecp->actNotCurrent<<"\t";
+            //fileTo<<ecp->VEGFR2tot<<"\t"<<ecp->actVEGFRArray[0];//<<ecp->Dll4tot<<"\t"<<ecp->actNotCurrent<<"\t";
 		
             if(ecp->tipCellTest()==true){
                     //it is a tip cell
@@ -1149,7 +1190,7 @@ void World::evaluate_final_offset_patt(ofstream& fileTo) {
         Xsum += count;
 
         if (ecp->tipCellTest() == true) {
-            //cout<<"Tip: "<<ecp->VEGFRtot<<" "<<ecp->actinUsed<<" ";
+            //cout<<"Tip: "<<ecp->VEGFR2tot<<" "<<ecp->actinUsed<<" ";
 
             for (r = 0; r < cellNeighbourhoods[c].size(); r++) {
 
@@ -1176,7 +1217,7 @@ void World::evaluate_final_offset_patt(ofstream& fileTo) {
 
 
         }
-        //else cout<<"stalk "<<ecp->VEGFRtot<<" "<<ecp->actinUsed<<endl;
+        //else cout<<"stalk "<<ecp->VEGFR2tot<<" "<<ecp->actinUsed<<endl;
 
 
     }
@@ -1233,7 +1274,7 @@ void World::evaluation(ofstream& fileTo) {
 
 
         //for each cell, if its got over half VEGFR2...
-        if (ecp->VEGFRtot > VEGFRNORM / 2.0f) {
+        if (ecp->VEGFR2tot > VEGFR2NORM / 2.0f) {
 
             //then store its stability
 
@@ -1365,10 +1406,11 @@ filTokSum+=ecp->nodeAgents[j]->filTokens;
         }*/
     
         if(timeStep==0){
-                cout<<"CEll: "<<i<<" VEGFRnorm: "<<ecp->VEGFRnorm<<" Vsink: "<<ecp->Vsink<<endl;
+                cout<<"CEll: "<<i<<" VEGFR2norm: "<<ecp->VEGFR2norm<<" Vsink: "<<ecp->Vsink<<endl;
+                cout<<"CEll: "<<i<<" VEGFR3norm: "<<ecp->VEGFR3norm<<" Vsink: "<<ecp->Vsink<<endl;
         }
         else{
-                cout<<timeStep<<" CEll: "<<i<<" actinUsed "<<ecp->actinUsed<<" fiToks "<<filTokSum<<" Dll4tot:"<<ecp->Dll4tot<<" activeVR2 "<<ecp->activeVEGFRtot<<" VEGFRnorm: "<<ecp->VEGFRnorm<<" Vsink: "<<ecp->Vsink<<endl; 
+                cout<<timeStep<<" CEll: "<<i<<" actinUsed "<<ecp->actinUsed<<" fiToks "<<filTokSum<<" Dll4tot:"<<ecp->Dll4tot<<" activeR2R2 "<<ecp->activeR2R2tot<<" activeR2R3 "<<ecp->activeR2R3tot<<" activeR3R23 "<<ecp->activeR3R3tot<<" VEGFR2norm: "<<ecp->VEGFR2norm<<" VEGFR3norm: "<<ecp->VEGFR3norm<<" Vsink: "<<ecp->Vsink<<endl; 
         }
         
         //fileTo<<ecp->Dll4tot<<"\t"<<ecp->activeVEGFRtot<<"\t";
@@ -1416,10 +1458,10 @@ void EC::store_cell_COM(void){
 //---------------------------------------------------------------------------------
 void EC::calcStability(void){
     
-    // if its significantly different from current stable amount, score 0 and change stableVEGFR to current VEGFR
-    if((VEGFRtot>stableVEGFR+SigRange)||(VEGFRtot<stableVEGFR-SigRange)){
+    // if its significantly different from current stable amount, score 0 and change stableVEGFR2 to current VEGFR2
+    if((VEGFR2tot>stableVEGFR2+SigRange)||(VEGFR2tot<stableVEGFR2-SigRange)){
         stableArray.push_back(0);
-        stableVEGFR=VEGFRtot;
+        stableVEGFR2=VEGFR2tot;
     }
     else stableArray.push_back(1);
     

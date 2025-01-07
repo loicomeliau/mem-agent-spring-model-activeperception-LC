@@ -19,7 +19,8 @@ bool EC::tipCellTest(void){
     //as the original tip cell test said there had to be 1.2x initmemagents no. which here is 740 which gives 148 left over to be involved in filopodia..
     //so as there would be slightly less spring agents than fil-memAgents in the previous model, as there are nodes in filopodia too we use 100
     //this remains the same even if cvell size is smaller with ECcross>1 as the no of filopdia agents should be the same..
-    if((VEGFRtot>(float)VEGFRnorm/2.0f)&&(actinUsed>=257.0))return(true);
+    if((VEGFR2tot>(float)VEGFR2norm/2.0f)&&(actinUsed>=257.0))return(true);
+    //LC test R3//if((VEGFR3tot>(float)VEGFR3norm/2.0f)&&(actinUsed>=257.0))return(true); //temporaire pour tester R3R3
     else return(false);
     
 }
@@ -106,7 +107,7 @@ void EC::allocateProts(void){
      * int MnotFilTot = count;
      * float alpha = 1.3;
      * float left;
-     * left = VEGFRtot-(MfilTot*((float)(VEGFRtot*alpha)/(float)div));*/
+     * left = VEGFR2tot-(MfilTot*((float)(VEGFR2tot*alpha)/(float)div));*/
     //-----------------------------------------------------------------------------------------------------
     //set membrane prot levels for each cell----------------------------------------------------
     
@@ -116,7 +117,7 @@ void EC::allocateProts(void){
         
         
         if(nodeAgents[j]->vonNeu==true){
-            nodeAgents[j]->VEGFR=(float)VEGFRtot/(float)div;
+            nodeAgents[j]->VEGFR2=(float)VEGFR2tot/(float)div;
             nodeAgents[j]->VEGFR3=(float)VEGFR3tot/(float)div; //LC//
         }
         
@@ -136,12 +137,12 @@ void EC::allocateProts(void){
         
         
         
-        springAgents[j]->VEGFR=(float)VEGFRtot/(float)div;
+        springAgents[j]->VEGFR2=(float)VEGFR2tot/(float)div;
         springAgents[j]->VEGFR3=(float)VEGFR3tot/(float)div; //LC//
         
         //clustered VR-2 to filopodia
-        //if(springAgents[j-nodeAgents.size()]->FIL!=NONE) springAgents[j-nodeAgents.size()]->VEGFR=(float)(VEGFRtot*alpha)/(float)div;
-        //else springAgents[j-nodeAgents.size()]->VEGFR=(float)left/(float)MnotFilTot;
+        //if(springAgents[j-nodeAgents.size()]->FIL!=NONE) springAgents[j-nodeAgents.size()]->VEGFR2=(float)(VEGFR2tot*alpha)/(float)div;
+        //else springAgents[j-nodeAgents.size()]->VEGFR2=(float)left/(float)MnotFilTot;
         
         if(springAgents[j]->junction==true){
             springAgents[j]->Notch1=(float)NotchNorm/(float)divJunction;
@@ -161,13 +162,13 @@ void EC::allocateProts(void){
         
         
         if(surfaceAgents[j]->vonNeu==true){
-            surfaceAgents[j]->VEGFR=(float)VEGFRtot/(float)div;
+            surfaceAgents[j]->VEGFR2=(float)VEGFR2tot/(float)div;
             surfaceAgents[j]->VEGFR3=(float)VEGFR3tot/(float)div; //LC//
         }
         
         //clustered VR-2 to filopodia
-        //if(springAgents[j-nodeAgents.size()]->FIL!=NONE) springAgents[j-nodeAgents.size()]->VEGFR=(float)(VEGFRtot*alpha)/(float)div;
-        //else springAgents[j-nodeAgents.size()]->VEGFR=(float)left/(float)MnotFilTot;
+        //if(springAgents[j-nodeAgents.size()]->FIL!=NONE) springAgents[j-nodeAgents.size()]->VEGFR2=(float)(VEGFR2tot*alpha)/(float)div;
+        //else springAgents[j-nodeAgents.size()]->VEGFR2=(float)left/(float)MnotFilTot;
         
         if(surfaceAgents[j]->junction==true){
             surfaceAgents[j]->Notch1=(float)NotchNorm/(float)divJunction;
@@ -202,11 +203,11 @@ void EC::NotchDelay(void){
     //remove element from delay stack
     NotchDelayArray.erase(T);
     
-    //remove frst element in lasts array, it nolonger has an effect on VEGFR levels.
+    //remove frst element in lasts array, it nolonger has an effect on VEGFR2 levels.
     T=NotchLastsArray.begin();
     NotchLastsArray.erase(T);
     
-    //update current amount of active notch that has an effect on VEGFR levels (the sum of the lasts array)
+    //update current amount of active notch that has an effect on VEGFR2 levels (the sum of the lasts array)
     
     for(i=0;i<actNot_VEGFR_lasts;i++){
         actNotCurrent=actNotCurrent+NotchLastsArray[i];
@@ -246,7 +247,7 @@ void EC::VEGFRDelay(void){
     R2R3DelayArray.erase(T_R2R3);
     R3R3DelayArray.erase(T_R3R3);
     
-    //remove frst element in lasts array, it nolonger has an effect on VEGFR levels.
+    //remove frst element in lasts array, it nolonger has an effect on VEGFR2 levels.
     //LC// T=VEGFRlastsArray.begin();
     //LC// VEGFRlastsArray.erase(T);
     T_R2R2=R2R2lastsArray.begin();
@@ -256,7 +257,7 @@ void EC::VEGFRDelay(void){
     T_R3R3=R3R3lastsArray.begin();
     R3R3lastsArray.erase(T_R3R3);
     
-    //update current amount of active notch that has an effect on VEGFR levels (the sum of the lasts array)
+    //update current amount of active notch that has an effect on VEGFR2 levels (the sum of the lasts array)
     for(i=0;i<VEGFR_dll4_lasts;i++){
         //actVEGFRcurrent=actVEGFRcurrent+VEGFRlastsArray[i];
         actR2R2current=actR2R2current+R2R2lastsArray[i];
@@ -271,13 +272,17 @@ void EC::GRN(void){
     //down-reg VEGFR2 via notch
     
     //LC// DLL4-VEGFRs affinity values
-    affR2R2DLL4 = 1.0; //LC//
-    affR2R3DLL4 = 0.0; //LC//
-    affR3R3DLL4 = 0.0; //LC//
+    affR2R2DLL4 = 1.0; //LC// 0.7-1.5
+    affR2R3DLL4 = 0.0; //LC// 0.1-0.8
+    affR3R3DLL4 = 0.0; //LC// 0.0 ou 0.01
   
-    VEGFRtot=(VEGFRnorm)-2*(actNotCurrent*sigma); //VEGFRnorm is now a EC specific param and scaled at config if mutant
+    VEGFR2tot=(VEGFR2norm)-2*(actNotCurrent*sigma); //VEGFR2norm is now a EC specific param and scaled at config if mutant
+    VEGFR3tot=(VEGFR3norm)-2*(actNotCurrent*sigma); //VEGFR3norm is now a EC specific param and scaled at config if mutant
 
-    if(VEGFRtot<VEGFRmin) VEGFRtot=VEGFRmin;
+    if(VEGFR2tot<VEGFR2min) VEGFR2tot=VEGFR2min;
+    if(VEGFR3tot<VEGFR3min) VEGFR3tot=VEGFR3min;
+
+    //LC// Check how to combine the effects of the different dimers on DLL4
     actVEGFRcurrent = affR2R2DLL4 * actR2R2current + affR2R3DLL4 * actR2R3current + affR3R3DLL4 * actR3R3current; //LC//
     if(ANALYSIS_HYSTERESIS==true){
         if((this!=worldP->ECagents[0])&&(this!=worldP->ECagents[ECELLS-1]))
@@ -305,7 +310,7 @@ void EC::updateProteinTotals(void){
     int uptoS=springAgents.size();
     int uptoSu=surfaceAgents.size();
     
-    //VEGFRtot=0.0f;
+    //VEGFR2tot=0.0f;
     Dll4tot=0.0f;
     activeNotchtot=0.0f;
     //LC// activeVEGFRtot=0.0f;
@@ -369,7 +374,7 @@ int uptoN;
     uptoS=springAgents.size();
     uptoSu=surfaceAgents.size();
 
-    //VEGFRtot=0.0f;
+    //VEGFR2tot=0.0f;
     Dll4tot=0.0f;
     activeNotchtot=0.0f;
     activeVEGFRtot=0.0f;
