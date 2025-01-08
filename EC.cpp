@@ -225,44 +225,44 @@ void EC::VEGFRDelay(void){
     actR2R3current=0.0f; //LC//
     actR3R3current=0.0f; //LC//
     //LC// vector<float>::iterator T=VEGFRDelayArray.begin();
-    vector<float>::iterator T_R2R2=R2R2DelayArray.begin();
-    vector<float>::iterator T_R2R3=R2R3DelayArray.begin();
-    vector<float>::iterator T_R3R3=R3R3DelayArray.begin();
+    vector<float>::iterator T_R2R2=R2R2DelayArray.begin(); //LC//
+    vector<float>::iterator T_R2R3=R2R3DelayArray.begin(); //LC//
+    vector<float>::iterator T_R3R3=R3R3DelayArray.begin(); //LC//
     
     //LC// VEGFRDelayArray.push_back(activeVEGFRtot);
-    R2R2DelayArray.push_back(activeR2R2tot);
-    R2R3DelayArray.push_back(activeR2R3tot);
-    R3R3DelayArray.push_back(activeR3R3tot);
+    R2R2DelayArray.push_back(activeR2R2tot); //LC//
+    R2R3DelayArray.push_back(activeR2R3tot); //LC//
+    R3R3DelayArray.push_back(activeR3R3tot); //LC//
     
     //add the first element in the delay vector (has passed its delay time and can now have an effect)
     //to the end of the lasts vector - where it will have an effect until it leaves the lasts stack.
     //LC// VEGFRlastsArray.push_back(VEGFRDelayArray.front());
-    R2R2lastsArray.push_back(R2R2DelayArray.front());
-    R2R3lastsArray.push_back(R2R3DelayArray.front());
-    R3R3lastsArray.push_back(R3R3DelayArray.front());
+    R2R2lastsArray.push_back(R2R2DelayArray.front()); //LC//
+    R2R3lastsArray.push_back(R2R3DelayArray.front()); //LC//
+    R3R3lastsArray.push_back(R3R3DelayArray.front()); //LC//
     
     //remove element from delay stack
     //LC// VEGFRDelayArray.erase(T);
-    R2R2DelayArray.erase(T_R2R2);
-    R2R3DelayArray.erase(T_R2R3);
-    R3R3DelayArray.erase(T_R3R3);
+    R2R2DelayArray.erase(T_R2R2); //LC//
+    R2R3DelayArray.erase(T_R2R3); //LC//
+    R3R3DelayArray.erase(T_R3R3); //LC//
     
     //remove frst element in lasts array, it nolonger has an effect on VEGFR2 levels.
     //LC// T=VEGFRlastsArray.begin();
     //LC// VEGFRlastsArray.erase(T);
-    T_R2R2=R2R2lastsArray.begin();
-    R2R2lastsArray.erase(T_R2R2);
-    T_R2R3=R2R3lastsArray.begin();
-    R2R3lastsArray.erase(T_R2R3);
-    T_R3R3=R3R3lastsArray.begin();
-    R3R3lastsArray.erase(T_R3R3);
+    T_R2R2=R2R2lastsArray.begin(); //LC//
+    R2R2lastsArray.erase(T_R2R2); //LC//
+    T_R2R3=R2R3lastsArray.begin(); //LC//
+    R2R3lastsArray.erase(T_R2R3); //LC//
+    T_R3R3=R3R3lastsArray.begin(); //LC//
+    R3R3lastsArray.erase(T_R3R3); //LC//
     
     //update current amount of active notch that has an effect on VEGFR2 levels (the sum of the lasts array)
     for(i=0;i<VEGFR_dll4_lasts;i++){
-        //actVEGFRcurrent=actVEGFRcurrent+VEGFRlastsArray[i];
-        actR2R2current=actR2R2current+R2R2lastsArray[i];
-        actR2R3current=actR2R3current+R2R3lastsArray[i];
-        actR3R3current=actR3R3current+R3R3lastsArray[i];
+        //LC// actVEGFRcurrent=actVEGFRcurrent+VEGFRlastsArray[i];
+        actR2R2current=actR2R2current+R2R2lastsArray[i]; //LC//
+        actR2R3current=actR2R3current+R2R3lastsArray[i]; //LC//
+        actR3R3current=actR3R3current+R3R3lastsArray[i]; //LC//
     }
 }
 //-------------------------------------------------------------------------------------------------------------

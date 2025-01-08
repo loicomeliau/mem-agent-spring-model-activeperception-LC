@@ -635,7 +635,7 @@ void MemAgent::VEGFRresponse(void) {
     float Prob, chance;
 
     int upto = Cell->VonNeighs;
-    float VEGFRactiveProp;
+    //LC// float VEGFRactiveProp;
     float R2R2activeProp; //LC//
     float R2R3activeProp; //LC//
     float R3R3activeProp; //LC//
@@ -673,10 +673,10 @@ void MemAgent::VEGFRresponse(void) {
     R3R3active = (SumVEGF / Cell->Vsink) * affR3R3 * R3R3activeProp;
 
     //done exceed max level //LC// --to be removed 
-    if (VEGFRactive > VEGFR2) {
+    //LC//if (VEGFRactive > VEGFR2) {
         
-        VEGFRactive = VEGFR2;
-    }
+    //LC//    VEGFRactive = VEGFR2;
+    //LC//}
 
     //LC//
     if (R2R2active > R2R2) {

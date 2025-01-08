@@ -253,15 +253,21 @@ std::vector< std::vector< std::vector<float> > > World::getFilopodiaBaseLocation
                 float y = currentMemAgentInFilopodia->My;
                 float z = currentMemAgentInFilopodia->Mz;
                 //float totalVegfr = currentMemAgentInFilopodia->VEGFRactive;
-                float totalVegfr = currentMemAgentInFilopodia->R2R2active; //LC-R2R2//
+                float totalR2r2 = currentMemAgentInFilopodia->R2R2active; //LC-R2R2//
+                float totalR2r3 = currentMemAgentInFilopodia->R2R3active; //LC-R2R3//
+                float totalR3r3 = currentMemAgentInFilopodia->R3R3active; //LC-R3R3//
 
                 //totalVegfr += currentMemAgentInFilopodia->VEGFRactive;
-                totalVegfr += currentMemAgentInFilopodia->R2R2active; //LC-R2R2//
+                totalR2r2 += currentMemAgentInFilopodia->R2R2active; //LC-R2R2//
+                totalR2r3 += currentMemAgentInFilopodia->R2R3active; //LC-R2R3//
+                totalR3r3 += currentMemAgentInFilopodia->R3R3active; //LC-R3R3//
                 while (currentMemAgentInFilopodia->plusSite != nullptr)
                 {
                     currentMemAgentInFilopodia = currentMemAgentInFilopodia->plusSite;
                     //totalVegfr += currentMemAgentInFilopodia->VEGFRactive;
-                    totalVegfr += currentMemAgentInFilopodia->R2R2active; //LC-R2R2//
+                    totalR2r2 += currentMemAgentInFilopodia->R2R2active; //LC-R2R2//
+                    totalR2r3 += currentMemAgentInFilopodia->R2R3active; //LC-R2R3//
+                    totalR3r3 += currentMemAgentInFilopodia->R3R3active; //LC-R3R3//
                 }
 
                 std::vector<float> values;
