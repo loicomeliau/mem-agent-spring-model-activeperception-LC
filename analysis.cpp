@@ -271,7 +271,8 @@ std::vector< std::vector< std::vector<float> > > World::getFilopodiaBaseLocation
                 }
 
                 std::vector<float> values;
-                values.push_back(x); values.push_back(y); values.push_back(z); values.push_back(totalVegfr);
+                values.push_back(x); values.push_back(y); values.push_back(z); 
+                values.push_back(totalR2r2); values.push_back(totalR2r3); values.push_back(totalR3r3);
 
                 if (currentMemAgentInFilopodia->Cell == ECagents[0])
                 {
