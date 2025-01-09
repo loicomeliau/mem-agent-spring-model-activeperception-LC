@@ -478,12 +478,14 @@ void World::printScores(ofstream& fileTo) {
 //---------------------------------------------------------------------------------
 //LC// Evaluate the sand and pepper pattern to stop simulation
 //---------------------------------------------------------------------------------
+
+// Parameters init - SHOULD STAY OUT OF THE FUNCTION (init once and not each time locally in the function)
+int patternHistory = 0;
+bool patterned = false;
+
 void World::evaluateSandP()
 {
     // Init local variables
-    int patternHistory = 0;
-    bool patterned = false;
-
     int Patt = 0;
     int c, s, r;
     int count;
