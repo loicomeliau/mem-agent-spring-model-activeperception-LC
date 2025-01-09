@@ -562,8 +562,8 @@ void World::calcEnvVEGFlevel(void)
     int i, j, k;
     float sum = 0.0f;
 
-    int count = 0;
-    int countM = 0;
+    int count = 0; // env agents (??)
+    int countM = 0; // "gridded" mem agents (??)
 
     for (i = 0; i < xMAX; i++)
     {

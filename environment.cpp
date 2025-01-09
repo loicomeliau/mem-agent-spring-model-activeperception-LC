@@ -19,21 +19,6 @@ float affR3R3 ;
 
 int VType;
 
-//---------------------------------------------------------------
-void World::updateEnvironment(void){
-
-    //check_if_InsideVessel();
-
-
-//updateVEGF();
-
-//cout<<macrophages[0]->coords.x<<endl;
-    //grid[(int)((float)ECwidth/2.0f)][(int)((float)ECwidth/2.0f)][1].Eid->VEGF = 10.0f;
-
-
-
-}
-
 //-----------------------------------------------------------------
 void World::check_if_InsideVessel(void){
 

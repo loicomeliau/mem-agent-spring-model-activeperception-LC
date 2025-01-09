@@ -35,7 +35,7 @@
 using namespace std;
 //using std::random_shuffle;
 
-//general
+// General variables
 World* WORLDpointer;
 ofstream RUNSfile;
 ofstream TIMETOPATTERNfile;
@@ -44,10 +44,10 @@ int memINIT;
 char fname[200];
 float actinMax = 512;
 
-//Model alterations
+// Model alterations
 float intersoso;
 
-//GRN Signalling pathways
+// GRN Signalling pathways variables
 float delta = 2.0; //2.0f normal
 float sigma = 15;// 10.35f; //15 normal JTB setup
 float NotchNorm;
@@ -57,11 +57,7 @@ float VEGFR3NORM; //LC//
 float VEGFR2min;
 float VEGFR3min; //LC//
 
-//junctional offset simulations as in PLoS CB 2009
-int Junct_arrange = UNEQUAL_NEIGHS;
-float CellPosOffset;
-
-//ENVIRONMENT SETUP
+// ENVIRONMENT SETUP
 float VEGFconc = 0.8f; //for uniform VEGF above a vessel JTB 2008
 float horV = 0.04; //for NCB 2010 blind ended sprout radiating gradient
 float perpV = 0.04; //for NCB 2010 blind ended sprout radiating gradient
@@ -70,16 +66,16 @@ float HorCutOff = ECwidth*ECpack - (ECwidth / 2.0f); //for NCB 2010 blind ended 
 float VconcST = 0.04;
 float VconcSTMACRO = 0.15f; // Macrophage point source for PLoS CB 2009
 
-//rearrangement CPM module
+// Rearrangement CPM module
 CPM_module* diffAd;
 int MCS = 8000;
 float M1_neta = 200.0f; //M1 differential adhesion neta parameter value (used to be called NUMERATOR and set to double this amount in previous code) to determine diffferential adhesion , or =0 for  all weakly adhesive, =5000 for all strongly adhesive 
 float M2_lambda = 200.0f;
 
-//remove!
+//remove! //LC// wtf?
 bool MEM_LEAK_OCCURRING = false; //core removal
 
-//hysteresis related
+// Hysteresis related variables
 bool continue_hysteresis;
 float dll4_SIG = 7.0f;
 float FIL_VARY = 2;
@@ -95,6 +91,12 @@ long long seed = -1;
 mt19937 g;
 uniform_real_distribution<double> dist = uniform_real_distribution<double>(0, NEW_RAND_MAX);
 
+// Paper specific parameters - Junctional offset simulations as in PLoS CB 2009
+int Junct_arrange = UNEQUAL_NEIGHS;
+float CellPosOffset;
+
+//------------------------------------------------------------------------------
+//LC// maybe should stay
 //------------------------------------------------------------------------------
 //#define BAHTI_ANALYSIS true
 #if BAHTI_ANALYSIS
@@ -114,9 +116,15 @@ PYBIND11_MODULE(springAgent, m) {
             .def("getGridMapOfFilopodiaMovement", &World::getGridMapOfFilopodiaMovement, "returns 3d vector grid reflecting grid in simulation. The inner most vector contains an array of size 2. The first value in the array represents how many filopodia extensions into that grid site have occured on the current timestep. Second value represents the amount of retractions.");
 }
 #endif
-void readArgs(int argc, char * argv[]) {
+//---------------------------------------------------------------------------------
+//LC// Read arguments
+//---------------------------------------------------------------------------------
+void readArgs(int argc, char * argv[])
+{
     if (argc > 1)
+    {
         run_number = atoi(argv[1]);
+    }
     if (argc > 2)
     {
         EPSILON = atof(argv[2]);
@@ -128,58 +136,50 @@ void readArgs(int argc, char * argv[]) {
 		FIL_SPACING = atof(argv[8]);
         VType = atoi(argv[9]);
         intersoso = atof(argv[10]);
-        // intersoso2 = atof(argv[10])  /!\ changer les numéros de la suite (+1)
         if (argc > 10)
         {
             randFilExtend = atof(argv[11]);
             if (randFilExtend >= 0 && randFilExtend <= 1)
+            {
                 EPSILON = 0;
+            }
             RAND_FILRETRACT_CHANCE = atof(argv[12]);
             if (argc > 13)
+            {
                 seed = stoll(argv[13]);
+            }
         }
         VEGFconc = VconcST;
     }
 }
 
-void checkArgValues(int argc, char * argv[])
+
+//---------------------------------------------------------------------------------
+//LC// MAIN LOOP YOUHOU //LC//
+//---------------------------------------------------------------------------------
+int main(int argc, char * argv[])
 {
 
-}
-
-void print_exit( string message )
-{
-    cout << message;
-    exit(1);
-}
-
-int main(int argc, char * argv[]) {
-
-    //seeds all randomness in the simulation. set to 1 if testing against normal output so has "deterministic stochasticity"
-//    if (TESTING == true)
-//        srand(100);
-//    else
-//        srand(time(NULL));
-
-/*    if (ENV_SETUP == 6)
-        VconcST = 0.008;
-    if (ENV_SETUP == 1)
-        VconcST = 0.04;*/ //0.008 for blind ended sprout x axis increasing gradient//0.04 for JTB and PLoS Comp Biol vessel
-
+    // Read arguments and create statistics file
 	char statistics_file_buffer[500];
     readArgs(argc, argv);
 
-    if (ANALYSIS_HYSTERESIS) {
+    if (ANALYSIS_HYSTERESIS)
+    {
 		sprintf(statistics_file_buffer,
 				"statistics_hysteresis_filvary_%g_epsilon_%g_VconcST%g_GRADIENT%i_FILTIPMAX%g_tokenStrength%g_FILSPACING%i_randFilExtend%g_randFilRetract%g_seed%lld_run%i_.csv",
 				double(FIL_VARY), double(EPSILON), VconcST, GRADIENT, FILTIPMAX, tokenStrength, FIL_SPACING,
 				randFilExtend, RAND_FILRETRACT_CHANCE, seed, run_number);
-	} else if (ANALYSIS_TIME_TO_PATTERN) {
+	} 
+    else if (ANALYSIS_TIME_TO_PATTERN)
+    {
 		sprintf(statistics_file_buffer,
 				"statistics_time_to_pattern_filvary_%g_epsilon_%g_VconcST%g_GRADIENT%i_FILTIPMAX%g_tokenStrength%g_FILSPACING%i_randFilExtend%g_randFilRetract%g_seed%lld_run%i_.csv",
 				double(FIL_VARY), double(EPSILON), VconcST, GRADIENT, FILTIPMAX, tokenStrength, FIL_SPACING,
 				randFilExtend, RAND_FILRETRACT_CHANCE, seed, run_number);
-    } else {
+    }
+    else
+    {
 		sprintf(statistics_file_buffer,
 				"statistics_msm_filvary_%g_epsilon_%g_VconcST%g_GRADIENT%i_FILTIPMAX%g_tokenStrength%g_FILSPACING%i_randFilExtend%g_randFilRetract%g_seed%lld_run%i_.csv",
 				double(FIL_VARY), double(EPSILON), VconcST, GRADIENT, FILTIPMAX, tokenStrength, FIL_SPACING,
@@ -188,6 +188,7 @@ int main(int argc, char * argv[]) {
 
 	create_statistics_file(statistics_file_buffer);
 
+    // Initialise timestep, print in file and output simulation parameters in console
 	std::time_t start_time = get_current_time();
 	string start_time_string = format_time_string(start_time, true);
 	write_to_statistics_file(statistics_file_buffer, start_time_string);
@@ -196,7 +197,6 @@ int main(int argc, char * argv[]) {
     cout << "ECPACK: " << ECpack << endl;
     cout << "GRAPHICS: " << GRAPHICS << endl;
     cout << "bahti analysis: " << BAHTI_ANALYSIS << " @@ time to pattern analysis: " << ANALYSIS_TIME_TO_PATTERN << " @@  hysteresis analysis: " << ANALYSIS_HYSTERESIS << endl;
-    //TODO: read args and create world
     cout << "ECELLS: " << ECELLS << endl;
     cout << "Epsilon: " << EPSILON << endl;
     cout << "VconcST: " << VconcST << endl;
@@ -207,14 +207,12 @@ int main(int argc, char * argv[]) {
 	cout << "FIL_SPACING: " << FIL_SPACING << endl;
 	cout << "randFilExtension: " << randFilExtend << endl;
 	cout << "RAND_FILRETRACT_CHANCE: " << RAND_FILRETRACT_CHANCE<< endl;
-    //---------------------------------------------------------------
 
+    // Initialise output files names ans open files
     char outfilename[500];
     char tipamountfilename[500];
     char timetopatternfilename[500];
 
-    //TODO update these file names with variable vals
-    //do print statement as well
     if (ANALYSIS_HYSTERESIS) {
         cout << "running bistability analysis" << endl;
         sprintf(outfilename, "analysis_hysteresis_filvary_%g_epsilon_%g_VconcST%g_GRADIENT%i_FILTIPMAX%g_tokenStrength%g_FILSPACING%i_randFilExtend%g_randFilRetract%g_seed%lld_run%i.txt", double(FIL_VARY), double(EPSILON), VconcST, GRADIENT, FILTIPMAX, tokenStrength, FIL_SPACING, randFilExtend, RAND_FILRETRACT_CHANCE, seed, run_number);
@@ -238,24 +236,32 @@ int main(int argc, char * argv[]) {
     TIMETOPATTERNfile.open(timetopatternfilename, ios::app);
     TIPAMOUNTfile.open(tipamountfilename, ios::app);
 
+    // Create main world variable
     World* world = new World();
     WORLDpointer = world;
 	
+    //LC// what is it used for?? //LC//
     for (int i=0; i<16; ++i)
             new_rand();
     std::vector<int> testNumber = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
     new_random_shuffle(testNumber.begin(), testNumber.end());
+    //LC// what is it used for?? //LC//
 
+    // Create main CPM variable (may not be used in our simulations I think)
     diffAd = new CPM_module(world);
 
+    // Start graphics GUI if asked
 #if GRAPHICS
     //main display function - simulating the model is called within here
     displayGlui(&argc, argv);
     glutMainLoop();
 #else
+
+    // LAUNCH MAIN SIMULATION
     world->runSimulation();
 
-    //Get end time, and calculate elapsed time -> add these to results file.
+    // Write in output files
+    /// Get end time, and calculate elapsed time -> add these to results file.
 	std::time_t end_time = get_current_time();
 	std::cout << "End time: " << std::ctime(&end_time) << std::endl;
 
@@ -267,25 +273,42 @@ int main(int argc, char * argv[]) {
 	write_to_statistics_file(statistics_file_buffer, elapsed_time_string);
 
 #endif
+
+    // Close output files
     RUNSfile.close();
     TIMETOPATTERNfile.close();
     TIPAMOUNTfile.close();
 }
-//------------------------------------------------------------------------------------------
-//------------------------------------------------------------------------------------------
 
+
+//------------------------------------------------------------------------------------------
+//LC// Main function - launching the simulation
+//------------------------------------------------------------------------------------------
 void World::runSimulation()
 {
+    // Simulate timesteps until MAXtime
     while (timeStep <= MAXtime)
     {
-        if (timeStep % 50 == 0) cout << "timestep " << timeStep << ".. " << MAXtime - timeStep << " left" << endl;
+        // Print timestep in console every 50 timesteps
+        if (timeStep % 50 == 0)
+        {
+            cout << "timestep " << timeStep << ".. " << MAXtime - timeStep << " left" << endl;
+        }
+
+        // Simulate current timestep
         simulateTimestep();
 
+        // Run simulation analysis
         if (ANALYSIS_HYSTERESIS)
+        {
             hysteresisAnalysis();
+        }
         else if (ANALYSIS_TIME_TO_PATTERN)
+        {
             evaluateSandP();
+        }
 
+        // Memory issues
         if(MEM_LEAK_OCCURRING)
         {
             timeStep = MAXtime;
@@ -294,21 +317,31 @@ void World::runSimulation()
             MEM_LEAK_OCCURRING = false;
         }
 
+        // Go twice to next line in output file if we reached MAXtime
         if (timeStep == MAXtime)
+        {
             RUNSfile << endl << endl;
-//        if (timeStep ==3)
-//        {
-//            getGridSiteData();
-//        }
-//        printScores(RUNSfile, RUNSfile2, RUNSfile3);
+        }
+
+        /* //LC// MAY BE USED IN THE FUTURE //LC//
+        // Get gridsite data at specific timeStep
+        if (timeStep ==3)
+        {
+            getGridSiteData();
+        }
+        printScores(RUNSfile, RUNSfile2, RUNSfile3);
+        */ //LC// MAY BE USED IN THE FUTURE //LC//
     }
     cout << "end of run simulation" << endl;
 }
 
 void World::simulateTimestep()
 {
-    int movie = 0; //LC// Seems useless (will always be 0)
+    int movie = 0; //LC// Seems useless (will always be 0...?)
     timeStep++;
+
+    // Initialise everything at first timestep - simulate timestep otherwise
+    //LC// I agree with the following comments but let's keep it like that for now
     //TODO: maybe move this out of simulate timestep? bit misleading that its in here
     //could just call creation timestep func from here.. and have timesteps start from zero instead of -1
     if (timeStep == 0)
@@ -318,32 +351,42 @@ void World::simulateTimestep()
     }
     else
     {
-        //LC// What for?
+        // Clear extensions and retractions variables (??figure out why??)
         for (EC* ec : ECagents)
         {
             ec->filopodiaExtensions.clear();
             ec->filopodiaRetractions.clear();
         }
 
+        // Update each mem agent
         updateMemAgents();
-        //LC// What for? CPM?
-        if ( (timeStep > TIME_DIFFAD_STARTS) && REARRANGEMENT)
-            diffAd->run_CPM();
-        updateECagents();
-        updateEnvironment();
 
-        //movieMaking(movie);
+        // Run CPM if conditions met - //LC// should not happen in our simulations
+        if ( (timeStep > TIME_DIFFAD_STARTS) && REARRANGEMENT)
+        {
+            diffAd->run_CPM();
+        }
+
+        // Update each ec agent
+        updateECagents();
+
+        //LC// MOVIE MAKING HERE ??
         //movieMaking(movie);
     }
 }
 
 void World::creationTimestep(int movie)
 {
+    // Create macrophages if flag true - //LC// should not happen in our case
     if (MACROS > 0)
+    {
         createMacrophages();
+    }
 
+    // Create EC agents depending on setup - //LC// we are using CELL_SETUP==1 --> vessel
     /** create EC cells spring mesh and memAgents within continuous space **/
-    if ((CELL_SETUP == 2) || (CELL_SETUP == 1)) {
+    if ((CELL_SETUP == 2) || (CELL_SETUP == 1))
+    {
         //blind ended sprout (NCB and rearrangement)
         //vessel setup (JTB and PLoS)
         createECagents(Junct_arrange);
@@ -358,19 +401,22 @@ void World::creationTimestep(int movie)
         create_3D_round_cell();
     }
 
-    //now place agents onto gridded lattice
+    // Place agents onto gridded lattice
     for (int j = 0; j < (int) ECagents.size(); j++)
+    {
         ECagents[j]->gridAgents();
+    }
 
+    // Collect the initial number of mem agents and output the number in the console
     /** set the memInit value if needed for watching cell growth and tip cell quantification **/
     memINIT = ECagents[0]->nodeAgents.size()+ ECagents[0]->surfaceAgents.size();
     cout << "memInit" << memINIT << endl;
 
-    //create environment
+    // Create environment
     createEnvironment();
-
     cout <<"created environment"<<endl;
 
+    //LC// Seems unused - confirm when testing CELL_SETUP==2 ?
     ///TODO: ask kate if this still needs to be in here?
     if (CELL_SETUP == 2) {
         /*if (BLINDENDED_SPROUT == true) {
@@ -394,37 +440,60 @@ void World::creationTimestep(int movie)
     }
 
     if (ASTRO == RETINA)
+    {
         create_astro_retina_section();
+    }
     else if (ASTRO != NONE)
+    {
         createAstrocytes();
+    }
 
+    // Create blood inside the vessels (== label inside and set VEGF=0)
     createBlood(); //labels the interior of vessels but not otherwise involved
 
-    //give Env objects correct VEGF level depending on chosen gradients
+    // Set VEGF levels according to input parameters
+    /*give Env objects correct VEGF level depending on chosen gradients*/
     setInitialVEGF();
 
-    //divide out cells overall levels of proteins to their memAgents once created
+    // Split EC protein levels into its mem agents
+    /*divide out cells overall levels of proteins to their memAgents once created*/
     for (int j = 0; j < (int) ECagents.size(); j++)
+    {
         ECagents[j]->allocateProts();
+    }
 
-    //define exposed membrane agents as those with a face adjacent to env not vertex (von neu neighbours)
-    //only these are flagged to do receptor interactions (required to give matching behaviour when scaling grid)
+    // Define mem agents which to receptor activations
+    /*define exposed membrane agents as those with a face adjacent to env not vertex (von neu neighbours)
+    only these are flagged to do receptor interactions (required to give matching behaviour when scaling grid)*/
     label_env_exposed_von_neu_agents();
 
+    // Output total VEGF, and the number of env agents and gridded (?) mem agents (Note: flag always true)
     if (ANALYSIS_TOTALVEGF_TOTAL_MEMBRANE)
+    {
         calcEnvVEGFlevel();
+    }
 
-    ///TODO: sort this movie thing out to hopw it was before.. only used in graphics on, so maybe hav
-    /// separate setup func to this
+    //LC// CPM module set up - should not be used in our case 
+    ///on first timestep this sets up the CPM module
+    if (REARRANGEMENT)
+    {
+        diffAd->run_CPM();
+    }
+
+    // Output EC initial protein levels in console - always true
+    if (ANALYSIS_PROTLEVELS)
+    {
+        output_cell_protlevels(dataFile);
+    }
+
+    //LC// Still do not get this movie thin (:
+    /**
+     * TODO: sort this movie thing out to hopw it was before.. only used in graphics on, so maybe hav
+     * separate setup func to this
+    **/
     if (movie == 1) system(" mkdir /tmp/movie2; rm -vf /tmp/movie2/*");
 
-    //on first timestep this sets up the CPM module
-    if (REARRANGEMENT)
-        diffAd->run_CPM();
-
-    if (ANALYSIS_PROTLEVELS)
-        output_cell_protlevels(dataFile);
-
+    // Clean and (re-)create movie directory
     system("mkdir movie; rm -vf movie/*");
     cout << "Creation complete" << endl;
 }
