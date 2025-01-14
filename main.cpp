@@ -335,6 +335,12 @@ void World::runSimulation()
     cout << "end of run simulation" << endl;
 }
 
+//------------------------------------------------------------------------------------------
+//LC// Step simulation function (called once)
+// --> creationTimeStep()
+// --> updateMemAgents()
+// --> updateECagents()
+//------------------------------------------------------------------------------------------
 void World::simulateTimestep()
 {
     int movie = 0; //LC// Seems useless (will always be 0...?)
@@ -375,6 +381,9 @@ void World::simulateTimestep()
     }
 }
 
+//------------------------------------------------------------------------------------------
+//LC// FIRST step simulation function (called once, at first timestep)
+//------------------------------------------------------------------------------------------
 void World::creationTimestep(int movie)
 {
     // Create macrophages if flag true - //LC// should not happen in our case
@@ -498,6 +507,9 @@ void World::creationTimestep(int movie)
     cout << "Creation complete" << endl;
 }
 
+//------------------------------------------------------------------------------------------
+//LC// Hysteresis analysis (not our focus for now)
+//------------------------------------------------------------------------------------------
 void World::hysteresisAnalysis()
 {
     if (timeStep == 1)
@@ -512,18 +524,20 @@ void World::hysteresisAnalysis()
         RUNSfile<<endl<<endl;
      }
 }
-//-----------------------------------------------------------------------------------------------------------------------------------
 
+//------------------------------------------------------------------------------------------
+//LC// mem agents update (called at each timestep)
+//------------------------------------------------------------------------------------------
 /**
  * Asynchronously update all memAgents across all cells
  * 
  * Grow/retract filopodia and lamella veil advance
  * 
  * Activate receptors from local ligand levels
- */
-void World::updateMemAgents(void) {
-
-
+ **/
+void World::updateMemAgents(void)
+{
+    // Init local parameters
     int upto;
     int i, j;
 
@@ -535,67 +549,70 @@ void World::updateMemAgents(void) {
 
     bool deleted;
 
-
-
-    JunctionAgents.clear();
+    //--------------------------------------------------------------------------------------------
+    // Reset agents and count again
+    JunctionAgents.clear(); //used where?
     ALLmemAgents.clear();
-    //set all agents lists to then pick current memAgent for update from---------------------------------------------------------------------------------------------------------------------------------------------------------
-    for (i = 0; i < uptoE; i++) {
-
+    /// Loop over all EC agent and store each mem agent in ALLmemAgents
+    for (i = 0; i < uptoE; i++)
+    {
+        // 
         uptoN = ECagents[i]->nodeAgents.size();
         uptoS = ECagents[i]->springAgents.size();
         uptoSu = ECagents[i]->surfaceAgents.size();
-
+        // Update ALLmemagents
         for (j = 0; j < uptoN; j++) ALLmemAgents.push_back(ECagents[i]->nodeAgents[j]);
         for (j = 0; j < uptoS; j++) ALLmemAgents.push_back(ECagents[i]->springAgents[j]);
         for (j = 0; j < uptoSu; j++) ALLmemAgents.push_back(ECagents[i]->surfaceAgents[j]);
 
     }
+    /// Update the number of mem agents
     upto = ALLmemAgents.size();
-    //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    //------------------------------------------------------------------------------------------------------
 
-    //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-    //reorder agents randomly
-    //random_shuffle(ALLmemAgents.begin(), ALLmemAgents.end());
+    //------------------------------------------------------------------------------------------------------
+    // Reorder agents randomly
     new_random_shuffle(ALLmemAgents.begin(), ALLmemAgents.end());
-    //----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    //------------------------------------------------------------------------------------------------------
 
-    //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-    //pick one at a time and update its prot levels and try to extend/retract filopodia/lamellapodia.
-    for (i = 0; i < upto; i++) {
-
-
+    //------------------------------------------------------------------------------------------------------
+    // Loop over each mem agent: update its prot levels and try to extend/retract filopodia/lamellapodia
+    for (i = 0; i < upto; i++)
+    {
+        // Init temporary variables
         tipDeleteFlag = false;
 
         memp = ALLmemAgents[i];
         memp->assessed = true;
         memp->addedJunctionList = false;
 
-        //delete spring agents sitting along filopodia scheduled for deletion during previous fil retraction
+        // Delete spring agents sitting along filopodia scheduled for deletion during previous fil retraction
         deleted = delete_if_spring_agent_on_a_retracted_fil(memp);
 
-
-        if (deleted == false) {
-
-            //reset memAgents active Notch level ready for new binding
+        // Check for deletion -> only for non-deleted mem agents
+        if (deleted == false)
+        {
+            // Reset memAgents active Notch level -> ready for new binding
             memp->activeNotch = 0.0f;
-
+            
+            //LC// Maybe keep those options in case code is reused
             //this is needed to tell if triangle positions have changed
             //on the fly surface agent coverage code
-            if (on_the_fly_surface_agents == true) {
-                memp->store_previous_triangle_pos();
-            }
+            if (on_the_fly_surface_agents == true) memp->store_previous_triangle_pos();
 
-            memp->checkNeighs(false); //assess local Moore neighbourhood and store data (includes diagonal neighs)
+            // Assess local Moore neighbourhood and store data (includes diagonal neighs)
+            memp->checkNeighs(false);
 
-            memp->JunctionTest(true); //determine if agent is on a junctoin for junctional behaviours      
+            // Determine if agent is on a junction for junctional behaviours
+            memp->JunctionTest(true);
 
-            //if the memAgent resides at the tip of a filopodium (note TIP state of a memAgent is to do with filopodia not tip cells.)
-            if (memp->FIL == TIP) {
-
-                //randomChance = rand() / (float) RAND_MAX;
+            // If the memAgent resides at the tip of a filopodium: check for retraction
+            if (memp->FIL == TIP)
+            {
+                // Generate random prob/chance
                 randomChance = new_rand() / (float) NEW_RAND_MAX;
 
+                //LC// Maybe keep those options in case code is reused
                 //veil advance for cell migration------------------------
                 if (VEIL_ADVANCE == true) {
                     if ((memp->form_filopodia_contact() == true) || (randomChance < RAND_VEIL_ADVANCE_CHANCE)) {
@@ -606,70 +623,79 @@ void World::updateMemAgents(void) {
                     }
                 }
                 //------------------------------------
-                //retract fils if inactive------------
-                if ( ((RAND_FILRETRACT_CHANCE==-1)&&(memp->filTipTimer > FILTIPMAX)) || ((RAND_FILRETRACT_CHANCE>-1) &&(randomChance < RAND_FILRETRACT_CHANCE)) ) {
 
-
-                    if (memp->filRetract() == true) {
-
+                // Retract fils if inactive (MAYBE VERIFY THESE CONDITIONS -----------
+                if ( ((RAND_FILRETRACT_CHANCE==-1)&&(memp->filTipTimer > FILTIPMAX)) || ((RAND_FILRETRACT_CHANCE>-1)&&(randomChance < RAND_FILRETRACT_CHANCE)) )
+                {
+                    if (memp->filRetract() == true)
+                    {
                         tipDeleteFlag = true;
                         deleteOldGridRef(memp, true);
 
                         delete memp;
-
                     }
-                        //NEEDED TO CALC CURRENT ACTIN USAEAGE for limit on fil extension
-                    else {
+                        //NEEDED TO CALC CURRENT ACTIN USAEAGE for limit on fil extension //LC//??
+                    else
+                    {
                         memp->calcRetractDist();
                     }
                 }
-                //------------------------------------
+                //---------------------------------------------------------------------
             }
 
-            //if memAGent has not deleted in behaviours above, then update receptor activities and possibly extend a fil
-            if (tipDeleteFlag == false) {
+            // If mem agent not deleted: update receptor activities and check for extension of fil
+            if (tipDeleteFlag == false)
+            {
+                // Reset active dimers to 
+                memp->R2R2active = 0.0f;
+                memp->R2R3active = 0.0f;
+                memp->R3R3active = 0.0f;
 
-                //LC-R2R2// memp->VEGFRactive = 0.0f; //reset VEGFR2 activation level
-                memp->R2R2active = 0.0f; //LC-R2R2// VEGFRactive;
-                memp->R2R3active = 0.0f; //LC// !!
-                memp->R3R3active = 0.0f; //LC// !!
-
-                if ((ANALYSIS_HYSTERESIS == true)&&(memp->Cell != ECagents[0])&&(memp->Cell != ECagents[ECELLS - 1])) {
+                // Apply VEGFRreponse() //it seems that it's not applied in some cases when doing hysteresis simulation
+                if ((ANALYSIS_HYSTERESIS == true)&&(memp->Cell != ECagents[0])&&(memp->Cell != ECagents[ECELLS - 1]))
+                {
                     if (memp->vonNeu == true) memp->VEGFRresponse();
                 }
-                else if(ANALYSIS_HYSTERESIS == false){
-                    if (memp->vonNeu == true) memp->VEGFRresponse();   
-
+                else if(ANALYSIS_HYSTERESIS == false)
+                {
+                    if (memp->vonNeu == true) memp->VEGFRresponse();
                 }
 
+                // Apply NotchResponse() in junction agents
                 if (memp->junction == true) memp->NotchResponse();
 
+                // Apply TokenTrading()
                 ///pass actin to nearest nodes Agent if a surfaceAgent, or further towards tip nodeagent if in a filopodium; lose all if not active
-                if ((ANALYSIS_HYSTERESIS == true)&&(memp->Cell != ECagents[0])&&(memp->Cell != ECagents[ECELLS - 1])) {
+                if ((ANALYSIS_HYSTERESIS == true)&&(memp->Cell != ECagents[0])&&(memp->Cell != ECagents[ECELLS - 1]))
+                {
                     //memp->ActinFlow();
                     memp->TokenTrading();
                 }
-                else if(ANALYSIS_HYSTERESIS == false){
+                else if(ANALYSIS_HYSTERESIS == false)
+                {
                       //memp->ActinFlow();
                       memp->TokenTrading();
                 }
-
             }
 
         }
     }
 
     // the force of new memAgent movements made in functions above are conveyed through the springs following Hookes Law to move all memAgents within the mesh
-    if ((ANALYSIS_HYSTERESIS == true)&&(memp->Cell != ECagents[0])&&(memp->Cell != ECagents[ECELLS - 1])) {
+    if ((ANALYSIS_HYSTERESIS == true)&&(memp->Cell != ECagents[0])&&(memp->Cell != ECagents[ECELLS - 1]))
+    {
         calculateSpringAdjustments();
     }
-    else if(ANALYSIS_HYSTERESIS == false){
+    else if(ANALYSIS_HYSTERESIS == false)
+    {
         calculateSpringAdjustments();
     }
 
 }
-//-------------------------------------------------------------------------------
 
+//------------------------------------------------------------------------------------------
+//LC// EC agents update (called at each timestep)
+//------------------------------------------------------------------------------------------
 /**
  * synchronously update all cell agents after memAgents have updated
  * 
@@ -678,105 +704,103 @@ void World::updateMemAgents(void) {
  * Calculate GRN new gene expression 
  * 
  * Re-allocate out new levels to memAgents
- */
-void World::updateECagents(void) {
-
+ **/
+void World::updateECagents(void)
+{
+    // Init local parameters
     int i, j;
     int upto = ECagents.size();
 
+    // Loop over each EC agent: apply protein and actin updates
+    for (j = 0; j < upto; j++)
+    {
+        if (ANALYSIS_COMS == true) ECagents[j]->store_cell_COM(); //to see cell movement, monitor its centre of mass
 
-    for (j = 0; j < upto; j++) {
-//cout<<ECagents[j]->activeVEGFRtot<<" "<<ECagents[j]->VEGFR2tot<<"\t"<<ECagents[j]->actinUsed<<endl;
-        if (ANALYSIS_COMS == true)
-            ECagents[j]->store_cell_COM(); //to see cell movement, monitor its centre of mass
-
-
+        // Update actin used after mem agent updates
         ECagents[j]->calcCurrentActinUsed(); //determine overall actin level after filopodia dynamics in memAgent update
 
+        // Update protein values after mem agent updates (+ d)
         ECagents[j]->updateProteinTotals(); //total up the memAgents new active receptor levels, add to time delay stacks 
 
+        // Apply GRN rules on updates protein values
         ECagents[j]->GRN(); //use the time delayed active receptor levels (time to get to get to nucleus+transcription) to calculate gene expression changes
 
+        // Deal with spring integrity etc (keep it like that)
         ECagents[j]->newNodes(); //add new nodes or delete them if springs size is too long/too short (as filopodia have nodes and adhesions along them at 2 micron intervals
 
     }
 
-//cout<<endl;
-    for (j = 0; j < (int) ECagents.size(); j++) {
-
-
+    // Loop over each EC agent: update spring agents
+    for (j = 0; j < (int) ECagents.size(); j++)
+    {
         // clear all spring agents from previous time step - all springs have been adjusted so need new arrangement of spring agents
         ECagents[j]->removeSpringAgents();
 
     }
 
-
-    for (j = 0; j < (int) ECagents.size(); j++) {
-
+    // Loop over each EC agent: update grid agents (?)
+    for (j = 0; j < (int) ECagents.size(); j++)
+    {
         //voxellise new spring and surface positions of mesh
         ECagents[j]->gridAgents();
 
+        //LC// Maybe keep those options in case code is reused
         //faster way to do it for debugging versions, but not correct to use in main simulations!!!
         if (on_the_fly_surface_agents == true) ECagents[j]->remove_DoubledUp_SurfaceAgents();
-
     }
 
-
+    // Loop over each EC agent: allocate proteins to mem agents
     for (j = 0; j < (int) ECagents.size(); j++) {
-
         //distribute back out the new VR-2 and Dll4 and Notch levels to voxelised memAgents across the whole new cell surface.
         ECagents[j]->allocateProts();
 
+        //LC// Maybe keep those options in case code is reused
         //use analysis method in JTB paper to obtain tip cell numbers, stability of S&P pattern etc. requird 1 cell per cross section in vessel (PLos/JTB cell setup)
-        if (ANALYSIS_JTB_SP_PATTERN == true)
-            ECagents[j]->calcStability();
-
-
-
+        if (ANALYSIS_JTB_SP_PATTERN == true) ECagents[j]->calcStability();
     }
-
 }
 
 
-//--------------------------------------------------------------------------------
-
+//------------------------------------------------------------------------------------------
+//LC// Calculate spring forces and move memAgents in the mesh (called at each timestep in updateMemAgent())
+//------------------------------------------------------------------------------------------
 /**
  * Calculate spring forces and move memAgents in the mesh
  * 
  * Goes asynchronously currently in the same order through all memAgents in the cells. could randomise in future.
- */
-void World::calculateSpringAdjustments(void) {
-
-
+ **/
+void World::calculateSpringAdjustments(void)
+{
+    // Init local variables
     int i, j, upto, uptoE;
     uptoE = ECagents.size();
     MemAgent* memp;
 
-
-    for (j = 0; j < uptoE; j++) {
-
-        upto = ECagents[j]->nodeAgents.size();
-
-        for (i = 0; i < upto; i++) {
-
+    // Loop over each EC: update mem agents nodes
+    for (j = 0; j < uptoE; j++)
+    {
+        upto = ECagents[j]->nodeAgents.size(); //number of mem agents in cell
+        // Loop over each mem agent: update mem agents nodes
+        for (i = 0; i < upto; i++)
+        {
             memp = ECagents[j]->nodeAgents[i];
 
-
-            if (memp->FA != true) {
-                memp->calcForce();
-            }
+            if (memp->FA != true) memp->calcForce();
         }
     }
-
 }
-//------------------------------------------------------------------------------------------------------------------------------
 
+
+//------------------------------------------------------------------------------------------
+//LC// Boom explosion
+//------------------------------------------------------------------------------------------
 /**
  * delete all agents and data stored if running multiple runs on a cluster (called in destructor) avoids memory leaks :)
  * 
- */
-void World::destroyWorld(void) {
-
+ **/
+void World::destroyWorld(void)
+{
+    // Init local variables
     EC* ec;
     MemAgent* mp;
     Filopodia* fp;
@@ -785,40 +809,59 @@ void World::destroyWorld(void) {
     Macrophage* map;
     int i, j, k;
 
-    for (i = 0; i < xMAX; i++) {
-        for (j = 0; j < yMAX; j++) {
-            for (k = 0; k < zMAX; k++) {
-                if (grid[i][j][k].type == E) {
-                    if (grid[i][j][k].Eid != NULL)
-                        delete grid[i][j][k].Eid;
+    // Loop over the whole grid (x, y, z)
+    for (i = 0; i < xMAX; i++)
+    {
+        for (j = 0; j < yMAX; j++)
+        {
+            for (k = 0; k < zMAX; k++)
+            {
+                if (grid[i][j][k].type == E)
+                {
+                    if (grid[i][j][k].Eid != NULL) delete grid[i][j][k].Eid;
                 }
             }
         }
     }
-    while (!ECagents.empty()) {
 
+    // Loop over EC agents until there are not any left
+    while (!ECagents.empty())
+    {
         ec = ECagents.back();
-        while (!ec->nodeAgents.empty()) {
+
+        // Loop over EC's mem agents (node) until there are not any left
+        while (!ec->nodeAgents.empty()) 
+        {
             mp = ec->nodeAgents.back();
             ec->nodeAgents.pop_back();
 
             delete mp;
         }
-        while (!ec->springAgents.empty()) {
+
+        // Loop over EC's mem agents (spring) until there are not any left
+        while (!ec->springAgents.empty())
+        {
             mp = ec->springAgents.back();
             ec->springAgents.pop_back();
             delete mp;
         }
-        while (!ec->surfaceAgents.empty()) {
+
+        // Loop over EC's mem agents (surface) until there are not any left
+        while (!ec->surfaceAgents.empty())
+        {
             mp = ec->surfaceAgents.back();
             ec->surfaceAgents.pop_back();
             delete mp;
         }
+
+        // Loop over EC's spring (?) until there are not any left
         while (!ec->Springs.empty()) {
             sp = ec->Springs.back();
             ec->Springs.pop_back();
             delete sp;
         }
+
+        // Remove EC agent from list
         ECagents.pop_back();
         delete ec;
     }
@@ -844,10 +887,11 @@ void World::destroyWorld(void) {
     }
 
 }
-//------------------------------------------------------------------------------------------------------------------------------
-//------------------------------------------------------------------------------------------------------------------------------
-//---------------------------------------------------------------------------------------------------------
 
+
+//------------------------------------------------------------------------------------------
+//LC// Make movie from screenshots
+//------------------------------------------------------------------------------------------
 /**
  * 
  * @param movie
@@ -855,21 +899,24 @@ void World::destroyWorld(void) {
  * Save tiff frames and make movie using imageMagick
  * 
  * !function needs updating! currently using imageMagick, but use something better
- */
-void World::movieMaking(int movie) {
+ **/
+void World::movieMaking(int movie)
+{
     //movie making
-    if (movie == 1)system("rm -vf movie/*");
-    if (movie == 2) {
+    if (movie == 1) system("rm -vf movie/*");
+    if (movie == 2)
+    {
         sprintf(fname, "movie/frame%05i.tga", timeStep);
         fprintf(stdout, "%s %i\n", fname, timeStep);
 
         //---------------------------
         //uncomment this function (defined in display.cpp) if you can get imageMAgick to run properly then this will actually save the tiff frames in order to make the movie from them
         //SaveFrame(fname);
-        //--------------------------
+        //---------------------------
 
     }
-    if (movie == 3) {
+    if (movie == 3)
+    {
         //576 x 620 - width must be divisible by 8 when using this imageMagick method!!
         system("cd movie ; /opt/local/bin/mencoder mf:// -mf w=800:h=800:fps=25:type=tga -ovc lavc -lavcopts vcodec=mpeg1video:keyint=25:vbitrate=3000:trell:mbd=2  -oac copy -o output.mpg");
         system(fname);
@@ -877,52 +924,63 @@ void World::movieMaking(int movie) {
 
     }
 }
-//---------------------------------------------------------------------------------------------------------
-//---------------------------------------------------------------------------------------------------------
 
+
+//------------------------------------------------------------------------------------------
+//LC// Scale protein levels to cell size (called once, at World creation)
+//------------------------------------------------------------------------------------------
 /**
  * Scale proteins for coarser grid - currently only 0.25 scaling of prots used (as surface area of cell reduced by this when grid changed from half micron cubes (3D grid site) to one micron cubes
- * 
- */
-void World::scale_ProtLevels_to_CellSize(void) {
+ **/
+void World::scale_ProtLevels_to_CellSize(void)
+{
+    // Init local variables
     float Scale;
 
-    if (CELL_SETUP == 1) {
+    if (CELL_SETUP == 1)
+    {
         Scale = 100.0f;
         actinMax = 512;
-    } else if ((ECcross == 2)&&(ECwidth == 20) && (vesselRadius == 6)) Scale = 48.6f;
-    else {
+    } 
+    else if ((ECcross == 2)&&(ECwidth == 20) && (vesselRadius == 6)) Scale = 48.6f;
+    else
+    {
         Scale = 25;
         actinMax = 128;
     }
 
-
+    // DEFINE INITIAL NUMBER OF PROTEINS (+ limits)
     //half the number of receptors for two cells per vessel cross section - actually 48% as this is the exact ratio of memAgents when two cell.
-    if (ECcross == 2) {
+    if (ECcross == 2)
+    {
         NotchNorm = (10000.0f / 100.0f) * Scale;
 
         MAX_dll4 = (10000.0f / 100.0f) * Scale;
         //LC// multiply by 2 for dimerization so that R2R2 gives the same result as VEGFR2 alone in previous version of code
         VEGFR2NORM = (2 * 31714.0f / 100.0f) * Scale; //total of receptors it will maintain if all else is equal - divides out to M agents
-        VEGFR3NORM = (2 * 31714.0f / 100.0f) * Scale; //LC//
+        VEGFR3NORM = (2 * 31714.0f / 100.0f) * Scale;
         //LC// multiply by 2 for dimerization so that R2R2 gives the same result as VEGFR2 alone in previous version of code
         VEGFR2min = (2 * 689.0f / 100.0f) * Scale;
-        VEGFR3min = (2 * 689.0f / 100.0f) * Scale; //LC//
-    } else {
+        VEGFR3min = (2 * 689.0f / 100.0f) * Scale;
+    }
+    else
+    {
         NotchNorm = 10000.0f;
 
         MAX_dll4 = 10000.0f;
         //LC// multiply by 2 for dimerization so that R2R2 gives the same result as VEGFR2 alone in previous version of code
         VEGFR2NORM = 2 * 31714.0f; //scaled to fit with first model - so each memagent has same number of recs - new arrangment means diff number of initial memagents
-        VEGFR3NORM = 2 * 31714.0f; //LC//
+        VEGFR3NORM = 2 * 31714.0f;
         //LC// multiply by 2 for dimerization so that R2R2 gives the same result as VEGFR2 alone in previous version of code
         VEGFR2min = 2 * 689.0f;
-        VEGFR3min = 2 * 689.0f; //LC//
+        VEGFR3min = 2 * 689.0f;
     }
 }
-//---------------------------------------------------------------------------------------------------------
-//---------------------------------------------------------------------------------------------------------
 
+
+//------------------------------------------------------------------------------------------
+//LC// Tell if spring agent will delete or not (called at every timestep, for each mem agent)
+//------------------------------------------------------------------------------------------
 /**
  * 
  * @param memp
@@ -932,40 +990,47 @@ void World::scale_ProtLevels_to_CellSize(void) {
  * 
  * this function actually deletes them from memory
  */
-bool World::delete_if_spring_agent_on_a_retracted_fil(MemAgent* memp) {
-
+bool World::delete_if_spring_agent_on_a_retracted_fil(MemAgent* memp) 
+{
+    // Init local variables
     int k = 0;
     int flag = 0;
     bool deleted = false;
     vector<MemAgent*>::iterator L;
 
-    if ((memp->node == false) && (memp->deleteFlag == true)) {
-
+    if ((memp->node == false) && (memp->deleteFlag == true))
+    {
         deleted = true;
         //remove the tip node from cells list
         k = 0;
         flag = 0;
-        do {
-
-            if (memp->Cell->springAgents[k] == memp) {
+        do
+        {
+            if (memp->Cell->springAgents[k] == memp)
+            {
                 flag = 1;
                 L = memp->Cell->springAgents.begin();
                 memp->Cell->springAgents.erase(L + k);
             }
             k++;
         } while ((k < (int) memp->Cell->springAgents.size()) && (flag == 0));
-        if (flag == 0) {
+
+        if (flag == 0)
+        {
             cout << "deleting spring agent in main: hasnt found in list" << endl;
             cout.flush();
         }
         delete memp;
     }
-
     return (deleted);
 }
 
-void World::store_normals(void){
 
+//------------------------------------------------------------------------------------------
+//LC// ?? (seems to be called only when GRAPHICS==true)
+//------------------------------------------------------------------------------------------
+void World::store_normals(void)
+{
     Coordinates cross;
 
     //top face z+L for all do minus sign of this for z face
@@ -989,38 +1054,62 @@ void World::store_normals(void){
 
     store_cube_normals.push_back(cross);
 }
-//---------------------------------------------------------------------------------------------------------
-int new_rand() {
+
+
+//------------------------------------------------------------------------------------------
+//LC// Random number generator
+//------------------------------------------------------------------------------------------
+int new_rand()
+{
     return (int)dist(g);
 }
 
-void create_statistics_file(string statisticsFilename) {
+
+//------------------------------------------------------------------------------------------
+//LC// Create statistics file
+//------------------------------------------------------------------------------------------
+void create_statistics_file(string statisticsFilename)
+{
 	ofstream statisticsFile(statisticsFilename);
 	statisticsFile.close();
 }
 
-void write_to_statistics_file(string statisticsFilename, string line) {
+
+//------------------------------------------------------------------------------------------
+//LC// Write in statistics file
+//------------------------------------------------------------------------------------------
+void write_to_statistics_file(string statisticsFilename, string line)
+{
 	ofstream statisticsFile;
 	statisticsFile.open(statisticsFilename, std::ios_base::app);
-	if (statisticsFile.is_open()) {
-		statisticsFile << line;
-	}
+	if (statisticsFile.is_open()) statisticsFile << line;
 	statisticsFile.close();
 }
 
+
+//------------------------------------------------------------------------------------------
+//LC// Get current time when starting and finishing simulation
+//------------------------------------------------------------------------------------------
 std::time_t get_current_time() {
 	auto time = std::chrono::system_clock::now();
 	std::time_t current_time = std::chrono::system_clock::to_time_t(time);
 	return current_time;
 }
 
+
+//------------------------------------------------------------------------------------------
+//LC// Associate string to time (start or end)
+//------------------------------------------------------------------------------------------
 std::string format_time_string(std::time_t time, bool start) {
 	// N.B. Function should be called at start and end of simulation only, for logging purposes.
 	string time_entry, time_string;
 
-	if (start) {
+	if (start)
+    {
 		time_entry = "Start time,";
-	} else {
+	}
+    else
+    {
 		time_entry = "End time,";
 	}
 
