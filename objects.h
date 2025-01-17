@@ -603,13 +603,13 @@ public:
 
     void allocateProts(void);
     void updateProteinTotals(void);
-    void updateMembraneProteins(void);
+    void updateMembraneProteins(void);  //LC// looks undefined (:
     void GRN(void);
     void NotchDelay(void);
     void VEGFRDelay(void);
-    void calcActNotCurrent(void);
-    void updateActVEGFRArray(void);
-    void updateVEGFRLastsArray(void);
+    void calcActNotCurrent(void);  //LC// looks undefined (:
+    void updateActVEGFRArray(void);  //LC// looks undefined (:
+    void updateVEGFRLastsArray(void);  //LC// looks undefined (:
 
     ///rearrangement
     int ideal_Cell_area;

@@ -624,103 +624,93 @@ bool MemAgent::checkNeighsVonForEnv(void) {
    
 
 }
-//-----------------------------------
-//------------------------------------------------------------------------------
-/**
- * 
- * main VEGFR2 activation function (applies VEGFR2-1 as a simple sink parameter taking away VEGF from VEGFR2-2
- */
-void MemAgent::VEGFRresponse(void) {
 
+
+//------------------------------------------------------------------------------------------
+//LC// VEGFRs response to ligands (called at each timestep, for each mem agent)
+//------------------------------------------------------------------------------------------
+/**
+ * main VEGFR activation function
+ * Note: applies VEGFR-1 as a simple sink parameter taking away VEGF from the different dimers
+ **/
+void MemAgent::VEGFRresponse(void)
+{
+    // Init local variables
     float Prob, chance;
 
     int upto = Cell->VonNeighs;
-    //LC// float VEGFRactiveProp;
-    float R2R2activeProp; //LC//
-    float R2R3activeProp; //LC//
-    float R3R3activeProp; //LC//
     int i, j, k;
     i = (int) Mx;
     j = (int) My;
     k = (int) Mz;
     bool moved = false;
 
-    //LC// To be adapted to account for sink 
+    /// Init dimers variables and dimerization proportions
+    float R2R2activeProp;
+    float R2R3activeProp;
+    float R3R3activeProp;
     R2toR2R2 = 1.0;
     R2toR2R3 = 1 - R2toR2R2;
     R3toR3R3 = 1.0;
     R3toR2R3 = 1 - R3toR3R3;
    
-    // Build dimers
+    // Build dimers from VEGFR2 and VEGFR3
     R2R2 = (R2toR2R2 * VEGFR2) / 2;
     R2R3 = min(R2toR2R3*VEGFR2, R3toR2R3*VEGFR3);
     R3R3 = (R3toR3R3 * VEGFR3) / 2;
 
-    //calculate the active VEGFR2 level as a function of VEGFR2-2, VEGFR1 level and vEGF.. 
-    //LC// --to be removed VEGFRactiveProp = (VEGFR2 / ((float) VEGFR2NORM / (float) upto));
-    //LC// --to be removed VEGFRactive = (SumVEGF / Cell->Vsink) * VEGFRactiveProp;
-
+    // Compute active dimers levels as a function of the dimers, VEGFR1 and "VEGF"
+    /// R2R2
     float maxR2R2 = VEGFR2NORM/2;
     R2R2activeProp = (R2R2 / ((float) maxR2R2 / (float) upto));
     R2R2active = (SumVEGF / Cell->Vsink) * affR2R2 * R2R2activeProp;
-
+    /// Ensure that active amount does not overcome the available amount of dimers
+    if (R2R2active > R2R2) R2R2active = R2R2;
+    /// R2R3
     float maxR2R3 = min(VEGFR2NORM, VEGFR3NORM);
     R2R3activeProp = (R2R3 / ((float) maxR2R3 / (float) upto));
     R2R3active = (SumVEGF / Cell->Vsink) * affR2R3 * R2R3activeProp;
-
+    /// Ensure that active amount does not overcome the available amount of dimers
+    if (R2R3active > R2R3) R2R3active = R2R3;
+    // R3R3
     float maxR3R3 = VEGFR3NORM/2;
     R3R3activeProp = (R3R3 / ((float) maxR3R3 / (float) upto));
     R3R3active = (SumVEGF / Cell->Vsink) * affR3R3 * R3R3activeProp;
+    /// Ensure that active amount does not overcome the available amount of dimers
+    if (R3R3active > R3R3) R3R3active = R3R3;
 
-    //done exceed max level //LC// --to be removed 
-    //LC//if (VEGFRactive > VEGFR2) {
-        
-    //LC//    VEGFRactive = VEGFR2;
-    //LC//}
-
-    //LC//
-    if (R2R2active > R2R2) {
-        
-        R2R2active = R2R2;
+    // Compute probability of extending a filopodium as a function of VEGFR2 activity, if no filopodia needed set to 0
+    if (FILOPODIA == true)
+    {
+        if(randFilExtend >= 0 && randFilExtend <= 1)
+        {
+            Prob = randFilExtend; //0-1 continuous value input at runtime. if randFil!=-1 - token Strength forced to 0, and epsilon forced to 0.0 (fully random direction and extension, no bias from VR->actin or VR gradient to direction.
+        }
+        else
+        {
+            Prob = ((float) R2R2active / ((float) maxR2R2 / (float) upto)) * Cell->filCONST;
+            //LC - TEST R3// Prob = ((float) R3R3active / ((float) maxR3R3 / (float) upto)) * Cell->filCONST; //LC - TEST R3//
+        }
     }
-    if (R2R3active > R2R3) {
-        
-        R2R3active = R2R3;
-    }
-    if (R3R3active > R3R3) {
-        
-        R3R3active = R3R3;
-    }
-
-    //calculate probability of extending a filopdium as a function of VEGFR2 activity, if no filopodia needed set to 0
-    if (FILOPODIA == true){
-    //***** RANDFIL here
-    if(randFilExtend >= 0 && randFilExtend <= 1)
-      Prob = randFilExtend; //0-1 continuous value input at runtime. if randFil!=-1 - token Strength forced to 0, and epsilon forced to 0.0 (fully random direction and extension, no bias from VR->actin or VR gradient to direction.
     else
-      //LC// --to be removed Prob = ((float) VEGFRactive / ((float) Cell->VEGFR2norm / (float) upto)) * Cell->filCONST;
-      Prob = ((float) R2R2active / ((float) maxR2R2 / (float) upto)) * Cell->filCONST;
-      // LC test// Prob = ((float) R3R3active / ((float) maxR3R3 / (float) upto)) * Cell->filCONST;  //TEST R3//
-        //else Prob = ((float) VEGFRactive / (((float) VEGFR2norm/2.0f) / (float) upto)) * Cell->filCONST;
+    {
+        Prob = 0;
     }
-    else Prob = 0;
 
-   
-    //chance = (float) rand() / (float) RAND_MAX;
+    // Compute random chance to extend and compare to the probability
     chance = (float) new_rand() / (float) NEW_RAND_MAX;
-
-    //-----------------------------------------------------------------------
-    if (chance < Prob) {
-    
-        //award actin tokens
-
+    if (chance < Prob)
+    {
+        // Award actin tokens
         filTokens++;
 
-        
         if (FIL == NONE) tryActinPassRadiusN((int) Mx, (int) My, (int) Mz, FIL_SPACING);
 
-        if (oldVersion == true) {
-            if (FIL == STALK) {
+        // OLD WAY OF DOING
+        if (oldVersion == true)
+        {
+            if (FIL == STALK)
+            {
                 //passes its filExtend token to Magent in its plusSite
                 plusSite->filTokens++;
                 filTokens--;
@@ -729,20 +719,30 @@ void MemAgent::VEGFRresponse(void) {
 
         //--------------------------------------------------------------------------------------------
         //filopodia extension
-        if (((FIL == TIP) || (FIL == NONE)) && (filTokens >= tokenStrength)) {
+        if (((FIL == TIP) || (FIL == NONE)) && (filTokens >= tokenStrength))
+        {
             if (deleteFlag == false) moved = extendFil();
         }
         //--------------------------------------------------------------------------------------------
 
         //reset VRinactive counter as now activated
         VRinactiveCounter = 0;
+    }
+    else
+    {
+        // Increase inactive counter
+        VRinactiveCounter++;
+    }
 
-    } else VRinactiveCounter++;
-
-    if (moved == false) filTipTimer++;
-    else filTipTimer = 0;
-
-
+    // Update timer if not extended
+    if (moved == false) 
+    {
+        filTipTimer++;
+    }
+    else
+    {
+        filTipTimer = 0;
+    }
 }
 //----------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------
@@ -1077,10 +1077,14 @@ void World::store_new_fusion_events(EC* cell1, EC* cell2) {//store which cells h
     }
 
 }
-//----------------------------------------------------------------------------------------------------------------
-//-----------------------------------------------------------------------------------------------------------------------
 
-void MemAgent::JunctionTest( bool StoreInJunctionList) {
+
+//------------------------------------------------------------------------------------------
+//LC// Determine if an agent is a junction
+//------------------------------------------------------------------------------------------
+void MemAgent::JunctionTest( bool StoreInJunctionList)
+{
+    // Init local variables
     int x, m, n, p, y, S, z, a, b, c;
     int i, j, k;
     int flagA = 0;
@@ -1097,130 +1101,177 @@ void MemAgent::JunctionTest( bool StoreInJunctionList) {
 
     bool previousJunction = junction;
 
-
     i = (int) Mx;
     j = (int) My;
     k = (int) Mz;
-    //cout<<this<<endl;
-    
 
-
-    if ((FIL == NONE) || (FIL == BASE)) {
+    if ((FIL == NONE) || (FIL == BASE))
+    {
         //same layer
-        for (x = 0; x < 27; x++) {
-
-            if (x == 0) {
+        for (x = 0; x < 27; x++)
+        {
+            if (x == 0)
+            {
                 m = i + 1;
                 n = j - 1;
                 p = k;
-            } else if (x == 1) {
+            }
+            else if (x == 1)
+            {
                 m = i + 1;
                 n = j;
                 p = k;
-            } else if (x == 2) {
+            }
+            else if (x == 2)
+            {
                 m = i + 1;
                 n = j + 1;
                 p = k;
-            } else if (x == 3) {
+            }
+            else if (x == 3)
+            {
                 m = i;
                 n = j - 1;
                 p = k;
-            } else if (x == 4) {
+            }
+            else if (x == 4)
+            {
                 m = i;
                 n = j + 1;
                 p = k;
-            } else if (x == 5) {
+            }
+            else if (x == 5)
+            {
                 m = i - 1;
                 n = j - 1;
                 p = k;
-            } else if (x == 6) {
+            }
+            else if (x == 6)
+            {
                 m = i - 1;
                 n = j;
                 p = k;
-            } else if (x == 7) {
+            }
+            else if (x == 7)
+            {
                 m = i - 1;
                 n = j + 1;
                 p = k;
-            }                //layer below
-            else if (x == 8) {
+            }
+            else if (x == 8)
+            {
                 m = i + 1;
                 n = j - 1;
                 p = k - 1;
-            } else if (x == 9) {
+            }
+            else if (x == 9)
+            {
                 m = i + 1;
                 n = j;
                 p = k - 1;
-            } else if (x == 10) {
+            }
+            else if (x == 10)
+            {
                 m = i + 1;
                 n = j + 1;
                 p = k - 1;
-            } else if (x == 11) {
+            }
+            else if (x == 11)
+            {
                 m = i;
                 n = j - 1;
                 p = k - 1;
-            } else if (x == 12) {
+            }
+            else if (x == 12)
+            {
                 m = i;
                 n = j + 1;
                 p = k - 1;
-            } else if (x == 13) {
+            }
+            else if (x == 13)
+            {
                 m = i - 1;
                 n = j - 1;
                 p = k - 1;
-            } else if (x == 14) {
+            }
+            else if (x == 14)
+            {
                 m = i - 1;
                 n = j;
                 p = k - 1;
-            } else if (x == 15) {
+            }
+            else if (x == 15)
+            {
                 m = i - 1;
                 n = j + 1;
                 p = k - 1;
-            } else if (x == 16) {
+            }
+            else if (x == 16)
+            {
                 m = i;
                 n = j;
                 p = k - 1;
-            }                //layer above
-            else if (x == 17) {
+            }
+            else if (x == 17)
+            {
                 m = i + 1;
                 n = j - 1;
                 p = k + 1;
-            } else if (x == 18) {
+            }
+            else if (x == 18)
+            {
                 m = i + 1;
                 n = j;
                 p = k + 1;
-            } else if (x == 19) {
+            }
+            else if (x == 19)
+            {
                 m = i + 1;
                 n = j + 1;
                 p = k + 1;
-            } else if (x == 20) {
+            }
+            else if (x == 20)
+            {
                 m = i;
                 n = j - 1;
                 p = k + 1;
-            } else if (x == 21) {
+            }
+            else if (x == 21)
+            {
                 m = i;
                 n = j + 1;
                 p = k + 1;
-            } else if (x == 22) {
+            }
+            else if (x == 22)
+            {
                 m = i - 1;
                 n = j - 1;
                 p = k + 1;
-            } else if (x == 23) {
+            }
+            else if (x == 23)
+            {
                 m = i - 1;
                 n = j;
                 p = k + 1;
-            } else if (x == 24) {
+            }
+            else if (x == 24)
+            {
                 m = i - 1;
                 n = j + 1;
                 p = k + 1;
-            } else if (x == 25) {
+            }
+            else if (x == 25)
+            {
                 m = i;
                 n = j;
                 p = k;
-            } else {
+            }
+            else
+            {
                 m = i;
                 n = j;
                 p = k + 1;
             }
-
 
             //-------------------------------
             //toroidal only X
@@ -1228,67 +1279,52 @@ void MemAgent::JunctionTest( bool StoreInJunctionList) {
             if (m < 0) m = xMAX - 1;
             if (n >= yMAX) n = 0;
             if (n < 0) n = yMAX - 1;
-
             //-------------------------------
 
-            if (worldP->insideWorld(m, n, p) == true) {
-                if (worldP->grid[m][n][p].type == M) {
-                    for (y = 0; y < (int) worldP->grid[m][n][p].Mids.size(); y++) {
-
-
-                        if ((worldP->grid[m][n][p].Mids[y]->Cell != Cell) && (worldP->grid[m][n][p].Mids[y]->FIL != STALK) && (worldP->grid[m][n][p].Mids[y]->FIL != TIP)) {
-
+            if (worldP->insideWorld(m, n, p) == true)
+            {
+                if (worldP->grid[m][n][p].type == M)
+                {
+                    for (y = 0; y < (int) worldP->grid[m][n][p].Mids.size(); y++)
+                    {
+                        if ((worldP->grid[m][n][p].Mids[y]->Cell != Cell) && (worldP->grid[m][n][p].Mids[y]->FIL != STALK) && (worldP->grid[m][n][p].Mids[y]->FIL != TIP))
+                        {
                             junction = true;
                             flagA = 1;
                             worldP->grid[m][n][p].Mids[y]->junction = true;
 
+                            if (worldP->timeStep == 0) {}
 
-
-                            if (worldP->timeStep == 0) {
-
-                            }
-
-                            if (worldP->timeStep > 0) {
-
+                            if (worldP->timeStep > 0)
+                            {
                                 //-------------------------------------------------------------------------------------------------------------
                                 //Anastamosis: create new spring junction to allow fusion, only on two tip cells
-                                if(StoreInJunctionList!=true){
-                                    if(ANASTOMOSIS==true)
-                                anastomosis(worldP->grid[m][n][p].Mids[y]);
+                                if(StoreInJunctionList!=true)
+                                {
+                                    if(ANASTOMOSIS==true) anastomosis(worldP->grid[m][n][p].Mids[y]);
                                 }
                                 //-------------------------------------------------------------------------------------------------------------
-                             
-
                             }
-
                         }
-
                     }
                 }
-
             }
         }
-
-
-
-    
-
-
     }
 
-
-    
-
     if (flagA == 0) junction = false;
+
     //StoreInJunctionList=false;
-    if ((StoreInJunctionList == true) && (node == true) && (FIL == NONE)) {//&&(previousJunction!=junction)){
+    if ((StoreInJunctionList == true) && (node == true) && (FIL == NONE))
+    {//&&(previousJunction!=junction)){
         //vector<MemAgent*>::iterator L;
         //L = worldP->JunctionAgents.begin();
         //flag=0;
         //add to list
         //m=0;
         //if(worldP->JunctionAgents.size()>0){
-        if ((junction == true) && (addedJunctionList == false)) {
+        if ((junction == true) && (addedJunctionList == false))
+        {
             //  do{
             //      if(worldP->JunctionAgents[m]==this) flag=1;
             //      m++;
@@ -1315,15 +1351,9 @@ void MemAgent::JunctionTest( bool StoreInJunctionList) {
         }
     }*/
     }
-
-
     //-------------------------------------------------------------------------------------------------------------
-
-
-
 }
-//-------------------------------------------------------------------------------------------------------------------
-//-------------------------------------------------------------------------------------------------------------------
+
 
 void MemAgent::triggeredAnastSurge(MemAgent* junctionedAgent) {
 
@@ -1613,10 +1643,14 @@ bool MemAgent::extendFil(void) {
     return (ans);
 
 }
-//----------------------------------------------------------------------------------
-//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-void MemAgent::checkNeighs(bool called_fron_differentialAdhesion) {
+
+//------------------------------------------------------------------------------------------
+//LC// Assess local Moore neighbourhood and store data
+//------------------------------------------------------------------------------------------
+void MemAgent::checkNeighs(bool called_fron_differentialAdhesion)
+{
+    // Init local variables and clear previous neighbours variables
     int x, m, n, p, zed;
     int i, j, k, mleb;
     i = (int) Mx;
@@ -1624,7 +1658,6 @@ void MemAgent::checkNeighs(bool called_fron_differentialAdhesion) {
     k = (int) Mz;
     Env* Eagent;
     bool connected;
-
     MneighCount = 0;
 
     EnvNeighs.clear();
@@ -1637,110 +1670,160 @@ void MemAgent::checkNeighs(bool called_fron_differentialAdhesion) {
     //--------------
 
     //same layer
-    for (x = 0; x < 26; x++) {
-        if (x == 0) {
+    for (x = 0; x < 26; x++) 
+    {
+        if (x == 0)
+        {
             m = i + 1;
             n = j - 1;
             p = k;
-        } else if (x == 1) {
+        } 
+        else if (x == 1)
+        {
             m = i + 1;
             n = j;
             p = k;
-        } else if (x == 2) {
+        }
+        else if (x == 2)
+        {
             m = i + 1;
             n = j + 1;
             p = k;
-        } else if (x == 3) {
+        }
+        else if (x == 3)
+        {
             m = i;
             n = j - 1;
             p = k;
-        } else if (x == 4) {
+        }
+        else if (x == 4)
+        {
             m = i;
             n = j + 1;
             p = k;
-        } else if (x == 5) {
+        }
+        else if (x == 5)
+        {
             m = i - 1;
             n = j - 1;
             p = k;
-        } else if (x == 6) {
+        }
+        else if (x == 6)
+        {
             m = i - 1;
             n = j;
             p = k;
-        } else if (x == 7) {
+        }
+        else if (x == 7)
+        {
             m = i - 1;
             n = j + 1;
             p = k;
-        }            //layer below
-        else if (x == 8) {
+        }
+        else if (x == 8)
+        {
             m = i + 1;
             n = j - 1;
             p = k - 1;
-        } else if (x == 9) {
+        }
+        else if (x == 9)
+        {
             m = i + 1;
             n = j;
             p = k - 1;
-        } else if (x == 10) {
+        }
+        else if (x == 10)
+        {
             m = i + 1;
             n = j + 1;
             p = k - 1;
-        } else if (x == 11) {
+        }
+        else if (x == 11)
+        {
             m = i;
             n = j - 1;
             p = k - 1;
-        } else if (x == 12) {
+        }
+        else if (x == 12)
+        {
             m = i;
             n = j + 1;
             p = k - 1;
-        } else if (x == 13) {
+        }
+        else if (x == 13)
+        {
             m = i - 1;
             n = j - 1;
             p = k - 1;
-        } else if (x == 14) {
+        }
+        else if (x == 14)
+        {
             m = i - 1;
             n = j;
             p = k - 1;
-        } else if (x == 15) {
+        }
+        else if (x == 15)
+        {
             m = i - 1;
             n = j + 1;
             p = k - 1;
-        } else if (x == 16) {
+        }
+        else if (x == 16)
+        {
             m = i;
             n = j;
             p = k - 1;
-        }            //layer above
-        else if (x == 17) {
+        }
+        else if (x == 17)
+        {
             m = i + 1;
             n = j - 1;
             p = k + 1;
-        } else if (x == 18) {
+        }
+        else if (x == 18)
+        {
             m = i + 1;
             n = j;
             p = k + 1;
-        } else if (x == 19) {
+        }
+        else if (x == 19)
+        {
             m = i + 1;
             n = j + 1;
             p = k + 1;
-        } else if (x == 20) {
+        }
+        else if (x == 20)
+        {
             m = i;
             n = j - 1;
             p = k + 1;
-        } else if (x == 21) {
+        }
+        else if (x == 21)
+        {
             m = i;
             n = j + 1;
             p = k + 1;
-        } else if (x == 22) {
+        }
+        else if (x == 22)
+        {
             m = i - 1;
             n = j - 1;
             p = k + 1;
-        } else if (x == 23) {
+        }
+        else if (x == 23)
+        {
             m = i - 1;
             n = j;
             p = k + 1;
-        } else if (x == 24) {
+        }
+        else if (x == 24)
+        {
             m = i - 1;
             n = j + 1;
             p = k + 1;
-        } else {
+        }
+        else
+        {
             m = i;
             n = j;
             p = k + 1;
@@ -1749,30 +1832,32 @@ void MemAgent::checkNeighs(bool called_fron_differentialAdhesion) {
 
         //-------------------------------
         //toroidal only X
-        if(TOROIDAL_X==true){
-        if (m >= xMAX) m = 0;
-        if (m < 0) m = xMAX - 1;
+        if(TOROIDAL_X==true)
+        {
+            if (m >= xMAX) m = 0;
+            if (m < 0) m = xMAX - 1;
         }
 
-        if(TOROIDAL_Y==true){
-        if (n >= yMAX) n = 0;
-        if (n < 0) n = yMAX - 1;
+        if(TOROIDAL_Y==true)
+        {
+            if (n >= yMAX) n = 0;
+            if (n < 0) n = yMAX - 1;
         }
 
 
-        if (worldP->insideWorld(m, n, p) == true) {
+        if (worldP->insideWorld(m, n, p) == true)
+        {
             worldP->neigh[x].Mids = worldP->grid[m][n][p].Mids;
             worldP->neigh[x].Eid = worldP->grid[m][n][p].Eid;
-
             worldP->neigh[x].type = worldP->grid[m][n][p].type;
             worldP->neigh[x].Fids = worldP->grid[m][n][p].Fids;
 
-            if (worldP->neigh[x].type == M) {
+            if (worldP->neigh[x].type == M)
+            {
                 MneighCount++;
             }
-
-
-            else if (worldP->neigh[x].type == E) {
+            else if (worldP->neigh[x].type == E)
+            {
                 Eagent = worldP->neigh[x].Eid;
                 SumVEGF += Eagent->VEGF;
                 EnvNeighs.push_back(Eagent);
@@ -1787,42 +1872,56 @@ void MemAgent::checkNeighs(bool called_fron_differentialAdhesion) {
 
             //for differential adhesion..
             //will need to add a lot to make sure dont think filagents are neighbours here for vessel version etc...!!!!
-            if (called_fron_differentialAdhesion == true) {
-                if (worldP->grid[m][n][p].type == M) {
-                    if (diffAd_replaced_cell != NULL) {
-                        for (zed = 0; zed < worldP->grid[m][n][p].Mids.size(); zed++) {
-                            if ((worldP->grid[m][n][p].Mids[zed]->FIL != TIP) && (worldP->grid[m][n][p].Mids[zed]->FIL != STALK)) {
+            if (called_fron_differentialAdhesion == true)
+            {
+                if (worldP->grid[m][n][p].type == M)
+                {
+                    if (diffAd_replaced_cell != NULL)
+                    {
+                        for (zed = 0; zed < worldP->grid[m][n][p].Mids.size(); zed++)
+                        {
+                            if ((worldP->grid[m][n][p].Mids[zed]->FIL != TIP) && (worldP->grid[m][n][p].Mids[zed]->FIL != STALK))
+                            {
                                 connected = meshConnected(worldP->grid[m][n][p].Mids[zed]);
-                                if (connected == true) {
-
-                                    if ((worldP->grid[m][n][p].Mids[zed]->Cell != this->diffAd_replaced_cell)) {
+                                if (connected == true)
+                                {
+                                    if ((worldP->grid[m][n][p].Mids[zed]->Cell != this->diffAd_replaced_cell))
+                                    {
                                         DiffAd_neighs.push_back(worldP->grid[m][n][p].Mids[zed]);
                                         //worldP->grid[m][n][p].Mids[zed]->labelled2 = true;
                                     }
                                 }
                             }
                         }
-                    } else if (diffAd_replaced_med != NULL) {
-
-                        
-                        for (zed = 0; zed < worldP->grid[m][n][p].Mids.size(); zed++) {
-
+                    }
+                    else if (diffAd_replaced_med != NULL)
+                    {
+                        for (zed = 0; zed < worldP->grid[m][n][p].Mids.size(); zed++)
+                        {
                             DiffAd_neighs.push_back(worldP->grid[m][n][p].Mids[zed]);
                         }
-
-                    } else {
-                        for (zed = 0; zed < worldP->grid[m][n][p].Mids.size(); zed++) {
-                            if ((worldP->grid[m][n][p].Mids[zed]->FIL != TIP) && (worldP->grid[m][n][p].Mids[zed]->FIL != STALK)) {
+                    }
+                    else
+                    {
+                        for (zed = 0; zed < worldP->grid[m][n][p].Mids.size(); zed++)
+                        {
+                            if ((worldP->grid[m][n][p].Mids[zed]->FIL != TIP) && (worldP->grid[m][n][p].Mids[zed]->FIL != STALK))
+                            {
                                 connected = meshConnected(worldP->grid[m][n][p].Mids[zed]);
-                                if (connected == true) {
-                                    //cout<<"*"<<endl;
-                                    if (worldP->grid[m][n][p].Mids[zed]->diffAd_replaced_cell != NULL) {
-                                        if ((worldP->grid[m][n][p].Mids[zed]->diffAd_replaced_cell != this->Cell)) {
+                                if (connected == true)
+                                {
+                                    if (worldP->grid[m][n][p].Mids[zed]->diffAd_replaced_cell != NULL)
+                                    {
+                                        if ((worldP->grid[m][n][p].Mids[zed]->diffAd_replaced_cell != this->Cell))
+                                        {
                                             DiffAd_neighs.push_back(worldP->grid[m][n][p].Mids[zed]);
                                             //worldP->grid[m][n][p].Mids[zed]->labelled2 = true;
                                         }
-                                    } else {
-                                        if ((worldP->grid[m][n][p].Mids[zed]->Cell != this->Cell)) {
+                                    }
+                                    else
+                                    {
+                                        if ((worldP->grid[m][n][p].Mids[zed]->Cell != this->Cell))
+                                        {
                                             DiffAd_neighs.push_back(worldP->grid[m][n][p].Mids[zed]);
                                             //worldP->grid[m][n][p].Mids[zed]->labelled2 = true;
                                         }
@@ -1832,30 +1931,25 @@ void MemAgent::checkNeighs(bool called_fron_differentialAdhesion) {
                             }
                         }
                     }
-                } else if ((worldP->grid[m][n][p].type == MED) && (diffAd_replaced_med == NULL) && (worldP->grid[m][n][p].med->diffAd_replaced == NULL)) {
-
-
-                    mediumNeighs++;
-
-                } else if ((worldP->grid[m][n][p].type == MED) && (diffAd_replaced_med == NULL) && (worldP->grid[m][n][p].med->diffAd_replaced != NULL)) {
-                    if (worldP->grid[m][n][p].med->diffAd_replaced->Cell != this->Cell) DiffAd_neighs.push_back(worldP->grid[m][n][p].med->diffAd_replaced);
-
                 }
-
+                else if ((worldP->grid[m][n][p].type == MED) && (diffAd_replaced_med == NULL) && (worldP->grid[m][n][p].med->diffAd_replaced == NULL))
+                {
+                    mediumNeighs++;
+                }
+                else if ((worldP->grid[m][n][p].type == MED) && (diffAd_replaced_med == NULL) && (worldP->grid[m][n][p].med->diffAd_replaced != NULL))
+                {
+                    if (worldP->grid[m][n][p].med->diffAd_replaced->Cell != this->Cell) DiffAd_neighs.push_back(worldP->grid[m][n][p].med->diffAd_replaced);
+                }
             }
-
-
-
-            //_____________________
-        } else {
-
+        }
+        else
+        {
             worldP->neigh[x].Eid = NULL;
             worldP->neigh[x].type = -1;
             worldP->neigh[x].Fids.clear();
             worldP->neigh[x].Mids.clear();
         }
         //-------------------------------
-
     }
 
     /*if(diffAd_replaced!=NULL){
@@ -1867,7 +1961,7 @@ void MemAgent::checkNeighs(bool called_fron_differentialAdhesion) {
     }*/
 
 }
-//-------------------------------------------------------------------------------
+
 
 //-----------------------------------------------------------------------------------
 Env * MemAgent::findHighestConc(void){

@@ -615,7 +615,7 @@ void World::updateMemAgents(void)
                 //LC// Maybe keep those options in case code is reused
                 //veil advance for cell migration------------------------
                 if (VEIL_ADVANCE == true) {
-                    if ((memp->form_filopodia_contact() == true) || (randomChance < RAND_VEIL_ADVANCE_CHANCE)) {
+                    if ((memp->form_filopodia_contact() == true) || (randomChance < RAND_VEIL_ADVANCE_CHANCE)){
 
                         if ((ANALYSIS_HYSTERESIS == true)&&(memp->Cell != ECagents[0])&&(memp->Cell != ECagents[ECELLS - 1]))
                             memp->veilAdvance();
