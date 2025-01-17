@@ -689,7 +689,7 @@ void MemAgent::VEGFRresponse(void)
         else
         {
             Prob = ((float) R2R2active / ((float) maxR2R2 / (float) upto)) * Cell->filCONST;
-            //LC - TEST R3// Prob = ((float) R3R3active / ((float) maxR3R3 / (float) upto)) * Cell->filCONST; //LC - TEST R3//
+            //LC - VEGFR2toVEGFR3// Prob = ((float) R3R3active / ((float) maxR3R3 / (float) upto)) * Cell->filCONST;
         }
     }
     else

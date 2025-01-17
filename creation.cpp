@@ -1659,6 +1659,8 @@ void World::createNewEnvAgent(int x, int y, int z){
         // call function to specify VEGF type
         calcVType();
         cout << "Affinity R2R2: " << affR2R2 << endl;
+        cout << "Affinity R2R3: " << affR2R3 << endl;
+        cout << "Affinity R3R3: " << affR3R3 << endl;
 
         //create environment onjects and place on grid++++++++++++++++++++++++++++++++++++++
         for(i=0;i<xMAX;i++)
