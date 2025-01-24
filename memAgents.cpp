@@ -649,9 +649,10 @@ void MemAgent::VEGFRresponse(void)
     float R2R2activeProp;
     float R2R3activeProp;
     float R3R3activeProp;
-    R2toR2R2 = 1.0;
+    //LC - VEGFR2toVEGFR3//
+    R2toR2R2 = 0.5;
     R2toR2R3 = 1 - R2toR2R2;
-    R3toR3R3 = 1.0;
+    R3toR3R3 = 0.5;
     R3toR2R3 = 1 - R3toR3R3;
    
     // Build dimers from VEGFR2 and VEGFR3
@@ -667,7 +668,7 @@ void MemAgent::VEGFRresponse(void)
     /// Ensure that active amount does not overcome the available amount of dimers
     if (R2R2active > R2R2) R2R2active = R2R2;
     /// R2R3
-    float maxR2R3 = min(VEGFR2NORM, VEGFR3NORM);
+    float maxR2R3 = min(VEGFR2NORM*R2toR2R3, VEGFR3NORM*R3toR2R3);  // /!\ multiply by RitoRiRi as this will impact the max
     R2R3activeProp = (R2R3 / ((float) maxR2R3 / (float) upto));
     R2R3active = (SumVEGF / Cell->Vsink) * affR2R3 * R2R3activeProp;
     /// Ensure that active amount does not overcome the available amount of dimers
@@ -689,7 +690,8 @@ void MemAgent::VEGFRresponse(void)
         else
         {
             //LC - VEGFR2toVEGFR3// Prob = ((float) R2R2active / ((float) maxR2R2 / (float) upto)) * Cell->filCONST;
-            Prob = ((float) R3R3active / ((float) maxR3R3 / (float) upto)) * Cell->filCONST;
+            //LC - VEGFR2toVEGFR3// Prob = ((float) R3R3active / ((float) maxR3R3 / (float) upto)) * Cell->filCONST;
+            Prob = ((float) R2R3active / ((float) maxR2R3 / (float) upto)) * Cell->filCONST;
         }
     }
     else

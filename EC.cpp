@@ -20,7 +20,8 @@ bool EC::tipCellTest(void){
     //so as there would be slightly less spring agents than fil-memAgents in the previous model, as there are nodes in filopodia too we use 100
     //this remains the same even if cvell size is smaller with ECcross>1 as the no of filopdia agents should be the same..
     //LC - VEGFR2toVEGFR3// if((VEGFR2tot>(float)VEGFR2norm/2.0f)&&(actinUsed>=257.0))return(true);
-    if((VEGFR3tot>(float)VEGFR3norm/2.0f)&&(actinUsed>=257.0))return(true);
+    //LC - VEGFR2toVEGFR3// if((VEGFR3tot>(float)VEGFR3norm/2.0f)&&(actinUsed>=257.0))return(true);
+    if((VEGFR3tot>(float)VEGFR3norm/2.0f)&&(VEGFR2tot>(float)VEGFR2norm/2.0f)&&(actinUsed>=257.0))return(true);
     else return(false);
     
 }
@@ -274,9 +275,10 @@ void EC::GRN(void){
     //LC// DLL4-VEGFRs affinity values
     //LC - VEGFR2toVEGFR3// affR2R2DLL4 = 1.0; //LC// 0.7-1.5
     affR2R2DLL4 = 0.0;
-    affR2R3DLL4 = 0.0; //LC// 0.1-0.8
-    //LC - VEGFR2toVEGFR3// affR3R3DLL4 = 0.0; //LC// 0.0 ou 0.01
-    affR3R3DLL4 = 1.0;
+    affR2R3DLL4 = 1.0; //LC// 0.1-0.8
+    //LC - VEGFR2toVEGFR3// affR2R3DLL4 = 0.0; //LC// 0.1-0.8
+    //LC - VEGFR2toVEGFR3// affR3R3DLL4 = 1.0; //LC// 0.0 ou 0.01
+    affR3R3DLL4 = 0.0;
   
     VEGFR2tot=(VEGFR2norm)-2*(actNotCurrent*sigma); //VEGFR2norm is now a EC specific param and scaled at config if mutant
     VEGFR3tot=(VEGFR3norm)-2*(actNotCurrent*sigma); //VEGFR3norm is now a EC specific param and scaled at config if mutant
