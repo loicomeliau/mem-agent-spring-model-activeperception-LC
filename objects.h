@@ -234,6 +234,15 @@ extern mt19937 g;
 extern uniform_real_distribution<double> dist;
 int new_rand();
 
+// NEW BETA RAND
+#define alpha_R2R2 1
+#define beta_R2R2 1.1
+#define alpha_R2R3 2.5
+#define beta_R2R3 4.5
+#define alpha_R3R3 2.5
+#define beta_R3R3 4.5
+float new_rand_beta(float alpha, float beta);
+
 void create_statistics_file(string statisticsFilename);
 void write_to_statistics_file(string statisticsFilename, string line);
 std::time_t get_current_time();

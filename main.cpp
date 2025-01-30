@@ -1064,6 +1064,18 @@ int new_rand()
     return (int)dist(g);
 }
 
+//------------------------------------------------------------------------------------------
+//LC// Random number generator
+//------------------------------------------------------------------------------------------
+float new_rand_beta(float alpha, float beta)
+{
+    float X, Y;
+    std::gamma_distribution<double> dist_X(alpha, 1.0);
+    std::gamma_distribution<double> dist_Y(beta, 1.0);
+    X = dist_X(g);
+    Y = dist_Y(g);
+    return (float)(X/(X+Y));
+}
 
 //------------------------------------------------------------------------------------------
 //LC// Create statistics file
