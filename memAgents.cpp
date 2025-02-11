@@ -20,10 +20,10 @@ float overallVEGF = 0.0f;
 int overallflag = 0;
 int Dolaycount = 0;
 
-float R2toR2R2;
-float R2toR2R3;
-float R3toR3R3;
-float R3toR2R3;
+// float R2toR2R2;
+// float R2toR2R3;
+// float R3toR3R3;
+// float R3toR2R3;
 //----------------------------------------------------------------------------------
 /**
  *
@@ -646,55 +646,156 @@ void MemAgent::VEGFRresponse(void)
     int R3R3_inactive_flag = 0;
 
     int upto = Cell->VonNeighs;
+    float VEGFR2activeProp;
+    float VEGFR3activeProp;
     int i, j, k;
     i = (int) Mx;
     j = (int) My;
     k = (int) Mz;
     bool moved = false;
 
-    /// Init dimers variables and dimerization proportions
-    float R2R2activeProp;
-    float R2R3activeProp;
-    float R3R3activeProp;
-    //LC - VEGFR2toVEGFR3//
-    R2toR2R2 = 0.5;
-    R2toR2R3 = 1 - R2toR2R2;
-    R3toR3R3 = 0.5;
-    R3toR2R3 = 1 - R3toR3R3;
-   
-    // Build dimers from VEGFR2 and VEGFR3
-    R2R2 = (R2toR2R2 * VEGFR2) / 2;
-    R2R3 = min(R2toR2R3*VEGFR2, R3toR2R3*VEGFR3);
-    R3R3 = (R3toR3R3 * VEGFR3) / 2;
+    // VEGFR variables
+    float VEGFR2active;
+    float VEGFR3active;
+    float VEGFR2inactive;
+    float VEGFR3inactive;
+    float VEGFR2active_homo;
+    float VEGFR2active_hetero;
+    float VEGFR3active_homo;
+    float VEGFR3active_hetero;
+    float VEGFR2inactive_homo;
+    float VEGFR2inactive_hetero;
+    float VEGFR3inactive_homo;
+    float VEGFR3inactive_hetero;
 
-    // Compute active dimers levels as a function of the dimers, VEGFR1 and "VEGF"
-    /// R2R2
-    float maxR2R2 = VEGFR2NORM/2;
-    R2R2activeProp = (R2R2 / ((float) maxR2R2 / (float) upto));
-    R2R2active = (SumVEGF / Cell->Vsink) * affR2R2 * R2R2activeProp;
-    /// Ensure that active amount does not overcome the available amount of dimers
-    if (R2R2active > R2R2) R2R2active = R2R2;
-    /// R2R3
-    float maxR2R3 = min(VEGFR2NORM*R2toR2R3, VEGFR3NORM*R3toR2R3);  // /!\ multiply by RitoRiRi as this will impact the max
-    // Garde juste pour eviter des problemes lorsqu'on fait des tests
-    if (maxR2R3 == 0)
+    //calculate the active VEGFR2 level as a function of VEGFR2, VEGFR1 level and vEGF.. 
+    VEGFR2activeProp = (VEGFR2 / ((float) VEGFR2NORM / (float) upto));
+    VEGFR2active = ( (SumVEGF*VEGFtoR2) / Cell->Vsink ) * VEGFR2activeProp;
+    if (VEGFR2active > VEGFR2) VEGFR2active = VEGFR2;
+    VEGFR2inactive = VEGFR2 - VEGFR2active;
+
+    //calculate the active VEGFR3 level as a function of VEGFR2, VEGFR1 level and vEGF.. 
+    VEGFR3activeProp = (VEGFR3 / ((float) VEGFR3NORM / (float) upto));
+    VEGFR3active = ( (SumVEGF*VEGFtoR3) / Cell->Vsink ) * VEGFR3activeProp;
+    if (VEGFR3active > VEGFR3) VEGFR3active = VEGFR3;
+    VEGFR3inactive = VEGFR3 - VEGFR3active;
+
+    VEGFR2active_homo = VEGFR2active * R2toR2R2;
+    VEGFR2active_hetero = VEGFR2active * R2toR2R3;
+    VEGFR3active_homo = VEGFR3active * R3toR3R3;
+    VEGFR3active_hetero = VEGFR3active * R3toR2R3;
+
+    VEGFR2inactive_homo = VEGFR2inactive * R2toR2R2;
+    VEGFR2inactive_hetero = VEGFR2inactive * R2toR2R3;
+    VEGFR3inactive_homo = VEGFR3inactive * R3toR3R3;
+    VEGFR3inactive_hetero = VEGFR3inactive * R3toR2R3;
+
+    // R2R2
+    R2R2active = 0;
+    if (VEGFR2active_homo > VEGFR2inactive_homo)
     {
-        R2R3activeProp = 0;
-    } 
+        R2R2active += VEGFR2inactive_homo;
+        VEGFR2active_homo -= VEGFR2inactive_homo;
+    }
     else
     {
-        R2R3activeProp = (R2R3 / ((float) maxR2R3 / (float) upto));
+        R2R2active = VEGFR2active_homo;
+        VEGFR2active_homo = 0;
     }
-    R2R3active = (SumVEGF / Cell->Vsink) * affR2R3 * R2R3activeProp;
-    //cout << R2R3activeProp << endl;
-    /// Ensure that active amount does not overcome the available amount of dimers
-    if (R2R3active > R2R3) R2R3active = R2R3;
+    // Rest of active VEGFR2 and VEGFR3 (hetero-)dimerize
+    R2R2active += floor(VEGFR2active_homo/2);
+
+
+    std::cout << VEGFR2activeProp << endl;
+    // R2R3
+    // VEGFR2 active consumes VEGFR3 inactive
+    R2R3active = 0;
+    if (VEGFR2active_hetero > VEGFR3inactive_hetero)
+    {
+        R2R3active += VEGFR3inactive_hetero;
+        VEGFR2active_hetero -= VEGFR3inactive_hetero;
+    }
+    else
+    {
+        R2R2active = VEGFR2active_hetero;
+        VEGFR2active_hetero = 0;
+    }
+    // VEGFR3 active consumes VEGFR2 inactive
+    if (VEGFR3active_hetero > VEGFR2inactive_hetero)
+    {
+        R2R3active += VEGFR2inactive_hetero;
+        VEGFR3active_hetero -= VEGFR2inactive_hetero;
+    }
+    else
+    {
+        R2R2active = VEGFR3active_hetero;
+        VEGFR3active_hetero = 0;
+    }
+    // Rest of active VEGFR2 and VEGFR3 (hetero-)dimerize
+    R2R3active += min(VEGFR2active_hetero, VEGFR3active_hetero);
+    
     // R3R3
+    R3R3active = 0;
+    if (VEGFR3active_homo > VEGFR3inactive_homo)
+    {
+        R3R3active += VEGFR3inactive_homo;
+        VEGFR3active_homo -= VEGFR3inactive_homo;
+    }
+    else
+    {
+        R3R3active = VEGFR3active_homo;
+        VEGFR3active_homo = 0;
+    }
+    // Rest of active VEGFR2 and VEGFR3 (hetero-)dimerize
+    R3R3active += floor(VEGFR3active_homo/2);
+    
+    float maxR2R2 = VEGFR2NORM/10;
+    float maxR2R3 = min(VEGFR2NORM*R2toR2R3, VEGFR3NORM*R3toR2R3);  // /!\ multiply by RitoRiRi as this will impact the max
     float maxR3R3 = VEGFR3NORM/2;
-    R3R3activeProp = (R3R3 / ((float) maxR3R3 / (float) upto));
-    R3R3active = (SumVEGF / Cell->Vsink) * affR3R3 * R3R3activeProp;
-    /// Ensure that active amount does not overcome the available amount of dimers
-    if (R3R3active > R3R3) R3R3active = R3R3;
+
+    // // // /// Init dimers variables and dimerization proportions
+    // // // float R2R2activeProp;
+    // // // float R2R3activeProp;
+    // // // float R3R3activeProp;
+    // // // //LC - VEGFR2toVEGFR3//
+    // // // R2toR2R2 = 0.5;
+    // // // R2toR2R3 = 1 - R2toR2R2;
+    // // // R3toR3R3 = 0.5;
+    // // // R3toR2R3 = 1 - R3toR3R3;
+   
+    // // // // Build dimers from VEGFR2 and VEGFR3
+    // // // R2R2 = (R2toR2R2 * VEGFR2) / 2;
+    // // // R2R3 = min(R2toR2R3*VEGFR2, R3toR2R3*VEGFR3);
+    // // // R3R3 = (R3toR3R3 * VEGFR3) / 2;
+
+    // // // // Compute active dimers levels as a function of the dimers, VEGFR1 and "VEGF"
+    // // // /// R2R2
+    // // // float maxR2R2 = VEGFR2NORM/2;
+    // // // R2R2activeProp = (R2R2 / ((float) maxR2R2 / (float) upto));
+    // // // R2R2active = (SumVEGF / Cell->Vsink) * affR2R2 * R2R2activeProp;
+    // // // /// Ensure that active amount does not overcome the available amount of dimers
+    // // // if (R2R2active > R2R2) R2R2active = R2R2;
+    // // // /// R2R3
+    // // // float maxR2R3 = min(VEGFR2NORM*R2toR2R3, VEGFR3NORM*R3toR2R3);  // /!\ multiply by RitoRiRi as this will impact the max
+    // // // // Garde juste pour eviter des problemes lorsqu'on fait des tests
+    // // // if (maxR2R3 == 0)
+    // // // {
+    // // //     R2R3activeProp = 0;
+    // // // } 
+    // // // else
+    // // // {
+    // // //     R2R3activeProp = (R2R3 / ((float) maxR2R3 / (float) upto));
+    // // // }
+    // // // R2R3active = (SumVEGF / Cell->Vsink) * affR2R3 * R2R3activeProp;
+    // // // //cout << R2R3activeProp << endl;
+    // // // /// Ensure that active amount does not overcome the available amount of dimers
+    // // // if (R2R3active > R2R3) R2R3active = R2R3;
+    // // // // R3R3
+    // // // float maxR3R3 = VEGFR3NORM/2;
+    // // // R3R3activeProp = (R3R3 / ((float) maxR3R3 / (float) upto));
+    // // // R3R3active = (SumVEGF / Cell->Vsink) * affR3R3 * R3R3activeProp;
+    // // // /// Ensure that active amount does not overcome the available amount of dimers
+    // // // if (R3R3active > R3R3) R3R3active = R3R3;
 
     // Compute probability of extending a filopodium as a function of VEGFR2 activity, if no filopodia needed set to 0
     if (FILOPODIA == true)

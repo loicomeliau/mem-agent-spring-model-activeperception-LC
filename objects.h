@@ -159,13 +159,39 @@ extern float affCmR2R3 ;
 extern float affCmR3R3 ;
 extern float affR2R2 ; 
 extern float affR2R3 ; 
-extern float affR3R3 ;  
+extern float affR3R3 ; 
+// Affinities for ligands v2
+extern float VEGFAtoR2;
+extern float VEGFCtoR2;
+extern float VEGFCmtoR2;
+extern float VEGFtoR2;
+
+extern float VEGFAtoR3;
+extern float VEGFCtoR3;
+extern float VEGFCmtoR3; 
+extern float VEGFtoR3;
+// RitoRiRj
+extern float VEGFAR2toR2R2;
+extern float VEGFCR2toR2R2;
+extern float R2toR2R2;
+
+extern float VEGFCR3toR2R3;
+extern float VEGFCmR3toR2R3;
+extern float R3toR2R3;
+
+extern float VEGFAR2toR2R3;
+extern float VEGFCR2toR2R3;
+extern float R2toR2R3;
+
+extern float VEGFCR3toR3R3;
+extern float VEGFCmR3toR3R3;
+extern float R3toR3R3;
 
 //LC// dimerization
-extern float R2toR2R2;
-extern float R2toR2R3;
-extern float R3toR2R3;
-extern float R3toR3R3;
+// extern float R2toR2R2;
+// extern float R2toR2R3;
+// extern float R3toR2R3;
+// extern float R3toR3R3;
 
 extern float VEGFconc; ///conc of VEGF in flat gradient
 extern float VconcST;

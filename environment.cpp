@@ -17,6 +17,32 @@ float affR2R2 ;
 float affR2R3 ; 
 float affR3R3 ;
 
+float VEGFAtoR2;
+float VEGFCtoR2;
+float VEGFCmtoR2;
+float VEGFtoR2;
+
+float VEGFAtoR3;
+float VEGFCtoR3;
+float VEGFCmtoR3;
+float VEGFtoR3;
+
+float VEGFAR2toR2R2;
+float VEGFCR2toR2R2;
+float R2toR2R2;
+
+float VEGFCR3toR2R3;
+float VEGFCmR3toR2R3;
+float R3toR2R3;
+
+float VEGFAR2toR2R3;
+float VEGFCR2toR2R3;
+float R2toR2R3;
+
+float VEGFCR3toR3R3;
+float VEGFCmR3toR3R3;
+float R3toR3R3;
+
 int VType;
 
 //-----------------------------------------------------------------
@@ -196,6 +222,13 @@ void Env::calcInside(void){
 // AJOUT3 //LC//
 void World::calcVType(){
 
+    VEGFAtoR2 = 1.0;
+    VEGFAtoR3 = 0.0;
+    VEGFCtoR2 = 0.4;
+    VEGFCtoR3 = 0.6;
+    VEGFCmtoR2 = 0.0;
+    VEGFCmtoR3 = 1.0;
+
     affCR2R2 = 0.0;
     affCR2R3 = 0.0;
     affCR3R3 = 1.0;
@@ -206,46 +239,88 @@ void World::calcVType(){
     affCmR2R3 = 0.0;
     affCmR3R3 = 1.0;
 
+    VEGFAR2toR2R2 = 1.0; //0.8;
+    VEGFCR2toR2R2 = 0.3;
+
+    VEGFCR3toR2R3 = 0.4;
+    VEGFCmR3toR2R3 = 0.0;
+    R3toR2R3;
+
+    VEGFAR2toR2R3 = 0.0; //0.2;
+    VEGFCR2toR2R3 =0.7;
+    R2toR2R3;
+
+    VEGFCR3toR3R3 = 0.6;
+    VEGFCmR3toR3R3 = 1.0;
+    R3toR2R3;
+
     if(VType==VEGF_alone){
         affR2R2 = affAR2R2 ;
         affR3R3 = affAR3R3 ;
         affR2R3 = affAR2R3 ;
+
+        VEGFtoR2 = VEGFAtoR2;
+        VEGFtoR3 = VEGFAtoR3;
+        R2toR2R2 = VEGFAR2toR2R2;
+        R2toR2R3 = VEGFAR2toR2R3;
+        R3toR2R3 = 0.0;
+        R3toR3R3 = 0.0;
     }
     
     if(VType==VEGFC_alone){
         affR2R2 = affCR2R2 ;
         affR3R3 = affCR3R3 ;
         affR2R3 = affCR2R3 ;
+
+        VEGFtoR2 = VEGFCtoR2;
+        VEGFtoR3 = VEGFCtoR3;
+
+        // to be done
     }
 
     if(VType==VEGFCm_alone){
         affR2R2 = affCmR2R2 ;
         affR3R3 = affCmR3R3 ;
         affR2R3 = affCmR2R3 ;
+
+        VEGFtoR2 = VEGFCmtoR2;
+        VEGFtoR3 = VEGFCmtoR3;
     }
 
     if(VType==VEGF_VEGFC){
         affR2R2 = affAR2R2 + affCR2R2 ;
         affR3R3 = affAR3R3 + affCR3R3 ;
         affR2R3 = affAR2R3 + affCR2R3 ;
+
+        VEGFtoR2 = VEGFCmtoR2;
+        VEGFtoR3 = VEGFCmtoR3;
     }
 
     if(VType==VEGF_VEGFCm){
         affR2R2 = affAR2R2 + affCmR2R2 ;
         affR3R3 = affAR3R3 + affCmR3R3 ;
         affR2R3 = affAR2R3 + affCmR2R3 ;
+
+        VEGFtoR2 = VEGFAtoR2 + VEGFCmtoR2;
+        VEGFtoR3 = VEGFAtoR3 + VEGFCmtoR3;
     }
 
     if(VType==VEGFC_VEGFCm){
         affR2R2 = affCR2R2 + affCmR2R2 ;
         affR3R3 = affCR3R3 + affCmR3R3 ;
         affR2R3 = affCR2R3 + affCmR2R3 ;
+
+        VEGFtoR2 = VEGFCtoR2 + VEGFCmtoR2;
+        VEGFtoR3 = VEGFCtoR3 + VEGFCmtoR3;
     }
 
     if(VType==VEGF_VEGFC_VEGFCm){
         affR2R2 = affAR2R2 + affCR2R2 + affCmR2R2 ;
         affR3R3 = affAR3R3 + affCR3R3 + affCmR3R3 ;
         affR2R3 = affAR2R3 + affCR2R3 + affCmR2R3 ;
+
+        VEGFtoR2 = VEGFAtoR2 + VEGFCtoR2 + VEGFCmtoR2;
+        VEGFtoR3 = VEGFAtoR3 + VEGFCtoR3 + VEGFCmtoR3;
     }
 }
 
