@@ -235,12 +235,12 @@ extern uniform_real_distribution<double> dist;
 int new_rand();
 
 // NEW BETA RAND
-#define alpha_R2R2 1
-#define beta_R2R2 1.1
-#define alpha_R2R3 2.5
-#define beta_R2R3 4.5
-#define alpha_R3R3 2.5
-#define beta_R3R3 4.5
+#define alpha_R2R2 1.0
+#define beta_R2R2 1.0
+#define alpha_R2R3 1.0
+#define beta_R2R3 1.0
+#define alpha_R3R3 1.0
+#define beta_R3R3 1.0
 float new_rand_beta(float alpha, float beta);
 
 void create_statistics_file(string statisticsFilename);
