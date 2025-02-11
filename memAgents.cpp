@@ -637,6 +637,13 @@ void MemAgent::VEGFRresponse(void)
 {
     // Init local variables
     float Prob, chance;
+    float Prob_R2R2, Prob_R2R3, Prob_R3R3;
+    float chance_R2R2, chance_R2R3, chance_R3R3;
+
+    // flags for VRinactiveCounter
+    int R2R2_inactive_flag = 0;
+    int R2R3_inactive_flag = 0;
+    int R3R3_inactive_flag = 0;
 
     int upto = Cell->VonNeighs;
     int i, j, k;
@@ -650,9 +657,9 @@ void MemAgent::VEGFRresponse(void)
     float R2R3activeProp;
     float R3R3activeProp;
     //LC - VEGFR2toVEGFR3//
-    R2toR2R2 = 1.0;
+    R2toR2R2 = 0.5;
     R2toR2R3 = 1 - R2toR2R2;
-    R3toR3R3 = 1.0;
+    R3toR3R3 = 0.5;
     R3toR2R3 = 1 - R3toR3R3;
    
     // Build dimers from VEGFR2 and VEGFR3
@@ -698,9 +705,12 @@ void MemAgent::VEGFRresponse(void)
         }
         else
         {
-            Prob = ((float) R2R2active / ((float) maxR2R2 / (float) upto)) * Cell->filCONST;
-            //LC - VEGFR2toVEGFR3// Prob = ((float) R3R3active / ((float) maxR3R3 / (float) upto)) * Cell->filCONST;
-            //LC - VEGFR2toVEGFR3//Prob = ((float) R2R3active / ((float) maxR2R3 / (float) upto)) * Cell->filCONST;
+            //Prob = ((float) R2R2active / ((float) maxR2R2 / (float) upto)) * Cell->filCONST;
+
+            //LC - VEGFR2toVEGFR3// Compute weighted sum of probabilities
+            Prob_R2R2 = ((float) R2R2active / ((float) maxR2R2 / (float) upto)) * Cell->filCONST;
+            Prob_R3R3 = ((float) R3R3active / ((float) maxR3R3 / (float) upto)) * Cell->filCONST;
+            Prob_R2R3 = ((float) R2R3active / ((float) maxR2R3 / (float) upto)) * Cell->filCONST;
         }
     }
     else
@@ -710,8 +720,50 @@ void MemAgent::VEGFRresponse(void)
     
     // Compute random chance to extend and compare to the probability
     chance = (float) new_rand() / (float) NEW_RAND_MAX;
-    chance = new_rand_beta(alpha_R2R2,beta_R2R2);
-    if (chance < Prob)
+    chance = new_rand_beta(1.0,1.0);
+
+    // Compute random chance with different beta distributions
+    chance_R2R2 = new_rand_beta(alpha_R2R2, beta_R2R2);
+    chance_R2R3 = new_rand_beta(alpha_R2R3, beta_R2R3);
+    chance_R3R3 = new_rand_beta(alpha_R3R3, beta_R3R3);
+
+    // if (chance < Prob)
+    // {
+    //     // Award actin tokens
+    //     filTokens++;
+
+    //     if (FIL == NONE) tryActinPassRadiusN((int) Mx, (int) My, (int) Mz, FIL_SPACING);
+
+    //     // OLD WAY OF DOING
+    //     if (oldVersion == true)
+    //     {
+    //         if (FIL == STALK)
+    //         {
+    //             //passes its filExtend token to Magent in its plusSite
+    //             plusSite->filTokens++;
+    //             filTokens--;
+    //         }
+    //     }
+
+    //     //--------------------------------------------------------------------------------------------
+    //     //filopodia extension
+    //     if (((FIL == TIP) || (FIL == NONE)) && (filTokens >= tokenStrength))
+    //     {
+    //         if (deleteFlag == false) moved = extendFil();
+    //     }
+    //     //--------------------------------------------------------------------------------------------
+
+    //     //reset VRinactive counter as now activated
+    //     VRinactiveCounter = 0;
+    // }
+    // else
+    // {
+    //     // Increase inactive counter
+    //     VRinactiveCounter++;
+    // }
+
+    // R2R2
+    if (chance_R2R2 < Prob_R2R2)
     {
         // Award actin tokens
         filTokens++;
@@ -741,6 +793,80 @@ void MemAgent::VEGFRresponse(void)
         VRinactiveCounter = 0;
     }
     else
+    {
+        R2R2_inactive_flag = 1;
+    }
+
+    if (chance_R2R3 < Prob_R2R3)
+    {
+        // Award actin tokens
+        filTokens++;
+
+        if (FIL == NONE) tryActinPassRadiusN((int) Mx, (int) My, (int) Mz, FIL_SPACING);
+
+        // OLD WAY OF DOING
+        if (oldVersion == true)
+        {
+            if (FIL == STALK)
+            {
+                //passes its filExtend token to Magent in its plusSite
+                plusSite->filTokens++;
+                filTokens--;
+            }
+        }
+
+        //--------------------------------------------------------------------------------------------
+        //filopodia extension
+        if (((FIL == TIP) || (FIL == NONE)) && (filTokens >= tokenStrength))
+        {
+            if (deleteFlag == false) moved = extendFil();
+        }
+        //--------------------------------------------------------------------------------------------
+
+        //reset VRinactive counter as now activated
+        VRinactiveCounter = 0;
+    }
+    else
+    {
+        R2R3_inactive_flag = 1;
+    }
+
+    if (chance_R3R3 < Prob_R3R3)
+    {
+        // Award actin tokens
+        filTokens++;
+
+        if (FIL == NONE) tryActinPassRadiusN((int) Mx, (int) My, (int) Mz, FIL_SPACING);
+
+        // OLD WAY OF DOING
+        if (oldVersion == true)
+        {
+            if (FIL == STALK)
+            {
+                //passes its filExtend token to Magent in its plusSite
+                plusSite->filTokens++;
+                filTokens--;
+            }
+        }
+
+        //--------------------------------------------------------------------------------------------
+        //filopodia extension
+        if (((FIL == TIP) || (FIL == NONE)) && (filTokens >= tokenStrength))
+        {
+            if (deleteFlag == false) moved = extendFil();
+        }
+        //--------------------------------------------------------------------------------------------
+
+        //reset VRinactive counter as now activated
+        VRinactiveCounter = 0;
+    }
+    else
+    {
+        R3R3_inactive_flag = 1;
+    }
+
+    // Check for inactive flags
+    if ((R2R2_inactive_flag==1) && (R2R3_inactive_flag==1) && (R3R3_inactive_flag==1))
     {
         // Increase inactive counter
         VRinactiveCounter++;
