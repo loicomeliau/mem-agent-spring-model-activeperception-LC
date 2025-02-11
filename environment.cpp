@@ -239,7 +239,7 @@ void World::calcVType(){
     affCmR2R3 = 0.0;
     affCmR3R3 = 1.0;
 
-    VEGFAR2toR2R2 = 1.0; //0.8;
+    VEGFAR2toR2R2 = 0.8; //0.8;
     VEGFCR2toR2R2 = 0.3;
 
     VEGFCR3toR2R3 = 0.4;

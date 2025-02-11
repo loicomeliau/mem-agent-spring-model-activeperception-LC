@@ -705,8 +705,6 @@ void MemAgent::VEGFRresponse(void)
     // Rest of active VEGFR2 and VEGFR3 (hetero-)dimerize
     R2R2active += floor(VEGFR2active_homo/2);
 
-
-    std::cout << VEGFR2activeProp << endl;
     // R2R3
     // VEGFR2 active consumes VEGFR3 inactive
     R2R3active = 0;
@@ -717,7 +715,7 @@ void MemAgent::VEGFRresponse(void)
     }
     else
     {
-        R2R2active = VEGFR2active_hetero;
+        R2R3active = VEGFR2active_hetero;
         VEGFR2active_hetero = 0;
     }
     // VEGFR3 active consumes VEGFR2 inactive
@@ -728,7 +726,7 @@ void MemAgent::VEGFRresponse(void)
     }
     else
     {
-        R2R2active = VEGFR3active_hetero;
+        R2R3active = VEGFR3active_hetero;
         VEGFR3active_hetero = 0;
     }
     // Rest of active VEGFR2 and VEGFR3 (hetero-)dimerize
@@ -749,7 +747,7 @@ void MemAgent::VEGFRresponse(void)
     // Rest of active VEGFR2 and VEGFR3 (hetero-)dimerize
     R3R3active += floor(VEGFR3active_homo/2);
     
-    float maxR2R2 = VEGFR2NORM/10;
+    float maxR2R2 = VEGFR2NORM/2;
     float maxR2R3 = min(VEGFR2NORM*R2toR2R3, VEGFR3NORM*R3toR2R3);  // /!\ multiply by RitoRiRi as this will impact the max
     float maxR3R3 = VEGFR3NORM/2;
 
@@ -827,6 +825,7 @@ void MemAgent::VEGFRresponse(void)
     chance_R2R2 = new_rand_beta(alpha_R2R2, beta_R2R2);
     chance_R2R3 = new_rand_beta(alpha_R2R3, beta_R2R3);
     chance_R3R3 = new_rand_beta(alpha_R3R3, beta_R3R3);
+    //std:cout << Prob_R2R2 << endl;
 
     // if (chance < Prob)
     // {
