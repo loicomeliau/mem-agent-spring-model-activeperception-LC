@@ -680,15 +680,22 @@ void MemAgent::VEGFRresponse(void)
     if (VEGFR3active > VEGFR3) VEGFR3active = VEGFR3;
     VEGFR3inactive = VEGFR3 - VEGFR3active;
 
+    //cout << "r2tor2r2 " << R2toR2R2 << "  r2tor2r3 " << R2toR2R3 << "  r3tor2r3 " << R3toR2R3 << "  r3tor3r3 " << R3toR3R3 << endl;
+
     VEGFR2active_homo = VEGFR2active * R2toR2R2;
     VEGFR2active_hetero = VEGFR2active * R2toR2R3;
     VEGFR3active_homo = VEGFR3active * R3toR3R3;
-    VEGFR3active_hetero = VEGFR3active * R3toR2R3;
+    VEGFR3active_hetero = 0; //VEGFR3active * R3toR2R3;
 
     VEGFR2inactive_homo = VEGFR2inactive * R2toR2R2;
     VEGFR2inactive_hetero = VEGFR2inactive * R2toR2R3;
     VEGFR3inactive_homo = VEGFR3inactive * R3toR3R3;
-    VEGFR3inactive_hetero = VEGFR3inactive * R3toR2R3;
+    VEGFR3inactive_hetero = VEGFR3inactive; // * R3toR2R3;
+
+    //cout << "r3 " << VEGFR3 << "  r3a " << VEGFR3active << "  r3i " << VEGFR3inactive << endl;
+    //cout << "r2 " << VEGFR2 << "  r2a " << VEGFR2active << "  r2i " << VEGFR2inactive << endl;
+    //cout << "r2 active hetero " << VEGFR2active_hetero << "  r3 active hetero " << VEGFR3active_hetero << "  r2 inactive hetero " << VEGFR2inactive_hetero << "  r3 inactive hetero " << VEGFR3inactive_hetero << endl;
+    
 
     // R2R2
     R2R2active = 0;
@@ -715,7 +722,7 @@ void MemAgent::VEGFRresponse(void)
     }
     else
     {
-        R2R3active = VEGFR2active_hetero;
+        R2R3active += VEGFR2active_hetero;
         VEGFR2active_hetero = 0;
     }
     // VEGFR3 active consumes VEGFR2 inactive
@@ -726,12 +733,14 @@ void MemAgent::VEGFRresponse(void)
     }
     else
     {
-        R2R3active = VEGFR3active_hetero;
+        R2R3active += VEGFR3active_hetero;
         VEGFR3active_hetero = 0;
     }
     // Rest of active VEGFR2 and VEGFR3 (hetero-)dimerize
     R2R3active += min(VEGFR2active_hetero, VEGFR3active_hetero);
+    //cout << "r2 active hetero " << VEGFR2active_hetero << "  r3 active hetero " << VEGFR3active_hetero << "  r2 inactive hetero " << VEGFR2inactive_hetero << "  r3 inactive hetero " << VEGFR3inactive_hetero << endl;
     
+
     // R3R3
     R3R3active = 0;
     if (VEGFR3active_homo > VEGFR3inactive_homo)
@@ -748,7 +757,8 @@ void MemAgent::VEGFRresponse(void)
     R3R3active += floor(VEGFR3active_homo/2);
     
     float maxR2R2 = VEGFR2NORM/2;
-    float maxR2R3 = min(VEGFR2NORM*R2toR2R3, VEGFR3NORM*R3toR2R3);  // /!\ multiply by RitoRiRi as this will impact the max
+    float maxR2R3 = min(VEGFR2NORM/2, VEGFR3NORM/2);
+    //float maxR2R3 = min(VEGFR2NORM*R2toR2R3, VEGFR3NORM*R3toR2R3);  // /!\ multiply by RitoRiRi as this will impact the max
     float maxR3R3 = VEGFR3NORM/2;
 
     // // // /// Init dimers variables and dimerization proportions
@@ -809,6 +819,7 @@ void MemAgent::VEGFRresponse(void)
             //LC - VEGFR2toVEGFR3// Compute weighted sum of probabilities
             Prob_R2R2 = ((float) R2R2active / ((float) maxR2R2 / (float) upto)) * Cell->filCONST;
             Prob_R3R3 = ((float) R3R3active / ((float) maxR3R3 / (float) upto)) * Cell->filCONST;
+            //std::cout << "r2r3 active" << R2R3active << " max " << maxR2R3 << "  upto " << upto << "Cell->filCONST" << Cell->filCONST << endl;
             Prob_R2R3 = ((float) R2R3active / ((float) maxR2R3 / (float) upto)) * Cell->filCONST;
         }
     }
@@ -825,7 +836,7 @@ void MemAgent::VEGFRresponse(void)
     chance_R2R2 = new_rand_beta(alpha_R2R2, beta_R2R2);
     chance_R2R3 = new_rand_beta(alpha_R2R3, beta_R2R3);
     chance_R3R3 = new_rand_beta(alpha_R3R3, beta_R3R3);
-    //std:cout << Prob_R2R2 << endl;
+    //cout << "probR2R2" << Prob_R2R2 << "probR2R3" << Prob_R2R3 << endl;
 
     // if (chance < Prob)
     // {
