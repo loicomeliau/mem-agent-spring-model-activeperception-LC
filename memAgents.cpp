@@ -682,15 +682,15 @@ void MemAgent::VEGFRresponse(void)
 
     //cout << "r2tor2r2 " << R2toR2R2 << "  r2tor2r3 " << R2toR2R3 << "  r3tor2r3 " << R3toR2R3 << "  r3tor3r3 " << R3toR3R3 << endl;
 
-    VEGFR2active_homo = VEGFR2active * R2toR2R2;
-    VEGFR2active_hetero = VEGFR2active * R2toR2R3;
-    VEGFR3active_homo = VEGFR3active * R3toR3R3;
-    VEGFR3active_hetero = 0; //VEGFR3active * R3toR2R3;
+    VEGFR2active_homo = VEGFR2active * R2actitoR2R2;
+    VEGFR2active_hetero = VEGFR2active * R2actitoR2R3;
+    VEGFR3active_homo = VEGFR3active * R3actitoR3R3;
+    VEGFR3active_hetero = VEGFR3active * R3actitoR2R3;
 
-    VEGFR2inactive_homo = VEGFR2inactive * R2toR2R2;
-    VEGFR2inactive_hetero = VEGFR2inactive * R2toR2R3;
-    VEGFR3inactive_homo = VEGFR3inactive * R3toR3R3;
-    VEGFR3inactive_hetero = VEGFR3inactive; // * R3toR2R3;
+    VEGFR2inactive_homo = VEGFR2inactive * R2dispotoR2R2;
+    VEGFR2inactive_hetero = VEGFR2inactive * R2dispotoR2R3;
+    VEGFR3inactive_homo = VEGFR3inactive * R3dispotoR3R3;
+    VEGFR3inactive_hetero = VEGFR3inactive * R3dispotoR2R3;
 
     //cout << "r3 " << VEGFR3 << "  r3a " << VEGFR3active << "  r3i " << VEGFR3inactive << endl;
     //cout << "r2 " << VEGFR2 << "  r2a " << VEGFR2active << "  r2i " << VEGFR2inactive << endl;
@@ -757,7 +757,7 @@ void MemAgent::VEGFRresponse(void)
     R3R3active += floor(VEGFR3active_homo/2);
     
     float maxR2R2 = VEGFR2NORM/2;
-    float maxR2R3 = min(VEGFR2NORM/2, VEGFR3NORM/2);
+    float maxR2R3 = min(VEGFR2NORM, VEGFR3NORM);
     //float maxR2R3 = min(VEGFR2NORM*R2toR2R3, VEGFR3NORM*R3toR2R3);  // /!\ multiply by RitoRiRi as this will impact the max
     float maxR3R3 = VEGFR3NORM/2;
 

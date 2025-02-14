@@ -187,6 +187,44 @@ extern float VEGFCR3toR3R3;
 extern float VEGFCmR3toR3R3;
 extern float R3toR3R3;
 
+// Active receptors
+extern float R2actitoR2R2;
+extern float R2actitoR2R3;
+extern float R3actitoR3R3;
+extern float R3actitoR2R3;
+
+extern float R2actitoR2R2_A;
+extern float R2actitoR2R3_A;
+extern float R3actitoR3R3_A;
+extern float R3actitoR2R3_A;
+extern float R2actitoR2R2_C;
+extern float R2actitoR2R3_C;
+extern float R3actitoR3R3_C;
+extern float R3actitoR2R3_C;
+extern float R2actitoR2R2_Cm;
+extern float R2actitoR2R3_Cm;
+extern float R3actitoR3R3_Cm;
+extern float R3actitoR2R3_Cm;
+
+// Inactive receptors
+extern float R2dispotoR2R2;
+extern float R2dispotoR2R3;
+extern float R3dispotoR3R3;
+extern float R3dispotoR2R3;
+    
+extern float R2dispotoR2R2_A;
+extern float R2dispotoR2R3_A;
+extern float R3dispotoR3R3_A;
+extern float R3dispotoR2R3_A;
+extern float R2dispotoR2R2_C;
+extern float R2dispotoR2R3_C;
+extern float R3dispotoR3R3_C;
+extern float R3dispotoR2R3_C;
+extern float R2dispotoR2R2_Cm;
+extern float R2dispotoR2R3_Cm;
+extern float R3dispotoR3R3_Cm;
+extern float R3dispotoR2R3_Cm;
+
 //LC// dimerization
 // extern float R2toR2R2;
 // extern float R2toR2R3;

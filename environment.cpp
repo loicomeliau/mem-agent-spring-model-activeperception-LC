@@ -43,6 +43,44 @@ float VEGFCR3toR3R3;
 float VEGFCmR3toR3R3;
 float R3toR3R3;
 
+// Active receptors
+float R2actitoR2R2;
+float R2actitoR2R3;
+float R3actitoR3R3;
+float R3actitoR2R3;
+
+float R2actitoR2R2_A;
+float R2actitoR2R3_A;
+float R3actitoR3R3_A;
+float R3actitoR2R3_A;
+float R2actitoR2R2_C;
+float R2actitoR2R3_C;
+float R3actitoR3R3_C;
+float R3actitoR2R3_C;
+float R2actitoR2R2_Cm;
+float R2actitoR2R3_Cm;
+float R3actitoR3R3_Cm;
+float R3actitoR2R3_Cm;
+
+// Inactive receptors
+float R2dispotoR2R2;
+float R2dispotoR2R3;
+float R3dispotoR3R3;
+float R3dispotoR2R3;
+    
+float R2dispotoR2R2_A;
+float R2dispotoR2R3_A;
+float R3dispotoR3R3_A;
+float R3dispotoR2R3_A;
+float R2dispotoR2R2_C;
+float R2dispotoR2R3_C;
+float R3dispotoR3R3_C;
+float R3dispotoR2R3_C;
+float R2dispotoR2R2_Cm;
+float R2dispotoR2R3_Cm;
+float R3dispotoR3R3_Cm;
+float R3dispotoR2R3_Cm;
+
 int VType;
 
 //-----------------------------------------------------------------
@@ -229,99 +267,177 @@ void World::calcVType(){
     VEGFCmtoR2 = 0.0;
     VEGFCmtoR3 = 1.0;
 
-    affCR2R2 = 0.0;
-    affCR2R3 = 0.0;
-    affCR3R3 = 1.0;
-    affAR2R2 = 1.0; //0.8;
-    affAR2R3 = 0.0;
-    affAR3R3 = 0.0;
-    affCmR2R2 = 0.0;
-    affCmR2R3 = 0.0;
-    affCmR3R3 = 1.0;
+    // Active receptors
+    R2actitoR2R2;
+    R2actitoR2R3;
+    R3actitoR3R3;
+    R3actitoR2R3;
 
-    VEGFAR2toR2R2 = 0.8; //0.8;
-    VEGFCR2toR2R2 = 0.3;
+    R2actitoR2R2_A = 0.8;
+    R2actitoR2R3_A = 0.2;
+    R3actitoR3R3_A = 0.0;
+    R3actitoR2R3_A = 0.0;
+    
+    R2actitoR2R2_C = 0.3;
+    R2actitoR2R3_C = 0.7;
+    R3actitoR3R3_C = 0.6;
+    R3actitoR2R3_C = 0.4;
+    
+    R2actitoR2R2_Cm = 0.0;
+    R2actitoR2R3_Cm = 0.0;
+    R3actitoR3R3_Cm = 1.0;
+    R3actitoR2R3_Cm = 0.0;
+    
+    // Inactive receptors
+    R2dispotoR2R2;
+    R2dispotoR2R3;
+    R3dispotoR3R3;
+    R3dispotoR2R3;
 
-    VEGFCR3toR2R3 = 0.4;
-    VEGFCmR3toR2R3 = 0.0;
-    R3toR2R3;
+    R2dispotoR2R2_A = 0.8;
+    R2dispotoR2R3_A = 0.2;
+    R3dispotoR3R3_A = 0.0;
+    R3dispotoR2R3_A = 1.0;
+    
+    R2dispotoR2R2_C = 0.3;
+    R2dispotoR2R3_C = 0.7;
+    R3dispotoR3R3_C = 0.6;
+    R3dispotoR2R3_C = 0.4;
+    
+    R2dispotoR2R2_Cm = 0.0;
+    R2dispotoR2R3_Cm = 0.0;
+    R3dispotoR3R3_Cm = 1.0;
+    R3dispotoR2R3_Cm = 0.0;
 
-    VEGFAR2toR2R3 = 0.2; //0.2;
-    VEGFCR2toR2R3 =0.7;
-    R2toR2R3;
+    // VEGFAR2toR2R2 = 0.8; //0.8;
+    // VEGFCR2toR2R2 = 0.3;
 
-    VEGFCR3toR3R3 = 0.6;
-    VEGFCmR3toR3R3 = 1.0;
-    R3toR2R3;
+    // VEGFCR3toR2R3 = 0.4;
+    // VEGFCmR3toR2R3 = 0.0;
+    // R3toR2R3;
+
+    // VEGFAR2toR2R3 = 0.0; //0.2;
+    // VEGFCR2toR2R3 =0.7;
+    // R2toR2R3;
+
+    // VEGFCR3toR3R3 = 0.6;
+    // VEGFCmR3toR3R3 = 1.0;
+    // R3toR2R3;
 
     if(VType==VEGF_alone){
-        affR2R2 = affAR2R2 ;
-        affR3R3 = affAR3R3 ;
-        affR2R3 = affAR2R3 ;
-
         VEGFtoR2 = VEGFAtoR2;
         VEGFtoR3 = VEGFAtoR3;
-        R2toR2R2 = VEGFAR2toR2R2;
-        R2toR2R3 = VEGFAR2toR2R3;
-        R3toR2R3 = 0.0;
-        R3toR3R3 = 0.0;
+
+        R2actitoR2R2 = R2actitoR2R2_A;
+        R2actitoR2R3 = R2actitoR2R3_A;
+        R3actitoR3R3 = R3actitoR3R3_A;
+        R3actitoR2R3 = R3actitoR2R3_A;
+
+        R2dispotoR2R2 = R2dispotoR2R2_A;
+        R2dispotoR2R3 = R2dispotoR2R3_A;
+        R3dispotoR3R3 = R3dispotoR3R3_A;
+        R3dispotoR2R3 = R3dispotoR2R3_A;
     }
     
     if(VType==VEGFC_alone){
-        affR2R2 = affCR2R2 ;
-        affR3R3 = affCR3R3 ;
-        affR2R3 = affCR2R3 ;
-
         VEGFtoR2 = VEGFCtoR2;
         VEGFtoR3 = VEGFCtoR3;
 
-        // to be done
+        R2actitoR2R2 = R2actitoR2R2_C;
+        R2actitoR2R3 = R2actitoR2R3_C;
+        R3actitoR3R3 = R3actitoR3R3_C;
+        R3actitoR2R3 = R3actitoR2R3_C;
+
+        R2dispotoR2R2 = R2dispotoR2R2_C;
+        R2dispotoR2R3 = R2dispotoR2R3_C;
+        R3dispotoR3R3 = R3dispotoR3R3_C;
+        R3dispotoR2R3 = R3dispotoR2R3_C;
     }
 
     if(VType==VEGFCm_alone){
-        affR2R2 = affCmR2R2 ;
-        affR3R3 = affCmR3R3 ;
-        affR2R3 = affCmR2R3 ;
-
         VEGFtoR2 = VEGFCmtoR2;
         VEGFtoR3 = VEGFCmtoR3;
+
+        R2actitoR2R2 = R2actitoR2R2_Cm;
+        R2actitoR2R3 = R2actitoR2R3_Cm;
+        R3actitoR3R3 = R3actitoR3R3_Cm;
+        R3actitoR2R3 = R3actitoR2R3_Cm;
+
+        R2dispotoR2R2 = R2dispotoR2R2_Cm;
+        R2dispotoR2R3 = R2dispotoR2R3_Cm;
+        R3dispotoR3R3 = R3dispotoR3R3_Cm;
+        R3dispotoR2R3 = R3dispotoR2R3_Cm;
     }
 
     if(VType==VEGF_VEGFC){
-        affR2R2 = affAR2R2 + affCR2R2 ;
-        affR3R3 = affAR3R3 + affCR3R3 ;
-        affR2R3 = affAR2R3 + affCR2R3 ;
-
         VEGFtoR2 = VEGFCmtoR2;
         VEGFtoR3 = VEGFCmtoR3;
+
+        R2actitoR2R2 = (R2actitoR2R2_A + R2actitoR2R2_C) / ((R2actitoR2R2_A + R2actitoR2R3_A) + (R2actitoR2R2_C + R2actitoR2R3_C));
+        R2actitoR2R3 = (R2actitoR2R3_A + R2actitoR2R3_C) / ((R2actitoR2R2_A + R2actitoR2R3_A) + (R2actitoR2R2_C + R2actitoR2R3_C));
+        R3actitoR3R3 = (R3actitoR3R3_A + R3actitoR3R3_C) / ((R3actitoR3R3_A + R3actitoR2R3_A) + (R3actitoR3R3_C + R3actitoR2R3_C));
+        R3actitoR2R3 = (R3actitoR2R3_A + R3actitoR2R3_C) / ((R3actitoR3R3_A + R3actitoR2R3_A) + (R3actitoR3R3_C + R3actitoR2R3_C));
+
+        R2dispotoR2R2 = (R2dispotoR2R2_A + R2dispotoR2R2_C) / ((R2dispotoR2R2_A + R2dispotoR2R3_A) + (R2dispotoR2R2_C + R2dispotoR2R3_C));
+        R2dispotoR2R3 = (R2dispotoR2R3_A + R2dispotoR2R3_C) / ((R2dispotoR2R2_A + R2dispotoR2R3_A) + (R2dispotoR2R2_C + R2dispotoR2R3_C));
+        R3dispotoR3R3 = (R3dispotoR3R3_A + R3dispotoR3R3_C) / ((R3dispotoR3R3_A + R3dispotoR2R3_A) + (R3dispotoR3R3_C + R3dispotoR2R3_C));
+        R3dispotoR2R3 = (R3dispotoR2R3_A + R3dispotoR2R3_C) / ((R3dispotoR3R3_A + R3dispotoR2R3_A) + (R3dispotoR3R3_C + R3dispotoR2R3_C));
     }
 
     if(VType==VEGF_VEGFCm){
-        affR2R2 = affAR2R2 + affCmR2R2 ;
-        affR3R3 = affAR3R3 + affCmR3R3 ;
-        affR2R3 = affAR2R3 + affCmR2R3 ;
-
         VEGFtoR2 = VEGFAtoR2 + VEGFCmtoR2;
         VEGFtoR3 = VEGFAtoR3 + VEGFCmtoR3;
+
+        R2actitoR2R2 = (R2actitoR2R2_A + R2actitoR2R2_Cm) / ((R2actitoR2R2_A + R2actitoR2R3_A) + (R2actitoR2R2_Cm + R2actitoR2R3_Cm));
+        R2actitoR2R3 = (R2actitoR2R3_A + R2actitoR2R3_Cm) / ((R2actitoR2R2_A + R2actitoR2R3_A) + (R2actitoR2R2_Cm + R2actitoR2R3_Cm));
+        R3actitoR3R3 = (R3actitoR3R3_A + R3actitoR3R3_Cm) / ((R3actitoR3R3_A + R3actitoR2R3_A) + (R3actitoR3R3_Cm + R3actitoR2R3_Cm));
+        R3actitoR2R3 = (R3actitoR2R3_A + R3actitoR2R3_Cm) / ((R3actitoR3R3_A + R3actitoR2R3_A) + (R3actitoR3R3_Cm + R3actitoR2R3_Cm));
+
+        R2dispotoR2R2 = (R2dispotoR2R2_A + R2dispotoR2R2_Cm) / ((R2dispotoR2R2_A + R2dispotoR2R3_A) + (R2dispotoR2R2_Cm + R2dispotoR2R3_Cm));
+        R2dispotoR2R3 = (R2dispotoR2R3_A + R2dispotoR2R3_Cm) / ((R2dispotoR2R2_A + R2dispotoR2R3_A) + (R2dispotoR2R2_Cm + R2dispotoR2R3_Cm));
+        R3dispotoR3R3 = (R3dispotoR3R3_A + R3dispotoR3R3_Cm) / ((R3dispotoR3R3_A + R3dispotoR2R3_A) + (R3dispotoR3R3_Cm + R3dispotoR2R3_Cm));
+        R3dispotoR2R3 = (R3dispotoR2R3_A + R3dispotoR2R3_Cm) / ((R3dispotoR3R3_A + R3dispotoR2R3_A) + (R3dispotoR3R3_Cm + R3dispotoR2R3_Cm));
     }
 
     if(VType==VEGFC_VEGFCm){
-        affR2R2 = affCR2R2 + affCmR2R2 ;
-        affR3R3 = affCR3R3 + affCmR3R3 ;
-        affR2R3 = affCR2R3 + affCmR2R3 ;
-
         VEGFtoR2 = VEGFCtoR2 + VEGFCmtoR2;
         VEGFtoR3 = VEGFCtoR3 + VEGFCmtoR3;
+
+        R2actitoR2R2 = (R2actitoR2R2_C + R2actitoR2R2_Cm) / ((R2actitoR2R2_C + R2actitoR2R3_C) + (R2actitoR2R2_Cm + R2actitoR2R3_Cm));
+        R2actitoR2R3 = (R2actitoR2R3_C + R2actitoR2R3_Cm) / ((R2actitoR2R2_C + R2actitoR2R3_C) + (R2actitoR2R2_Cm + R2actitoR2R3_Cm));
+        R3actitoR3R3 = (R3actitoR3R3_C + R3actitoR3R3_Cm) / ((R3actitoR3R3_C + R3actitoR2R3_C) + (R3actitoR3R3_Cm + R3actitoR2R3_Cm));
+        R3actitoR2R3 = (R3actitoR2R3_C + R3actitoR2R3_Cm) / ((R3actitoR3R3_C + R3actitoR2R3_C) + (R3actitoR3R3_Cm + R3actitoR2R3_Cm));
+
+        R2dispotoR2R2 = (R2dispotoR2R2_C + R2dispotoR2R2_Cm) / ((R2dispotoR2R2_C + R2dispotoR2R3_C) + (R2dispotoR2R2_Cm + R2dispotoR2R3_Cm));
+        R2dispotoR2R3 = (R2dispotoR2R3_C + R2dispotoR2R3_Cm) / ((R2dispotoR2R2_C + R2dispotoR2R3_C) + (R2dispotoR2R2_Cm + R2dispotoR2R3_Cm));
+        R3dispotoR3R3 = (R3dispotoR3R3_C + R3dispotoR3R3_Cm) / ((R3dispotoR3R3_C + R3dispotoR2R3_C) + (R3dispotoR3R3_Cm + R3dispotoR2R3_Cm));
+        R3dispotoR2R3 = (R3dispotoR2R3_C + R3dispotoR2R3_Cm) / ((R3dispotoR3R3_C + R3dispotoR2R3_C) + (R3dispotoR3R3_Cm + R3dispotoR2R3_Cm));
     }
 
     if(VType==VEGF_VEGFC_VEGFCm){
-        affR2R2 = affAR2R2 + affCR2R2 + affCmR2R2 ;
-        affR3R3 = affAR3R3 + affCR3R3 + affCmR3R3 ;
-        affR2R3 = affAR2R3 + affCR2R3 + affCmR2R3 ;
-
         VEGFtoR2 = VEGFAtoR2 + VEGFCtoR2 + VEGFCmtoR2;
         VEGFtoR3 = VEGFAtoR3 + VEGFCtoR3 + VEGFCmtoR3;
+
+        R2actitoR2R2 = (R2actitoR2R2_A + R2actitoR2R2_C + R2actitoR2R2_Cm) / ((R2actitoR2R2_C + R2actitoR2R3_C) + (R2actitoR2R2_Cm + R2actitoR2R3_Cm) + (R2actitoR2R2_A + R2actitoR2R3_A));
+        R2actitoR2R3 = (R2actitoR2R3_A + R2actitoR2R3_C + R2actitoR2R3_Cm) / ((R2actitoR2R2_C + R2actitoR2R3_C) + (R2actitoR2R2_Cm + R2actitoR2R3_Cm) + (R2actitoR2R2_A + R2actitoR2R3_A));
+        R3actitoR3R3 = (R3actitoR3R3_A + R3actitoR3R3_C + R3actitoR3R3_Cm) / ((R3actitoR3R3_C + R3actitoR2R3_C) + (R3actitoR3R3_Cm + R3actitoR2R3_Cm) + (R3actitoR3R3_A + R3actitoR2R3_A));
+        R3actitoR2R3 = (R3actitoR2R3_A + R3actitoR2R3_C + R3actitoR2R3_Cm) / ((R3actitoR3R3_C + R3actitoR2R3_C) + (R3actitoR3R3_Cm + R3actitoR2R3_Cm) + (R3actitoR3R3_A + R3actitoR2R3_A));
+
+        R2dispotoR2R2 = (R2dispotoR2R2_A + R2dispotoR2R2_C + R2dispotoR2R2_Cm) / ((R2dispotoR2R2_C + R2dispotoR2R3_C) + (R2dispotoR2R2_Cm + R2dispotoR2R3_Cm)  + (R2dispotoR2R2_A + R2dispotoR2R3_A));
+        R2dispotoR2R3 = (R2dispotoR2R3_A + R2dispotoR2R3_C + R2dispotoR2R3_Cm) / ((R2dispotoR2R2_C + R2dispotoR2R3_C) + (R2dispotoR2R2_Cm + R2dispotoR2R3_Cm)  + (R2dispotoR2R2_A + R2dispotoR2R3_A));
+        R3dispotoR3R3 = (R3dispotoR3R3_A + R3dispotoR3R3_C + R3dispotoR3R3_Cm) / ((R3dispotoR3R3_C + R3dispotoR2R3_C) + (R3dispotoR3R3_Cm + R3dispotoR2R3_Cm)  + (R3dispotoR3R3_A + R3dispotoR2R3_A));
+        R3dispotoR2R3 = (R3dispotoR2R3_A + R3dispotoR2R3_C + R3dispotoR2R3_Cm) / ((R3dispotoR3R3_C + R3dispotoR2R3_C) + (R3dispotoR3R3_Cm + R3dispotoR2R3_Cm)  + (R3dispotoR3R3_A + R3dispotoR2R3_A));
     }
+
+    cout << "R2actitoR2R2" << R2actitoR2R2 << endl;
+    cout << "R2actitoR2R3" << R2actitoR2R3 << endl;
+    cout << "R3actitoR3R3" << R3actitoR3R3 << endl;
+    cout << "R3actitoR2R3" << R3actitoR2R3 << endl;
+
+    cout << "R2dispotoR2R2" << R2dispotoR2R2 << endl;
+    cout << "R2dispotoR2R3" << R2dispotoR2R3 << endl;
+    cout << "R3dispotoR3R3" << R3dispotoR3R3 << endl;
+    cout << "R3dispotoR2R3" << R3dispotoR2R3 << endl;
 }
 
 //-------------------------------------------------------------------------
