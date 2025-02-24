@@ -511,7 +511,7 @@ void World::evaluateSandP()
             if (neighCell == 1)
             {
                 Patt = 0;
-                break;
+                //break;
             }
             // Condition for pattern: 4 or 5 tip cells
             else if (tipCount == 4 || tipCount == 5)
@@ -527,6 +527,13 @@ void World::evaluateSandP()
     }
 
     tipCountSoso = tipCount;
+
+    // WRITE TIP COUNT IN FILE
+    // TIP_evolution_file << tipCount << endl;
+    if (timeStep != MAXtime+1)
+    {
+        RUNSfile << tipCount << endl;
+    }
 
     if (Patt == 1)
         patternHistory++;

@@ -59,6 +59,14 @@ class CPM_module;
 extern ofstream RUNSfile;
 extern ofstream TIMETOPATTERNfile;
 extern ofstream TIPAMOUNTfile;
+// extern ofstream TIP_evolution_file;
+// extern ofstream DLL4_evolution_file;
+// extern ofstream VEGFR2_evolution_file;
+// extern ofstream VEGFR3_evolution_file;
+// extern ofstream activeNotch_evolution_file;
+// extern ofstream activeR2R2_evolution_file;
+// extern ofstream activeR2R3_evolution_file;
+// extern ofstream activeR3R3_evolution_file;
 ///analysis/quantification
 #define SigRange 15.0f*(VEGFR2norm/100.0f) ///percentage of total VEGFR2 poss, within this range we say the cell is stable.
 #define TIP_VEGFR 50*(VEGFR2norm/100.0f)///set as over 50% - its the lower limit for no of VEGFR2 needed to qualify as a tip cell.

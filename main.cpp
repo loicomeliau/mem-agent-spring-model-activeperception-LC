@@ -2,6 +2,7 @@
 #include <iomanip>
 #include <fstream>
 #include <vector>
+#include <iterator>
 #include "objects.h"
 #include <string.h>
 #include <time.h>
@@ -40,6 +41,14 @@ World* WORLDpointer;
 ofstream RUNSfile;
 ofstream TIMETOPATTERNfile;
 ofstream TIPAMOUNTfile;
+// ofstream TIP_evolution_file;
+// ofstream DLL4_evolution_file;
+// ofstream VEGFR2_evolution_file;
+// ofstream VEGFR3_evolution_file;
+// ofstream activeNotch_evolution_file;
+// ofstream activeR2R2_evolution_file;
+// ofstream activeR2R3_evolution_file;
+// ofstream activeR3R3_evolution_file;
 int memINIT;
 char fname[200];
 float actinMax = 512;
@@ -212,6 +221,7 @@ int main(int argc, char * argv[])
     char outfilename[500];
     char tipamountfilename[500];
     char timetopatternfilename[500];
+    // char tipamountevolution[500];
 
     if (ANALYSIS_HYSTERESIS) {
         cout << "running bistability analysis" << endl;
@@ -229,12 +239,21 @@ int main(int argc, char * argv[])
 
     sprintf(timetopatternfilename, "output/time_to_pattern_concentration%g_parameter%g_run%i.txt", VconcST, intersoso, run_number);
     sprintf(tipamountfilename, "output/number_of_tip_concentration%g_parameter%g_run%i.txt", VconcST, intersoso, run_number);
+    // sprintf(tipamountfilename, "output/tip_evolution_concentration%g_parameter%g_run%i.txt", VconcST, intersoso, run_number);
 
     cout << "output file name: " << outfilename << endl;
 
     RUNSfile.open(outfilename);
     TIMETOPATTERNfile.open(timetopatternfilename, ios::app);
     TIPAMOUNTfile.open(tipamountfilename, ios::app);
+    // TIP_evolution_file.open("output/tip-evolution.txt");
+    // DLL4_evolution_file.open("output/dll-evolution.txt");
+    // VEGFR2_evolution_file.open("output/vegfr2-evolution.txt");
+    // VEGFR3_evolution_file.open("output/vegfr3-evolution.txt");
+    // activeNotch_evolution_file.open("output/active-notch-evolution.txt");
+    // activeR2R2_evolution_file.open("output/active-r2r2-evolution.txt");
+    // activeR2R3_evolution_file.open("output/active-r2r3-evolution.txt");
+    // activeR3R3_evolution_file.open("output/active-r3r3-evolution.txt");
 
     // Create main world variable
     World* world = new World();
@@ -710,6 +729,13 @@ void World::updateECagents(void)
     // Init local parameters
     int i, j;
     int upto = ECagents.size();
+    vector<float> DLL4_timestep;
+    vector<float> VEGFR2_timestep;
+    vector<float> VEGFR3_timestep;
+    vector<float> activeNotch_timestep;
+    vector<float> activeR2R2_timestep;
+    vector<float> activeR2R3_timestep;
+    vector<float> activeR3R3_timestep;
 
     // Loop over each EC agent: apply protein and actin updates
     for (j = 0; j < upto; j++)
@@ -728,7 +754,41 @@ void World::updateECagents(void)
         // Deal with spring integrity etc (keep it like that)
         ECagents[j]->newNodes(); //add new nodes or delete them if springs size is too long/too short (as filopodia have nodes and adhesions along them at 2 micron intervals
 
+        DLL4_timestep.push_back(ECagents[j]->Dll4tot);
+        VEGFR2_timestep.push_back(ECagents[j]->VEGFR2tot);
+        VEGFR3_timestep.push_back(ECagents[j]->VEGFR3tot);
+        activeNotch_timestep.push_back(ECagents[j]->activeNotchtot);
+        activeR2R2_timestep.push_back(ECagents[j]->activeR2R2tot);
+        activeR2R3_timestep.push_back(ECagents[j]->activeR2R3tot);
+        activeR3R3_timestep.push_back(ECagents[j]->activeR3R3tot);
+        // DLL4_evolution_file << ECagents[j]->Dll4tot << ", ";
+        // VEGFR2_evolution_file << ECagents[j]->VEGFR2tot << ", ";
+        // VEGFR3_evolution_file << ECagents[j]->VEGFR3tot << ", ";
+        // activeNotch_evolution_file << ECagents[j]->activeNotchtot << ", ";
+        // activeR2R2_evolution_file << ECagents[j]->activeR2R2tot << ", ";
+        // activeR2R3_evolution_file << ECagents[j]->activeR2R3tot << ", ";
+        // activeR3R3_evolution_file << ECagents[j]->activeR3R3tot << ", ";
     }
+
+    if (timeStep != MAXtime+1)
+    {
+        std::ostream_iterator<float> output_iterator(RUNSfile, ",");
+        std::copy(DLL4_timestep.begin(), DLL4_timestep.end(), output_iterator);
+        std::copy(VEGFR2_timestep.begin(), VEGFR2_timestep.end(), output_iterator);
+        std::copy(VEGFR3_timestep.begin(), VEGFR3_timestep.end(), output_iterator);
+        std::copy(activeNotch_timestep.begin(), activeNotch_timestep.end(), output_iterator);
+        std::copy(activeR2R2_timestep.begin(), activeR2R2_timestep.end(), output_iterator);
+        std::copy(activeR2R3_timestep.begin(), activeR2R3_timestep.end(), output_iterator);
+        std::copy(activeR3R3_timestep.begin(), activeR3R3_timestep.end(), output_iterator);
+    }
+    //RUNSfile << endl;
+    // DLL4_evolution_file << endl;
+    // VEGFR2_evolution_file << endl;
+    // VEGFR3_evolution_file << endl;
+    // activeNotch_evolution_file << endl;
+    // activeR2R2_evolution_file << endl;
+    // activeR2R3_evolution_file << endl;
+    // activeR3R3_evolution_file << endl;
 
     // Loop over each EC agent: update spring agents
     for (j = 0; j < (int) ECagents.size(); j++)
