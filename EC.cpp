@@ -19,7 +19,8 @@ bool EC::tipCellTest(void){
     //as the original tip cell test said there had to be 1.2x initmemagents no. which here is 740 which gives 148 left over to be involved in filopodia..
     //so as there would be slightly less spring agents than fil-memAgents in the previous model, as there are nodes in filopodia too we use 100
     //this remains the same even if cvell size is smaller with ECcross>1 as the no of filopdia agents should be the same..
-    if((VEGFR2tot>(float)VEGFR2norm/2.0f)&&(actinUsed>=257.0))return(true);
+    //if((VEGFR2tot>(float)VEGFR2norm/2.0f || VEGFR3tot>(float)VEGFR3norm/2.0f)&&(actinUsed>=257.0))return(true);
+    if(((VEGFR2tot+VEGFR3tot)>((float)VEGFR2norm/2.0f+(float)VEGFR3norm/2.0f))&&(actinUsed>=257.0))return(true);
     //LC - VEGFR2toVEGFR3// if((VEGFR3tot>(float)VEGFR3norm/2.0f)&&(actinUsed>=257.0))return(true);
     //LC - VEGFR2toVEGFR3// if((VEGFR3tot>(float)VEGFR3norm/2.0f)&&(VEGFR2tot>(float)VEGFR2norm/2.0f)&&(actinUsed>=257.0))return(true);
     else return(false);
