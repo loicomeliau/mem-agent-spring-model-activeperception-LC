@@ -195,7 +195,7 @@ EC::EC(World*  world){
         
 	VEGFR2tot=VEGFR2norm;
     VEGFR3tot=VEGFR3norm;
-	Dll4tot=0.0f;
+	Dll4tot=DLL4initscale*MAX_dll4;
 	Notchtot=0.0f;
 	activeNotchtot=0.0f;
 	stableVEGFR2=VEGFR2norm;

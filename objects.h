@@ -260,11 +260,13 @@ extern float randFilExtend;
 extern float NotchNorm;
 extern float VEGFR2NORM; /// (46000.0f/100.0f)*48.6f ///total of receptors it will maintain if all else is equal - divides out to M agents
 extern float VEGFR3NORM; //LC//
+extern float VEGFR3scale; // VEGFR3 over VEGFR2 Scale 
 extern float VEGFR2min; /// (1000.0f/100.0f)*48.6f///min level total VEGFR2 is allowed to drop to (Holger said wont go to zero..)
 extern float VEGFR3min; //LC//
 extern float sigma; ///no. of VEGFR2 recs lost by one active notch receptor.
 extern float MAX_dll4; ///max amount of VEGF that will induce the same amount of notch/dll4 - after this it will induce only amount specified in this param - from Liu03 paper
 extern float delta;
+extern float DLL4initscale;
 #define actNot_VEGFR_delay 28//CEll_setup 2: 120///28 ///no. of timesteps before active notch affects VEGFR2 expression
 #define actNot_VEGFR_lasts 1 ///no of timesteps activ notch effect on VEGFR2 expression lasts - after which VEGFR2 levels will return to normal (given no other active notch delays run out)
 #define VEGFR_dll4_delay 28//120CEll_setup 2: 120////28  ///no. of timesteps it takes for an active VEGFR2 receptor to cause dll4 expression. goes on the dll4array stack
@@ -310,9 +312,9 @@ int new_rand();
 #define alpha_R2R2 1.0
 #define beta_R2R2 1.0
 #define alpha_R2R3 1.0
-#define beta_R2R3 1.0
+extern float beta_R2R3;
 #define alpha_R3R3 1.0
-#define beta_R3R3 1.0
+extern float beta_R3R3;
 float new_rand_beta(float alpha, float beta);
 
 void create_statistics_file(string statisticsFilename);

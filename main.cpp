@@ -63,8 +63,14 @@ float NotchNorm;
 float MAX_dll4;
 float VEGFR2NORM; //total of receptors it will maintain if all else is equal - divides out to M agents
 float VEGFR3NORM; //LC//
+float VEGFR3scale;
 float VEGFR2min;
 float VEGFR3min; //LC//
+float DLL4initscale;
+
+// Filopodia elongation - Distributions parameters
+float beta_R2R3;
+float beta_R3R3;
 
 // ENVIRONMENT SETUP
 float VEGFconc = 0.8f; //for uniform VEGF above a vessel JTB 2008
@@ -145,17 +151,21 @@ void readArgs(int argc, char * argv[])
 		FIL_SPACING = atof(argv[8]);
         VType = atoi(argv[9]);
         intersoso = atof(argv[10]);
-        if (argc > 10)
+        beta_R2R3 = atof(argv[11]);
+        beta_R3R3 = atof(argv[12]);
+        VEGFR3scale = atof(argv[13]);
+        DLL4initscale = atof(argv[14]);
+        if (argc > 14)
         {
-            randFilExtend = atof(argv[11]);
+            randFilExtend = atof(argv[15]);
             if (randFilExtend >= 0 && randFilExtend <= 1)
             {
                 EPSILON = 0;
             }
-            RAND_FILRETRACT_CHANCE = atof(argv[12]);
-            if (argc > 13)
+            RAND_FILRETRACT_CHANCE = atof(argv[16]);
+            if (argc > 17)
             {
-                seed = stoll(argv[13]);
+                seed = stoll(argv[17]);
             }
         }
         VEGFconc = VconcST;
@@ -229,7 +239,7 @@ int main(int argc, char * argv[])
     }
     else if (ANALYSIS_TIME_TO_PATTERN) {
         cout << "running time to pattern analysis" << endl;
-        sprintf(outfilename, "time_to_pattern_filvary_%g_epsilon_%g_VconcST%g_GRADIENT%i_FILTIPMAX%g_tokenStrength%g_FILSPACING%i_randFilExtend%g_randFilRetract%g_seed%lld_VType%i_run%i.txt", double(FIL_VARY), double(EPSILON), VconcST, GRADIENT, FILTIPMAX, tokenStrength, FIL_SPACING, randFilExtend, RAND_FILRETRACT_CHANCE, seed, VType, run_number);
+        sprintf(outfilename, "time_to_pattern_filvary_%g_epsilon_%g_VconcST%g_GRADIENT%i_FILTIPMAX%g_tokenStrength%g_FILSPACING%i_randFilExtend%g_randFilRetract%g_seed%lld_VType%i_intersoso%g_betaR2R3%g_betaR3R3%g_VEGFR3scale%g_DLL4initscale%g_run%i.txt", double(FIL_VARY), double(EPSILON), VconcST, GRADIENT, FILTIPMAX, tokenStrength, FIL_SPACING, randFilExtend, RAND_FILRETRACT_CHANCE, seed, VType, intersoso, beta_R2R3, beta_R3R3, VEGFR3scale, DLL4initscale, run_number);
     }
     else {
         cout << "analysis must either be ANALYSIS_HYSTERESIS or ANALYSIS_TIME_TO_PATTERN.. aborting run";
@@ -1018,7 +1028,7 @@ void World::scale_ProtLevels_to_CellSize(void)
         MAX_dll4 = (10000.0f / 100.0f) * Scale;
         //LC// multiply by 2 for dimerization so that R2R2 gives the same result as VEGFR2 alone in previous version of code
         VEGFR2NORM = (2 * 31714.0f / 100.0f) * Scale; //total of receptors it will maintain if all else is equal - divides out to M agents
-        VEGFR3NORM = (2 * 31714.0f / 100.0f) * Scale;
+        VEGFR3NORM = VEGFR2NORM * VEGFR3scale;
         //LC// multiply by 2 for dimerization so that R2R2 gives the same result as VEGFR2 alone in previous version of code
         VEGFR2min = (2 * 689.0f / 100.0f) * Scale;
         VEGFR3min = (2 * 689.0f / 100.0f) * Scale;
@@ -1030,7 +1040,7 @@ void World::scale_ProtLevels_to_CellSize(void)
         MAX_dll4 = 10000.0f;
         //LC// multiply by 2 for dimerization so that R2R2 gives the same result as VEGFR2 alone in previous version of code
         VEGFR2NORM = 2 * 31714.0f; //scaled to fit with first model - so each memagent has same number of recs - new arrangment means diff number of initial memagents
-        VEGFR3NORM = 2 * 31714.0f;
+        VEGFR3NORM = VEGFR2NORM * VEGFR3scale;
         //LC// multiply by 2 for dimerization so that R2R2 gives the same result as VEGFR2 alone in previous version of code
         VEGFR2min = 2 * 689.0f;
         VEGFR3min = 2 * 689.0f;
