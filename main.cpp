@@ -780,7 +780,7 @@ void World::updateECagents(void)
         // activeR3R3_evolution_file << ECagents[j]->activeR3R3tot << ", ";
     }
 
-    if (timeStep != MAXtime+1)
+    if (timeStep < MAXtime)
     {
         std::ostream_iterator<float> output_iterator(RUNSfile, ",");
         std::copy(DLL4_timestep.begin(), DLL4_timestep.end(), output_iterator);

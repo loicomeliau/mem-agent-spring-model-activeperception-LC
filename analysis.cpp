@@ -530,7 +530,7 @@ void World::evaluateSandP()
 
     // WRITE TIP COUNT IN FILE
     // TIP_evolution_file << tipCount << endl;
-    if (timeStep != MAXtime+1)
+    if (timeStep < MAXtime)
     {
         RUNSfile << tipCount << endl;
     }
