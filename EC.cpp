@@ -21,7 +21,7 @@ bool EC::tipCellTest(void){
     //this remains the same even if cvell size is smaller with ECcross>1 as the no of filopdia agents should be the same..
     //if((VEGFR2tot>(float)VEGFR2norm/2.0f || VEGFR3tot>(float)VEGFR3norm/2.0f)&&(actinUsed>=257.0))return(true);
     if(((VEGFR2tot+VEGFR3tot)>((float)VEGFR2norm/2.0f+(float)VEGFR3norm/2.0f))&&(actinUsed>=257.0))return(true);
-    //LC - VEGFR2toVEGFR3// if((VEGFR3tot>(float)VEGFR3norm/2.0f)&&(actinUsed>=257.0))return(true);
+    //if((VEGFR2tot>(float)VEGFR2norm/2.0f)&&(actinUsed>=257.0))return(true);
     //LC - VEGFR2toVEGFR3// if((VEGFR3tot>(float)VEGFR3norm/2.0f)&&(VEGFR2tot>(float)VEGFR2norm/2.0f)&&(actinUsed>=257.0))return(true);
     else return(false);
     
@@ -278,8 +278,8 @@ void EC::GRN(void){
     affR2R3DLL4 = 0.5; //LC// 0.1-0.8
     affR3R3DLL4 = 0.05; //LC// 0.0 ou 0.01
   
-    VEGFR2tot=(VEGFR2norm)-2*(actNotCurrent*sigma); //VEGFR2norm is now a EC specific param and scaled at config if mutant
-    VEGFR3tot=(VEGFR3norm)-2*(actNotCurrent*sigma); //VEGFR3norm is now a EC specific param and scaled at config if mutant
+    VEGFR2tot=(VEGFR2norm)+NotchToVEGFR2*(actNotCurrent*sigma); //VEGFR2norm is now a EC specific param and scaled at config if mutant
+    VEGFR3tot=(VEGFR3norm)+NotchToVEGFR3*(actNotCurrent*sigma); //VEGFR3norm is now a EC specific param and scaled at config if mutant
 
     if(VEGFR2tot<VEGFR2min) VEGFR2tot=VEGFR2min;
     if(VEGFR3tot<VEGFR3min) VEGFR3tot=VEGFR3min;

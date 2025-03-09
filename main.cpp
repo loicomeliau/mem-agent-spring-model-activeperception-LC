@@ -68,6 +68,9 @@ float VEGFR2min;
 float VEGFR3min; //LC//
 float DLL4initscale;
 
+float NotchToVEGFR2;
+float NotchToVEGFR3;
+
 // Filopodia elongation - Distributions parameters
 float beta_R2R3;
 float beta_R3R3;
@@ -155,17 +158,19 @@ void readArgs(int argc, char * argv[])
         beta_R3R3 = atof(argv[12]);
         VEGFR3scale = atof(argv[13]);
         DLL4initscale = atof(argv[14]);
-        if (argc > 14)
+        NotchToVEGFR2 = atof(argv[15]);
+        NotchToVEGFR3 = atof(argv[16]);
+        if (argc > 16)
         {
-            randFilExtend = atof(argv[15]);
+            randFilExtend = atof(argv[17]);
             if (randFilExtend >= 0 && randFilExtend <= 1)
             {
                 EPSILON = 0;
             }
-            RAND_FILRETRACT_CHANCE = atof(argv[16]);
-            if (argc > 17)
+            RAND_FILRETRACT_CHANCE = atof(argv[18]);
+            if (argc > 19)
             {
-                seed = stoll(argv[17]);
+                seed = stoll(argv[19]);
             }
         }
         VEGFconc = VconcST;
@@ -239,7 +244,7 @@ int main(int argc, char * argv[])
     }
     else if (ANALYSIS_TIME_TO_PATTERN) {
         cout << "running time to pattern analysis" << endl;
-        sprintf(outfilename, "time_to_pattern_filvary_%g_epsilon_%g_VconcST%g_GRADIENT%i_FILTIPMAX%g_tokenStrength%g_FILSPACING%i_randFilExtend%g_randFilRetract%g_seed%lld_VType%i_intersoso%g_betaR2R3%g_betaR3R3%g_VEGFR3scale%g_DLL4initscale%g_run%i.txt", double(FIL_VARY), double(EPSILON), VconcST, GRADIENT, FILTIPMAX, tokenStrength, FIL_SPACING, randFilExtend, RAND_FILRETRACT_CHANCE, seed, VType, intersoso, beta_R2R3, beta_R3R3, VEGFR3scale, DLL4initscale, run_number);
+        sprintf(outfilename, "time_to_pattern_filvary_%g_epsilon_%g_VconcST%g_GRADIENT%i_FILTIPMAX%g_tokenStrength%g_FILSPACING%i_randFilExtend%g_randFilRetract%g_seed%lld_VType%i_intersoso%g_betaR2R3%g_betaR3R3%g_VEGFR3scale%g_DLL4initscale%g_NotchToVEGFR2%g_NotchToVEGFR3%g_run%i.txt", double(FIL_VARY), double(EPSILON), VconcST, GRADIENT, FILTIPMAX, tokenStrength, FIL_SPACING, randFilExtend, RAND_FILRETRACT_CHANCE, seed, VType, intersoso, beta_R2R3, beta_R3R3, VEGFR3scale, DLL4initscale, NotchToVEGFR2, NotchToVEGFR3, run_number);
     }
     else {
         cout << "analysis must either be ANALYSIS_HYSTERESIS or ANALYSIS_TIME_TO_PATTERN.. aborting run";
