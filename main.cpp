@@ -1075,6 +1075,11 @@ void World::scale_ProtLevels_to_CellSize(void)
             VEGFR3NORM = 1.153846 * VEGFR2NORM;
             // cout << "JE RENTRE DANS LE IF BORDEL - 1" << endl << endl << endl;
         }
+        else if (lymphatic==2)
+        {
+            VEGFR2NORM = 2 * 31714.0f;
+            VEGFR3NORM = VEGFR2NORM * VEGFR3scale;
+        }
 
         // //LC// multiply by 2 for dimerization so that R2R2 gives the same result as VEGFR2 alone in previous version of code
         // VEGFR2NORM = 2 * 31714.0f; //scaled to fit with first model - so each memagent has same number of recs - new arrangment means diff number of initial memagents
