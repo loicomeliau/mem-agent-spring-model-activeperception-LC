@@ -75,6 +75,9 @@ float NotchToVEGFR3;
 float beta_R2R3;
 float beta_R3R3;
 
+// HUVEC or LEC
+int lymphatic;
+
 // ENVIRONMENT SETUP
 float VEGFconc = 0.8f; //for uniform VEGF above a vessel JTB 2008
 float horV = 0.04; //for NCB 2010 blind ended sprout radiating gradient
@@ -160,17 +163,18 @@ void readArgs(int argc, char * argv[])
         DLL4initscale = atof(argv[14]);
         NotchToVEGFR2 = atof(argv[15]);
         NotchToVEGFR3 = atof(argv[16]);
-        if (argc > 16)
+        lymphatic = atoi(argv[17]);
+        if (argc > 17)
         {
-            randFilExtend = atof(argv[17]);
+            randFilExtend = atof(argv[18]);
             if (randFilExtend >= 0 && randFilExtend <= 1)
             {
                 EPSILON = 0;
             }
-            RAND_FILRETRACT_CHANCE = atof(argv[18]);
-            if (argc > 19)
+            RAND_FILRETRACT_CHANCE = atof(argv[19]);
+            if (argc > 20)
             {
-                seed = stoll(argv[19]);
+                seed = stoll(argv[20]);
             }
         }
         VEGFconc = VconcST;
@@ -244,7 +248,7 @@ int main(int argc, char * argv[])
     }
     else if (ANALYSIS_TIME_TO_PATTERN) {
         cout << "running time to pattern analysis" << endl;
-        sprintf(outfilename, "time_to_pattern_filvary_%g_epsilon_%g_VconcST%g_GRADIENT%i_FILTIPMAX%g_tokenStrength%g_FILSPACING%i_randFilExtend%g_randFilRetract%g_seed%lld_VType%i_intersoso%g_betaR2R3%g_betaR3R3%g_VEGFR3scale%g_DLL4initscale%g_NotchToVEGFR2%g_NotchToVEGFR3%g_run%i.txt", double(FIL_VARY), double(EPSILON), VconcST, GRADIENT, FILTIPMAX, tokenStrength, FIL_SPACING, randFilExtend, RAND_FILRETRACT_CHANCE, seed, VType, intersoso, beta_R2R3, beta_R3R3, VEGFR3scale, DLL4initscale, NotchToVEGFR2, NotchToVEGFR3, run_number);
+        sprintf(outfilename, "time_to_pattern_filvary_%g_epsilon_%g_VconcST%g_GRADIENT%i_FILTIPMAX%g_tokenStrength%g_FILSPACING%i_randFilExtend%g_randFilRetract%g_seed%lld_VType%i_intersoso%g_betaR2R3%g_betaR3R3%g_VEGFR3scale%g_DLL4initscale%g_NotchToVEGFR2%g_NotchToVEGFR3%g_lymphatic%i_run%i.txt", double(FIL_VARY), double(EPSILON), VconcST, GRADIENT, FILTIPMAX, tokenStrength, FIL_SPACING, randFilExtend, RAND_FILRETRACT_CHANCE, seed, VType, intersoso, beta_R2R3, beta_R3R3, VEGFR3scale, DLL4initscale, NotchToVEGFR2, NotchToVEGFR3, lymphatic, run_number);
     }
     else {
         cout << "analysis must either be ANALYSIS_HYSTERESIS or ANALYSIS_TIME_TO_PATTERN.. aborting run";
@@ -1031,6 +1035,21 @@ void World::scale_ProtLevels_to_CellSize(void)
         NotchNorm = (10000.0f / 100.0f) * Scale;
 
         MAX_dll4 = (10000.0f / 100.0f) * Scale;
+        
+        // if (lymphatic==0)
+        // {
+        //     VEGFR2NORM = (2 * 31714.0f / 100.0f) * Scale; //total of receptors it will maintain if all else is equal - divides out to M agents
+        //     // VEGFR3NORM = VEGFR2NORM * 0.58;
+        //     VEGFR3NORM = VEGFR2NORM;
+        //     cout << "bien vu";
+        // }
+        // else if (lymphatic==1)
+        // {
+        //     VEGFR2NORM = 1.3 * (2 * 31714.0f / 100.0f) * Scale;
+        //     VEGFR3NORM = 1.153846 * VEGFR2NORM;
+        //     cout << "mal vu";
+        // }
+        
         //LC// multiply by 2 for dimerization so that R2R2 gives the same result as VEGFR2 alone in previous version of code
         VEGFR2NORM = (2 * 31714.0f / 100.0f) * Scale; //total of receptors it will maintain if all else is equal - divides out to M agents
         VEGFR3NORM = VEGFR2NORM * VEGFR3scale;
@@ -1043,9 +1062,23 @@ void World::scale_ProtLevels_to_CellSize(void)
         NotchNorm = 10000.0f;
 
         MAX_dll4 = 10000.0f;
-        //LC// multiply by 2 for dimerization so that R2R2 gives the same result as VEGFR2 alone in previous version of code
-        VEGFR2NORM = 2 * 31714.0f; //scaled to fit with first model - so each memagent has same number of recs - new arrangment means diff number of initial memagents
-        VEGFR3NORM = VEGFR2NORM * VEGFR3scale;
+
+        if (lymphatic==0)
+        {
+            VEGFR2NORM = (2 * 31714.0f); //total of receptors it will maintain if all else is equal - divides out to M agents
+            VEGFR3NORM = VEGFR2NORM * 0.58;
+            // cout << "JE RENTRE DANS LE IF BORDEL - 0" << endl << endl << endl;
+        }
+        else if (lymphatic==1)
+        {
+            VEGFR2NORM = 1.3 * (2 * 31714.0f);
+            VEGFR3NORM = 1.153846 * VEGFR2NORM;
+            // cout << "JE RENTRE DANS LE IF BORDEL - 1" << endl << endl << endl;
+        }
+
+        // //LC// multiply by 2 for dimerization so that R2R2 gives the same result as VEGFR2 alone in previous version of code
+        // VEGFR2NORM = 2 * 31714.0f; //scaled to fit with first model - so each memagent has same number of recs - new arrangment means diff number of initial memagents
+        // VEGFR3NORM = VEGFR2NORM * VEGFR3scale;
         //LC// multiply by 2 for dimerization so that R2R2 gives the same result as VEGFR2 alone in previous version of code
         VEGFR2min = 2 * 689.0f;
         VEGFR3min = 2 * 689.0f;

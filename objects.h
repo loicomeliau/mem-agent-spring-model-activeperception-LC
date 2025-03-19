@@ -148,6 +148,10 @@ extern int GRADIENT;//FIXED_MACROS////ASTRO_UNIFORM///FIXED_MACROS///ASTRO_LINEA
 extern int VType; 
 extern float NotchToVEGFR2;
 extern float NotchToVEGFR3;
+
+// HUVEC or LEC
+extern int lymphatic;
+
 // AJOUT3 
 // Which Stimu ? The number we enter in argument 
 #define VEGF_alone 1
