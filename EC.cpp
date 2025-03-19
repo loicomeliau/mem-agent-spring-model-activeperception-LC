@@ -275,7 +275,7 @@ void EC::GRN(void){
     
     //LC - VEGFR2toVEGFR3// DLL4-VEGFRs affinity values
     affR2R2DLL4 = 1.0; //LC// 0.7-1.5
-    affR2R3DLL4 = 0.5; //LC// 0.1-0.8
+    affR2R3DLL4 = 0.67; //0.5; //LC// 0.1-0.8
     affR3R3DLL4 = 0.05; //LC// 0.0 ou 0.01
   
     VEGFR2tot=(VEGFR2norm)+NotchToVEGFR2*(actNotCurrent*sigma); //VEGFR2norm is now a EC specific param and scaled at config if mutant
