@@ -826,6 +826,9 @@ void MemAgent::VEGFRresponse(void)
     else
     {
         Prob = 0;
+        Prob_R2R2 = 0;
+        Prob_R2R3 = 0;
+        Prob_R3R3 = 0;
     }
     
     // Compute random chance to extend and compare to the probability
@@ -873,6 +876,7 @@ void MemAgent::VEGFRresponse(void)
     //     VRinactiveCounter++;
     // }
 
+    // ++-++ By doing so, due to the random part of the process, we increase give more chance to VEGFC to increase actin as it targets all 3 dimers, while VEGFA only targets 2 dimers
     // R2R2
     if (chance_R2R2 < Prob_R2R2)
     {
@@ -975,13 +979,64 @@ void MemAgent::VEGFRresponse(void)
     {
         R3R3_inactive_flag = 1;
     }
-
+    
     // Check for inactive flags
     if ((R2R2_inactive_flag==1) && (R2R3_inactive_flag==1) && (R3R3_inactive_flag==1))
     {
         // Increase inactive counter
         VRinactiveCounter++;
     }
+    // ++-++
+
+    // TRYING TO COMBINE PROBABILITIES DIFFERENTLY
+    // if ( (chance_R3R3+chance_R2R3+chance_R2R2)/1 < (Prob_R3R3+Prob_R2R3+Prob_R2R2) )
+    // {
+    //     // Award actin tokens
+    //     filTokens++;
+
+    //     if (FIL == NONE) tryActinPassRadiusN((int) Mx, (int) My, (int) Mz, FIL_SPACING);
+
+    //     // OLD WAY OF DOING
+    //     if (oldVersion == true)
+    //     {
+    //         if (FIL == STALK)
+    //         {
+    //             //passes its filExtend token to Magent in its plusSite
+    //             plusSite->filTokens++;
+    //             filTokens--;
+    //         }
+    //     }
+
+    //     //--------------------------------------------------------------------------------------------
+    //     //filopodia extension
+    //     if (((FIL == TIP) || (FIL == NONE)) && (filTokens >= tokenStrength))
+    //     {
+    //         if (deleteFlag == false) moved = extendFil();
+    //     }
+    //     //--------------------------------------------------------------------------------------------
+
+    //     //reset VRinactive counter as now activated
+    //     VRinactiveCounter = 0;
+    // }
+    // else
+    // {
+    //     R3R3_inactive_flag = 1;
+    // }
+
+    if (Prob_R2R2 > 0 & intersoso==1)
+    {
+        intersoso=0;
+        cout << "Chance R2R2: " << chance_R2R2 << " Chance R2R3: " << chance_R2R3 << " Chance R3R3: " << chance_R3R3 << endl;
+
+        cout << "Proba R2R2: " << Prob_R2R2 << " Proba R2R3: " << Prob_R2R3 << " Proba R3R3: " << Prob_R3R3 << endl << endl;
+    }
+
+    // // Check for inactive flags
+    // if (R3R3_inactive_flag==1)
+    // {
+    //     // Increase inactive counter
+    //     VRinactiveCounter++;
+    // }
 
     // Update timer if not extended
     if (moved == false) 
