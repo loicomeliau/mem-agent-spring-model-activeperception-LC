@@ -316,9 +316,11 @@ int new_rand();
 
 // NEW BETA RAND
 #define alpha_R2R2 1.0
-#define beta_R2R2 1.0
+extern float beta_R2R2;
+//#define beta_R2R2 1.0
 #define alpha_R2R3 1.0
-extern float beta_R2R3;
+#define beta_R2R3 1.0
+//extern float beta_R2R3;
 #define alpha_R3R3 1.0
 extern float beta_R3R3;
 float new_rand_beta(float alpha, float beta);
