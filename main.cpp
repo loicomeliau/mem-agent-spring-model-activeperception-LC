@@ -1061,7 +1061,7 @@ void World::scale_ProtLevels_to_CellSize(void)
     {
         NotchNorm = 10000.0f;
 
-        MAX_dll4 = 10000.0f;
+        MAX_dll4 = intersoso * 10000.0f;
 
         if (lymphatic==0)
         {
