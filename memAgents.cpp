@@ -1023,13 +1023,13 @@ void MemAgent::VEGFRresponse(void)
     //     R3R3_inactive_flag = 1;
     // }
 
-    if (Prob_R2R2 > 0 & intersoso==1)
-    {
-        intersoso=0;
-        cout << "Chance R2R2: " << chance_R2R2 << " Chance R2R3: " << chance_R2R3 << " Chance R3R3: " << chance_R3R3 << endl;
+    // if (Prob_R2R2 > 0 & intersoso==1)
+    // {
+    //     intersoso=0;
+    //     cout << "Chance R2R2: " << chance_R2R2 << " Chance R2R3: " << chance_R2R3 << " Chance R3R3: " << chance_R3R3 << endl;
 
-        cout << "Proba R2R2: " << Prob_R2R2 << " Proba R2R3: " << Prob_R2R3 << " Proba R3R3: " << Prob_R3R3 << endl << endl;
-    }
+    //     cout << "Proba R2R2: " << Prob_R2R2 << " Proba R2R3: " << Prob_R2R3 << " Proba R3R3: " << Prob_R3R3 << endl << endl;
+    // }
 
     // // Check for inactive flags
     // if (R3R3_inactive_flag==1)
